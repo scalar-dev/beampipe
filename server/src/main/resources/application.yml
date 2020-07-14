@@ -1,0 +1,24 @@
+micronaut:
+  application:
+    name: server
+  security:
+    enabled: false
+  server:
+    cors:
+      enabled: true
+datasources:
+  default:
+    url: jdbc:postgresql://${postgres.host:localhost}/${postgres.database:postgres}
+    driverClassName: org.postgresql.Driver
+    username: ${postgres.username:postgres}
+    password: ${postgres.password:postgres}
+    dialect: postgres
+graphql:
+  enabled: true
+  path: /graphql
+  graphiql:
+    enabled:  true
+flyway:
+  datasources:
+    default:
+      locations: classpath:databasemigrations
