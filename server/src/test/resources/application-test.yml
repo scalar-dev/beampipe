@@ -1,0 +1,11 @@
+datasources:
+  default:
+    url: jdbc:postgresql://${postgres.host:localhost}:${postgres.port}/${postgres.database:postgres}
+    driverClassName: org.postgresql.Driver
+    username: test
+    password: test
+    dialect: postgres
+
+micronaut:
+  security:
+    enabled: false

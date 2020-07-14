@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: server
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle
+features: [app-name, docker, file-watch, gradle, http-client, junit, kotlin, kotlin-application, logback, netty-server, readme, security-annotations, security-oauth2, shade, yaml]
