@@ -130,7 +130,7 @@ jib {
     extraDirectories {
         paths {
             path {
-                from = file("./geolite2")
+                from = file("../geolite2/")
                 into = "/data"
             }
         }
