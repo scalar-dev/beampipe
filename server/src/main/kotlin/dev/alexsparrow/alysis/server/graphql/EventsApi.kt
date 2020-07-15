@@ -74,7 +74,7 @@ class EventsApi {
     private fun timePeriodToStartTime(timePeriodStart: String?) = when (timePeriodStart ?: "day") {
         "day" -> Instant.now().minus(1, ChronoUnit.DAYS)
         "hour" -> Instant.now().minus(1, ChronoUnit.HOURS)
-        "week" -> Instant.now().minus(1, ChronoUnit.WEEKS)
+        "week" -> Instant.now().minus(7, ChronoUnit.DAYS)
         else -> throw Exception("Invalid time period")
     }
 
