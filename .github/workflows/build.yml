@@ -8,7 +8,7 @@ env:
   DOCKER_USERNAME: alexsparrow
   DOCKER_PASSWORD: ${{ secrets.SCALEWAY_SECRET }}
 jobs:
-  wat-server:
+  server:
     runs-on: ubuntu-latest
     container: alexsparrow/wat-builder
     steps:
@@ -19,7 +19,7 @@ jobs:
          cd ./server
          ./gradlew jib --no-daemon --console=plain --image=$DOCKER_REPO/server:$GITHUB_RUN_NUMBER
 
-  wat-frontend:
+  web:
     runs-on: ubuntu-latest
     container: alexsparrow/wat-builder
     steps:
