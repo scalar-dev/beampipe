@@ -126,6 +126,15 @@ jib {
     from {
         image = "gcr.io/distroless/java:11"
     }
+
+    extraDirectories {
+        paths {
+            path {
+                from = file("./geolite2")
+                into = "/data"
+            }
+        }
+    }
 }
 
 
