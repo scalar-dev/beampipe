@@ -3,7 +3,7 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
-import { useRef, useEffect, useState, ButtonHTMLAttributes } from "react";
+import { useRef, useEffect, useState } from "react";
 import Chart from "chart.js";
 
 interface ButtonProps
