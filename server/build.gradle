@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.expediagroup:graphql-kotlin-schema-generator:3.4.1'
 
     implementation("com.maxmind.geoip2:geoip2:2.14.0")
+    implementation("io.whitfin:siphash:2.0.0")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")

@@ -11,6 +11,7 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.http.server.util.HttpClientAddressResolver
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
+import io.whitfin.siphash.SipHasher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.jetbrains.exposed.sql.insert
@@ -31,6 +32,9 @@ class EventEndpoint {
     @Inject
     lateinit var clientAddressResolver: HttpClientAddressResolver
 
+    var key: ByteArray = "0123456789ABCDEF".toByteArray()
+    var container = SipHasher.container(key)
+
     var database = File("/home/alex/projects/alysis/data/GeoLite2-City_20200707/GeoLite2-City.mmdb")
     var reader = DatabaseReader.Builder(database).build()
 
@@ -43,8 +47,14 @@ class EventEndpoint {
             val screenWidth: Int
     )
 
-    suspend fun storeEvent(clientIp: String?, event: Event) {
+    fun screenWidthToDevice(width: Int): String = when {
+        width < 576 -> "mobile"
+        width < 992 -> "tablet"
+        width < 1440 -> "laptop"
+        else -> "desktop"
+    }
 
+    suspend fun storeEvent(clientIp: String?, event: Event) {
         val ipCity = GlobalScope.async {
             val ipAddress = InetAddress.getByName(clientIp)
             reader.tryCity(ipAddress)
@@ -58,10 +68,13 @@ class EventEndpoint {
                 it[domain] = uri.host.removePrefix("www.")
                 it[path] = uri.path ?: "/"
                 it[city] = ipCity.map { it.city.name }.orElse(null)
+                it[country] = ipCity.map { it.country.name }.orElse(null)
                 it[referrer] = event.referrer
                 it[source_] = event.source
                 it[userAgent] = event.userAgent
                 it[screenWidth] = event.screenWidth
+                it[device] = screenWidthToDevice(event.screenWidth)
+                it[userId] = container.hash("${domain}_${clientIp}_${userAgent}".toByteArray())
                 it[time] = Instant.now()
                 it[data] = emptyMap<String, Any>()
             }

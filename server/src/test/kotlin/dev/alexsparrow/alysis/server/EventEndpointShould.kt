@@ -48,7 +48,7 @@ class EventEndpointShould : TestPropertyProvider {
     )
 
     data class Response<T>(val data: T)
-    data class Events(val bucketEvents: List<EventsApi.Bucket>)
+    data class Events(val events: List<EventsApi.Event>)
 
     @Test
     fun insert_events() {
@@ -61,9 +61,12 @@ class EventEndpointShould : TestPropertyProvider {
         val body = GraphQLRequestBody()
         body.query= """
             {
-              bucketEvents(domain: "hello.com") {
-                time,
-                count
+              events(domain: "hello.com") {
+                type
+                time
+                source
+                city
+                country
               } 
             }
         """.trimIndent()
@@ -76,9 +79,8 @@ class EventEndpointShould : TestPropertyProvider {
         objectMapper.registerModule(JavaTimeModule())
         val events = objectMapper.readValue<Response<Events>>(response)
 
-        val total = events.data.bucketEvents.fold<EventsApi.Bucket, Long>(0, { acc, bucket -> acc + bucket.count })
-
-        assertEquals(3, total)
+        assertEquals("Nashville", events.data.events[0].city)
+        assertEquals("United States", events.data.events[0].country)
     }
 
     override fun getProperties(): MutableMap<String, String> {
