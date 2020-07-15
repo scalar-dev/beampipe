@@ -1,6 +1,6 @@
 import { AppProps } from "next/app";
 import { useEffect } from "react";
-import '../styles/index.css'
+import "../styles/index.css";
 
 const track = (
   event: string,
@@ -8,6 +8,11 @@ const track = (
 ) => {
   const location = window.location;
   const document = window.document;
+
+  const isLocal =
+    /^localhost$|^127(?:\.[0-9]+){0,2}\.[0-9]+$|^(?:0*\:)*?:?0*1$/.test(
+      location.hostname
+    ) || location.protocol === "file:";
 
   const payload = {
     type: event,
@@ -17,7 +22,7 @@ const track = (
       location.hostname +
       location.pathname +
       location.search,
-    domain: location.host,
+    domain: isLocal ? "localhost" : location.host,
     referrer: document.referrer,
     userAgent: window.navigator.userAgent,
     source: location.search.match(/[?&](ref|source|utm_source)=([^?&]+)/)?.[2],
