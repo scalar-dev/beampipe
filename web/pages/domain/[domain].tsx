@@ -134,7 +134,7 @@ const Root = () => {
   return (
     <div>
       <Head>
-        <title>Root</title>
+        <title>alysis</title>
         <link rel="icon" href="/static/favicon.ico" />
       </Head>
 
@@ -143,7 +143,7 @@ const Root = () => {
           <nav className="flex items-center justify-between flex-wrap py-6">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-semibold text-xl tracking-tight">
-                SimpleStats
+                alysis
               </span>
             </div>
             {/* <div className="block lg:hidden">
