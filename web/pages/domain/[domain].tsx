@@ -29,9 +29,11 @@ const Button: React.FunctionComponent<ButtonProps> = ({
   </button>
 );
 
-interface CardProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    
-}
+interface CardProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 const Card: React.FunctionComponent<CardProps> = ({
   children,
@@ -47,7 +49,7 @@ const Card: React.FunctionComponent<CardProps> = ({
 
 const Root = () => {
   const router = useRouter();
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
 
   const [timePeriod, setTimePeriod] = useState("day");
@@ -107,9 +109,19 @@ const Root = () => {
   }, []);
 
   if (chart.current && data.data) {
+    const gradient = canvasRef.current
+      ?.getContext("2d")
+      ?.createLinearGradient(0, 0, 0, 400);
+
+    gradient!.addColorStop(0, "rgba(11, 163, 96, 255)");
+    gradient!.addColorStop(1, "rgba(255,255,255,0)");
+
     chart.current.data.datasets = [
       {
         lineTension: 0,
+        backgroundColor: gradient,
+        borderColor: "#0ba360",
+        pointRadius: 0,
         data: data.data.bucketEvents.map(
           ({ time, count }: { time: string; count: number }) => ({
             x: new Date(parseInt(time) * 1000.0),
