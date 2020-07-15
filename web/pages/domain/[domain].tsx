@@ -106,8 +106,6 @@ const Root = () => {
     });
   }, []);
 
-  console.log(stats);
-
   if (chart.current && stats.data) {
     const gradient = canvasRef.current
       ?.getContext("2d")
