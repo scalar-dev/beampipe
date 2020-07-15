@@ -18,5 +18,6 @@ WORKDIR /usr/src/app
 COPY --from=deps /src/node_modules ./node_modules
 COPY --from=deps /src/package.json /src/yarn.lock ./
 COPY --from=base /src/.next ./.next
+COPY --from=base /src/public ./public
 
 CMD [ "yarn", "start" ]
