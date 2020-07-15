@@ -2,6 +2,7 @@ package dev.alexsparrow.alysis.server.api
 
 import com.maxmind.geoip2.DatabaseReader
 import dev.alexsparrow.alysis.server.db.Events
+import io.micronaut.context.annotation.Property
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpResponse
@@ -26,7 +27,7 @@ import javax.inject.Inject
 
 @Controller("/event")
 @Secured(SecurityRule.IS_ANONYMOUS)
-class EventEndpoint {
+class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) {
     val LOG = LoggerFactory.getLogger(EventEndpoint::class.java)
 
     @Inject
@@ -35,7 +36,7 @@ class EventEndpoint {
     var key: ByteArray = "0123456789ABCDEF".toByteArray()
     var container = SipHasher.container(key)
 
-    var database = File("/home/alex/projects/alysis/data/GeoLite2-City_20200707/GeoLite2-City.mmdb")
+    var database = File(geoLite2DbPath)
     var reader = DatabaseReader.Builder(database).build()
 
     data class Event(
