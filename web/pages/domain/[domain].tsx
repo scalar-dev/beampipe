@@ -61,24 +61,22 @@ const Root = () => {
     else return "day";
   };
 
-  const [data] = useQuery({
+  const [stats] = useQuery({
     query: gql`
-      query bucketEvents(
+      query stats(
         $domain: String!
         $bucketDuration: String!
         $timePeriodStart: String!
       ) {
-        bucketEvents(
-          domain: $domain
-          bucketDuration: $bucketDuration
-          timePeriodStart: $timePeriodStart
-        ) {
-          time
+        events(domain: $domain, timePeriodStart: $timePeriodStart) {
+          bucketed(bucketDuration: $bucketDuration) {
+            time
+            count
+          }
+
+          countUnique
           count
         }
-
-        countUnique(domain: $domain, timePeriodStart: $timePeriodStart)
-        count(domain: $domain, timePeriodStart: $timePeriodStart)
       }
     `,
     variables: {
@@ -108,7 +106,9 @@ const Root = () => {
     });
   }, []);
 
-  if (chart.current && data.data) {
+  console.log(stats);
+
+  if (chart.current && stats.data) {
     const gradient = canvasRef.current
       ?.getContext("2d")
       ?.createLinearGradient(0, 0, 0, 400);
@@ -122,7 +122,7 @@ const Root = () => {
         backgroundColor: gradient,
         borderColor: "#0ba360",
         pointRadius: 0,
-        data: data.data.bucketEvents.map(
+        data: stats.data?.events?.bucketed.map(
           ({ time, count }: { time: string; count: number }) => ({
             x: new Date(parseInt(time) * 1000.0),
             y: count,
@@ -182,11 +182,11 @@ const Root = () => {
                 </div>
                 <div className="text-2xl mr-4">
                   <span className="text-gray-500 mr-2 text-sm">total</span>
-                  {data.data?.count}
+                  {stats.data?.events.count}
                 </div>
                 <div className="text-2xl">
                   <span className="text-gray-500 mr-2 text-sm">unique</span>
-                  {data.data?.countUnique}
+                  {stats.data?.events.countUnique}
                 </div>
               </div>
             </Card>

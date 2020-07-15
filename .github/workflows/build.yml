@@ -1,0 +1,32 @@
+name: CI
+
+on: [push]
+
+env:
+  DOCKER_SERVER: rg.fr-par.scw.cloud
+  DOCKER_REPO: rg.fr-par.scw.cloud/alysis
+  DOCKER_USERNAME: alexsparrow
+  DOCKER_PASSWORD: ${{ secrets.SCALEWAY_SECRET }}
+jobs:
+  wat-server:
+    runs-on: ubuntu-latest
+    container: alexsparrow/wat-builder
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
+         cd ./server
+         ./gradlew jib --no-daemon --console=plain --image=$DOCKER_REPO/server:$GITHUB_RUN_NUMBER
+
+  wat-frontend:
+    runs-on: ubuntu-latest
+    container: alexsparrow/wat-builder
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
+         cd ./web
+         docker build -t $DOCKER_REPO/web:$GITHUB_RUN_NUMBER .
+         docker push $DOCKER_REPO/web:$GITHUB_RUN_NUMBER
