@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "buildTracker": "tsc --outDir public tracker/tracker.ts",
     "start": "next start",
     "type-check": "tsc"
   },
