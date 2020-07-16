@@ -78,6 +78,25 @@ class EventsApi {
                     .map { Count(it[Events.referrer], it[Events.referrer.count()]) }
         }
 
+
+        suspend fun topDevices(n: Int?) = newSuspendedTransaction {
+            Events.slice(Events.device, Events.device.count())
+                    .select { preselect() }
+                    .groupBy(Events.device)
+                    .orderBy(Events.device.count(), SortOrder.DESC)
+                    .limit(n ?: 10)
+                    .map { Count(it[Events.device], it[Events.device.count()]) }
+        }
+
+        suspend fun topCountries(n: Int?) = newSuspendedTransaction {
+            Events.slice(Events.country, Events.country.count())
+                    .select { preselect() }
+                    .groupBy(Events.country)
+                    .orderBy(Events.country.count(), SortOrder.DESC)
+                    .limit(n ?: 10)
+                    .map { Count(it[Events.country] ?: "unknown", it[Events.country.count()]) }
+        }
+
         suspend fun countUnique() = newSuspendedTransaction {
             Events
                     .slice(Events.userId)
