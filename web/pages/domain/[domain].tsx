@@ -33,58 +33,39 @@ interface CardProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  classNames?: string;
+}
 
 const Card: React.FunctionComponent<CardProps> = ({
   children,
+  classNames,
   ...otherProps
 }) => (
-  <div
-    className="flex flex-col rounded overflow-hidden shadow-lg bg-white w-full p-4 mr-4 mb-4"
-    {...otherProps}
-  >
-    {children}
+  <div className={`pb-4 pr-4 ${classNames}`}>
+    <div
+      className={`flex flex-col rounded overflow-hidden shadow-lg bg-white p-4`}
+      {...otherProps}
+    >
+      {children}
+    </div>
   </div>
 );
 
-const Root = () => {
-  const router = useRouter();
+const CardTitle: React.FunctionComponent<{}> = ({ children }) => (
+  <h2 className="text-xl pb-2">{children}</h2>
+);
+
+const timePeriodToBucket = (timePeriod: string) => {
+  if (timePeriod === "day") return "hour";
+  else if (timePeriod === "hour") return "minute";
+  else if (timePeriod === "week") return "day";
+  else return "day";
+};
+
+const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
-
-  const [timePeriod, setTimePeriod] = useState("day");
-
-  const timePeriodToBucket = (timePeriod: string) => {
-    if (timePeriod === "day") return "hour";
-    else if (timePeriod === "hour") return "minute";
-    else if (timePeriod === "week") return "day";
-    else return "day";
-  };
-
-  const [stats] = useQuery({
-    query: gql`
-      query stats(
-        $domain: String!
-        $bucketDuration: String!
-        $timePeriodStart: String!
-      ) {
-        events(domain: $domain, timePeriodStart: $timePeriodStart) {
-          bucketed(bucketDuration: $bucketDuration) {
-            time
-            count
-          }
-
-          countUnique
-          count
-        }
-      }
-    `,
-    variables: {
-      domain: router.query.domain,
-      bucketDuration: timePeriodToBucket(timePeriod),
-      timePeriodStart: timePeriod,
-    },
-  });
 
   useEffect(() => {
     chart.current = new Chart(canvasRef.current!, {
@@ -106,7 +87,7 @@ const Root = () => {
     });
   }, []);
 
-  if (chart.current && stats.data) {
+  if (chart.current && data) {
     const gradient = canvasRef.current
       ?.getContext("2d")
       ?.createLinearGradient(0, 0, 0, 400);
@@ -120,7 +101,7 @@ const Root = () => {
         backgroundColor: gradient,
         borderColor: "#0ba360",
         pointRadius: 0,
-        data: stats.data?.events?.bucketed.map(
+        data: data?.events?.bucketed.map(
           ({ time, count }: { time: string; count: number }) => ({
             x: new Date(parseInt(time) * 1000.0),
             y: count,
@@ -131,19 +112,72 @@ const Root = () => {
     chart.current.update();
   }
 
+  return <canvas ref={canvasRef} />;
+};
+
+const Root = () => {
+  const router = useRouter();
+
+  const [timePeriod, setTimePeriod] = useState("day");
+
+  const [stats] = useQuery({
+    query: gql`
+      query stats(
+        $domain: String!
+        $bucketDuration: String!
+        $timePeriodStart: String!
+      ) {
+        events(domain: $domain, timePeriodStart: $timePeriodStart) {
+          bucketed(bucketDuration: $bucketDuration) {
+            time
+            count
+          }
+
+          topPages {
+            key
+            count
+          }
+
+          topReferrers {
+            key
+            count
+          }
+
+          topDevices {
+            key
+            count
+          }
+
+          topCountries {
+            key
+            count
+          }
+
+          countUnique
+          count
+        }
+      }
+    `,
+    variables: {
+      domain: router.query.domain,
+      bucketDuration: timePeriodToBucket(timePeriod),
+      timePeriodStart: timePeriod,
+    },
+  });
+
   return (
     <div>
       <Head>
-        <title>Root</title>
+        <title>alysis</title>
         <link rel="icon" href="/static/favicon.ico" />
       </Head>
 
-      <div className="w-screen h-screen bg-gray-100">
+      <div className="w-full min-h-screen bg-gray-100">
         <div className="container m-auto">
           <nav className="flex items-center justify-between flex-wrap py-6">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-semibold text-xl tracking-tight">
-                SimpleStats
+                alysis
               </span>
             </div>
             {/* <div className="block lg:hidden">
@@ -171,9 +205,9 @@ const Root = () => {
             </div> */}
           </nav>
 
-          <div className="flex flex-col">
-            <Card>
-              <div className="flex flex-row">
+          <div className="flex flex-row flex-wrap">
+            <Card classNames="w-full">
+              <div className="flex flex-row flex-wrap">
                 <div className="text-2xl flex-grow">
                   <span className="text-gray-500 mr-2 text-sm">domain</span>
                   {router.query.domain}
@@ -188,7 +222,7 @@ const Root = () => {
                 </div>
               </div>
             </Card>
-            <Card style={{ height: "20rem" }}>
+            <Card classNames="w-full" style={{ height: "22rem" }}>
               <div>
                 <div className="float-right">
                   <Button
@@ -215,7 +249,73 @@ const Root = () => {
               </div>
 
               <div className="flex-1">
-                <canvas ref={canvasRef} />
+                <LineChart data={stats.data} timePeriod={timePeriod} />
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <CardTitle>Top Pages</CardTitle>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topPages.map((page: any) => (
+                      <tr key={page.key}>
+                        <td className="border px-4">{page.key || "none"}</td>
+                        <td className="border px-4">{page.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <CardTitle>Top Referrers</CardTitle>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topReferrers.map((referrer: any) => (
+                      <tr key={referrer.key}>
+                        <td className="border px-4">
+                          {referrer.key || "none"}
+                        </td>
+                        <td className="border px-4">{referrer.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <CardTitle>Top Countries</CardTitle>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topCountries.map((country: any) => (
+                      <tr key={country.key}>
+                        <td className="border px-4">{country.key || "none"}</td>
+                        <td className="border px-4">{country.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <CardTitle>Top Devices</CardTitle>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topDevices.map((device: any) => (
+                      <tr key={device.key}>
+                        <td className="border px-4">{device.key || "none"}</td>
+                        <td className="border px-4">{device.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </Card>
           </div>
