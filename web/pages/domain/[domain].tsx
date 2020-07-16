@@ -34,8 +34,8 @@ interface CardProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-    classNames?: string;
-  }
+  classNames?: string;
+}
 
 const Card: React.FunctionComponent<CardProps> = ({
   children,
@@ -52,6 +52,10 @@ const Card: React.FunctionComponent<CardProps> = ({
   </div>
 );
 
+const CardTitle: React.FunctionComponent<{}> = ({ children }) => (
+  <h2 className="text-xl pb-2">{children}</h2>
+);
+
 const timePeriodToBucket = (timePeriod: string) => {
   if (timePeriod === "day") return "hour";
   else if (timePeriod === "hour") return "minute";
@@ -59,7 +63,7 @@ const timePeriodToBucket = (timePeriod: string) => {
   else return "day";
 };
 
-const LineChart = ({ data, timePeriod }: { data: any, timePeriod: string }) => {
+const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
 
@@ -168,7 +172,7 @@ const Root = () => {
         <link rel="icon" href="/static/favicon.ico" />
       </Head>
 
-      <div className="w-screen h-screen bg-gray-100">
+      <div className="w-full min-h-screen bg-gray-100">
         <div className="container m-auto">
           <nav className="flex items-center justify-between flex-wrap py-6">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
@@ -250,7 +254,7 @@ const Root = () => {
             </Card>
 
             <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
-              <h2 className="text-xl">Top Pages</h2>
+              <CardTitle>Top Pages</CardTitle>
               <div className="flex-1">
                 <table className="w-full">
                   <tbody>
@@ -266,7 +270,7 @@ const Root = () => {
             </Card>
 
             <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
-              <h2 className="text-xl">Top Referrers</h2>
+              <CardTitle>Top Referrers</CardTitle>
               <div className="flex-1">
                 <table className="w-full">
                   <tbody>
@@ -284,15 +288,13 @@ const Root = () => {
             </Card>
 
             <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
-              <h2 className="text-xl">Top Countries</h2>
+              <CardTitle>Top Countries</CardTitle>
               <div className="flex-1">
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topCountries.map((country: any) => (
                       <tr>
-                        <td className="border px-4">
-                          {country.key || "none"}
-                        </td>
+                        <td className="border px-4">{country.key || "none"}</td>
                         <td className="border px-4">{country.count}</td>
                       </tr>
                     ))}
@@ -302,15 +304,13 @@ const Root = () => {
             </Card>
 
             <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
-              <h2 className="text-xl">Top Devices</h2>
+              <CardTitle>Top Devices</CardTitle>
               <div className="flex-1">
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topDevices.map((device: any) => (
                       <tr>
-                        <td className="border px-4">
-                          {device.key || "none"}
-                        </td>
+                        <td className="border px-4">{device.key || "none"}</td>
                         <td className="border px-4">{device.count}</td>
                       </tr>
                     ))}
