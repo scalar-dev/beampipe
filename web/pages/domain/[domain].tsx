@@ -139,6 +139,16 @@ const Root = () => {
             count
           }
 
+          topDevices {
+            key
+            count
+          }
+
+          topCountries {
+            key
+            count
+          }
+
           countUnique
           count
         }
@@ -208,7 +218,7 @@ const Root = () => {
                 </div>
               </div>
             </Card>
-            <Card classNames="w-full" style={{ height: "20rem" }}>
+            <Card classNames="w-full" style={{ height: "22rem" }}>
               <div>
                 <div className="float-right">
                   <Button
@@ -239,7 +249,7 @@ const Root = () => {
               </div>
             </Card>
 
-            <Card classNames="w-full md:w-1/2" style={{ height: "20rem" }}>
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
               <h2 className="text-xl">Top Pages</h2>
               <div className="flex-1">
                 <table className="w-full">
@@ -255,7 +265,7 @@ const Root = () => {
               </div>
             </Card>
 
-            <Card classNames="w-full md:w-1/2" style={{ height: "20rem" }}>
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
               <h2 className="text-xl">Top Referrers</h2>
               <div className="flex-1">
                 <table className="w-full">
@@ -266,6 +276,42 @@ const Root = () => {
                           {referrer.key || "none"}
                         </td>
                         <td className="border px-4">{referrer.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <h2 className="text-xl">Top Countries</h2>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topCountries.map((country: any) => (
+                      <tr>
+                        <td className="border px-4">
+                          {country.key || "none"}
+                        </td>
+                        <td className="border px-4">{country.count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+              <h2 className="text-xl">Top Devices</h2>
+              <div className="flex-1">
+                <table className="w-full">
+                  <tbody>
+                    {stats.data?.events.topDevices.map((device: any) => (
+                      <tr>
+                        <td className="border px-4">
+                          {device.key || "none"}
+                        </td>
+                        <td className="border px-4">{device.count}</td>
                       </tr>
                     ))}
                   </tbody>
