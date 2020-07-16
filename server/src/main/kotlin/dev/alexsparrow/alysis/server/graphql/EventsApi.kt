@@ -89,12 +89,12 @@ class EventsApi {
         }
 
         suspend fun topCountries(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.country, Events.country.count())
+            Events.slice(Events.country, Events.id.count())
                     .select { preselect() }
                     .groupBy(Events.country)
-                    .orderBy(Events.country.count(), SortOrder.DESC)
+                    .orderBy(Events.id.count(), SortOrder.DESC)
                     .limit(n ?: 10)
-                    .map { Count(it[Events.country] ?: "unknown", it[Events.country.count()]) }
+                    .map { Count(it[Events.country] ?: "unknown", it[Events.id.count()]) }
         }
 
         suspend fun countUnique() = newSuspendedTransaction {
