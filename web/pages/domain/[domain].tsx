@@ -259,7 +259,7 @@ const Root = () => {
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topPages.map((page: any) => (
-                      <tr>
+                      <tr key={page.key}>
                         <td className="border px-4">{page.key || "none"}</td>
                         <td className="border px-4">{page.count}</td>
                       </tr>
@@ -275,7 +275,7 @@ const Root = () => {
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topReferrers.map((referrer: any) => (
-                      <tr>
+                      <tr key={referrer.key}>
                         <td className="border px-4">
                           {referrer.key || "none"}
                         </td>
@@ -293,7 +293,7 @@ const Root = () => {
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topCountries.map((country: any) => (
-                      <tr>
+                      <tr key={country.key}>
                         <td className="border px-4">{country.key || "none"}</td>
                         <td className="border px-4">{country.count}</td>
                       </tr>
@@ -309,7 +309,7 @@ const Root = () => {
                 <table className="w-full">
                   <tbody>
                     {stats.data?.events.topDevices.map((device: any) => (
-                      <tr>
+                      <tr key={device.key}>
                         <td className="border px-4">{device.key || "none"}</td>
                         <td className="border px-4">{device.count}</td>
                       </tr>
