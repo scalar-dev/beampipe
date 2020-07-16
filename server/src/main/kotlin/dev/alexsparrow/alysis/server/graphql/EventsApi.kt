@@ -7,7 +7,11 @@ import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import dev.alexsparrow.alysis.server.db.Events
 import dev.alexsparrow.alysis.server.db.TimeBucket
+import dev.alexsparrow.alysis.server.db.TimeBucketGapFill
+import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.castTo
+import org.jetbrains.exposed.sql.function
 import java.time.Duration
 import java.time.Instant
 import java.time.Period
@@ -32,16 +36,16 @@ class EventsApi {
             private val startTime: Instant
     ) {
        suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
-           val timeBucket = TimeBucket(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
-           val count = Events.time.count()
+           val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
+           val count = Events.time.count().castTo<Long?>(LongColumnType())
 
            Events.slice(timeBucket, count)
                    .select {
-                       Events.domain.eq(domain).and(Events.time.greaterEq(startTime))
+                       Events.domain.eq(domain).and(Events.time.greaterEq(startTime)) and Events.time.less(Instant.now())
                    }
                    .groupBy(timeBucket)
                    .orderBy(timeBucket)
-                   .map { Bucket(it[timeBucket], it[count]) }
+                   .map { Bucket(it[timeBucket], it[count] ?: 0) }
        }
 
         suspend fun count() = newSuspendedTransaction {
