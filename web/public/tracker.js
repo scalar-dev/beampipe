@@ -4,11 +4,17 @@
     }
     var location = window.location;
     var document = window.document;
+    var history = window.history;
     var isLocal = /^localhost$|^127(?:\.[0-9]+){0,2}\.[0-9]+$|^(?:0*\:)*?:?0*1$/.test(location.hostname) || location.protocol === "file:";
     var ele = document.querySelector("[data-alysis-domain]");
-    var domain = ele.getAttribute("data-alysis-domain") || (isLocal ? "localhost" : location.host);
+    var domain = ele.getAttribute("data-alysis-domain") ||
+        (isLocal ? "localhost" : location.host);
     var track = function (event) {
         var _a;
+        if (isLocal) {
+            console.warn("Ignoring in local mode");
+            return;
+        }
         var payload = {
             type: event,
             url: location.protocol +
@@ -27,6 +33,15 @@
         request.setRequestHeader("Content-Type", "application/json");
         request.send(JSON.stringify(payload));
     };
+    var log = function () { return track("page_view"); };
     window.alysis = track;
-    track("page_view");
+    if (history.pushState) {
+        var pushState_1 = history["pushState"];
+        history.pushState = function () {
+            pushState_1.apply(this, arguments);
+            log();
+        };
+        window.addEventListener("popstate", log);
+    }
+    log();
 })(window, "https://alysis.alexsparrow.dev/event");
