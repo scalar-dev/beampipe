@@ -1,4 +1,9 @@
 (function (window: Window, apiHost: string) {
+
+  if ((window as any).alysis) {
+    return;
+  }
+
   const location = window.location;
   const document = window.document;
 
@@ -7,8 +12,10 @@
       location.hostname
     ) || location.protocol === "file:";
 
+  const ele = document.querySelector("[data-alysis-domain]");
+  const domain = ele.getAttribute("data-alysis-domain") || (isLocal ? "localhost" : location.host);
+
   const track = (event: string) => {
-      console.log(document.visibilityState);
     const payload = {
       type: event,
       url:
@@ -17,7 +24,7 @@
         location.hostname +
         location.pathname +
         location.search,
-      domain: isLocal ? "localhost" : location.host,
+      domain,
       referrer: document.referrer,
       userAgent: window.navigator.userAgent,
       source: location.search.match(
@@ -32,6 +39,9 @@
     request.send(JSON.stringify(payload));
   };
 
+
+  (window as any).alysis = track;
+
   track("page_view");
 
-})(window, "http://alysis.alexsparrow.dev/event");
+})(window, "https://alysis.alexsparrow.dev/event");

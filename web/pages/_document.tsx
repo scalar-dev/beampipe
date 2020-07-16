@@ -5,7 +5,7 @@ class MyDocument extends Document {
       return (
         <Html>
           <Head>
-            <script async defer src="/tracker.js" />
+            <script async defer src="/tracker.js" data-alysis-domain="foo.com" />
           </Head>
           <body>
             <Main />

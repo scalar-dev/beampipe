@@ -42,6 +42,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     data class Event(
             val type: String,
             val url: String,
+            val domain: String?,
             val referrer: String,
             val source: String?,
             val userAgent: String,
@@ -66,7 +67,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
         newSuspendedTransaction{
             Events.insert {
                 it[type] = event.type
-                it[domain] = uri.host.removePrefix("www.")
+                it[domain] = event.domain?.removePrefix("www.") ?: uri.host.removePrefix("www.")
                 it[path] = uri.path ?: "/"
                 it[city] = ipCity.map { it.city.name }.orElse(null)
                 it[country] = ipCity.map { it.country.name }.orElse(null)
