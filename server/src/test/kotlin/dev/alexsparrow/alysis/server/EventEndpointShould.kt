@@ -41,6 +41,7 @@ class EventEndpointShould : TestPropertyProvider {
     private fun event() = EventEndpoint.Event(
             "event",
             "http://www.hello.com",
+            "foo.com",
             "foo",
             "foo",
             "Firefox",

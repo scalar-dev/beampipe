@@ -25,6 +25,17 @@ class TimeBucket(val expr1: Expression<*>, val expr2: Expression<*>) : Expressio
     override val columnType: IColumnType = JavaInstantColumnType()
 }
 
+
+class TimeBucketGapFill(val expr1: Expression<*>, val expr2: Expression<*>) : ExpressionWithColumnType<Instant>() {
+    override fun toQueryBuilder(queryBuilder: QueryBuilder) {
+        queryBuilder {
+            append("time_bucket_gapfill(",expr1, ",", expr2, ")")
+        }
+    }
+
+    override val columnType: IColumnType = JavaInstantColumnType()
+}
+
 fun SqlExpressionBuilder.timeBucket(expr1: Expression<*>, expr2: Expression<*>) = TimeBucket(expr1, expr2)
 
 fun Table.defaultObjectMapper(): ObjectMapper {
