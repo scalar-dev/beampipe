@@ -1,13 +1,17 @@
 package dev.alexsparrow.alysis.server.graphql
 
+import dev.alexsparrow.alysis.server.db.Domains
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import dev.alexsparrow.alysis.server.db.Events
-import dev.alexsparrow.alysis.server.db.TimeBucket
 import dev.alexsparrow.alysis.server.db.TimeBucketGapFill
+import dev.alexsparrow.alysis.server.db.Accounts
+import io.micronaut.http.context.ServerRequestContext
+import io.micronaut.security.utils.SecurityService
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -15,16 +19,18 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
-import org.jetbrains.exposed.sql.function
-import java.time.Duration
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
-import java.time.Period
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EventsApi {
+    @Inject
+    lateinit var securityService: SecurityService
+
     data class Bucket(val time: Instant, val count: Long)
     data class Count(val key: String, val count: Long)
 
@@ -120,6 +126,26 @@ class EventsApi {
     }
 
     fun events(domain: String, timePeriodStart: String?): EventsQuery {
-        return EventsQuery(domain, timePeriodToStartTime(timePeriodStart), Instant.now())
+        val userName = securityService.authentication.map { it.name }.orElse(null)
+
+        val matchingDomain = transaction {
+            Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                    .select {
+                        Domains.domain.eq(domain) and (
+                                if (userName != null) {
+                                    Domains.public or Accounts.username.eq(userName)
+                                } else {
+                                    Domains.public
+                                }
+                            )
+                    }
+                    .firstOrNull()
+        }
+
+        if (matchingDomain != null) {
+            return EventsQuery(domain, timePeriodToStartTime(timePeriodStart), Instant.now())
+        } else {
+            throw Exception("Not found")
+        }
     }
 }
