@@ -5,7 +5,7 @@ micronaut:
     enabled: true
     authentication: cookie
     redirect:
-      login-success: http://localhost:3000
+      login-success: /
     token:
       jwt:
         enabled: true
