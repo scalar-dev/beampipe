@@ -39,7 +39,6 @@ const IndexPage = () => {
     `,
   });
 
-
   return (
     <Layout title="alysis.io | dead simple web analytics">
       <h1 className="text-2xl pb-4">Domains</h1>
