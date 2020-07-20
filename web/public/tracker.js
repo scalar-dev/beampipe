@@ -11,10 +11,10 @@
         (isLocal ? "localhost" : location.host);
     var track = function (event) {
         var _a;
-        if (isLocal) {
-            console.warn("Ignoring in local mode");
-            return;
-        }
+        // if (isLocal) {
+        //     console.warn("Ignoring in local mode");
+        //     return;
+        // }
         var payload = {
             type: event,
             url: location.protocol +
@@ -44,4 +44,4 @@
         window.addEventListener("popstate", log);
     }
     log();
-})(window, "https://alysis.alexsparrow.dev/event");
+})(window, "http://localhost:8080/event");
