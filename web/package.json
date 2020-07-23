@@ -2,7 +2,7 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "cross-env NODE_ENV=development PORT=3000 node server.js",
     "build": "next build",
     "buildTracker": "tsc --outDir public tracker/tracker.ts",
     "start": "next start",
@@ -25,6 +25,9 @@
     "@types/node": "^12.12.21",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
+    "crossenv": "^0.0.2-security",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.5",
     "postcss-preset-env": "^6.7.0",
     "tailwindcss": "^1.4.6",
     "typescript": "3.7.3"

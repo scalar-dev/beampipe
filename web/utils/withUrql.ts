@@ -8,7 +8,9 @@ const apiRootUrl = (isServer: boolean) => {
       ? `http://${process.env.BACKEND_HOST}:8080/graphql`
       : `${location.origin}/graphql`;
   } else {
-      return "http://localhost:8080/graphql";
+    return isServer
+      ? "http://localhost:8080/graphql"
+      : "http://localhost:3000/graphql";
   }
 };
 
