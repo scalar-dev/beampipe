@@ -35,13 +35,14 @@ dependencies {
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.security:micronaut-security-oauth2")
+    implementation("io.micronaut.security:micronaut-security-jwt")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
 
     implementation 'io.micronaut.flyway:micronaut-flyway'
     runtimeOnly 'io.micronaut.sql:micronaut-jdbc-hikari'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.10'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
 
     implementation "org.jetbrains.exposed:exposed-core:$exposedVersion"
     implementation "org.jetbrains.exposed:exposed-dao:$exposedVersion"

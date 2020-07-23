@@ -25,6 +25,12 @@ class GraphQLFactory {
     @Inject
     lateinit var eventsApi: EventsApi
 
+    @Inject
+    lateinit var userApi: UserApi
+
+    @Inject
+    lateinit var accountApi: AccountApi
+
     @Bean
     @Singleton
     fun graphQL(): GraphQL {
@@ -41,11 +47,15 @@ class GraphQLFactory {
                     }
                 }
         )
+
         val queries = listOf(
-                TopLevelObject(eventsApi)
+                TopLevelObject(eventsApi),
+                TopLevelObject(userApi)
         )
 
-        val mutations = emptyList<TopLevelObject>()
+        val mutations = listOf(
+                TopLevelObject(accountApi)
+        )
 
         val schema = GraphQLSchema.newSchema(toSchema(config, queries, mutations)).additionalType(Scalars.dateTime).build()
 

@@ -5,7 +5,7 @@ import io.micronaut.runtime.Micronaut.*
 fun main(args: Array<String>) {
 	build()
 	    .args(*args)
-		.packages("server")
+		.packages("dev.alexsparrow.alysis")
 		.start()
 }
 

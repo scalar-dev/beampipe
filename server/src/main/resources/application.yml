@@ -2,10 +2,62 @@ micronaut:
   application:
     name: server
   security:
-    enabled: false
+    enabled: true
+    authentication: cookie
+    redirect:
+      login-success: /
+    token:
+      jwt:
+        enabled: true
+        cookie:
+          enabled: true
+        generator:
+          access-token-expiration: 604800 # A week
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+    oauth2:
+      clients:
+        github:
+          client-id:  '${OAUTH_CLIENT_ID:Iv1.c513f06b5e8a3c39}'
+          client-secret: '${OAUTH_CLIENT_SECRET:0e7051d02a98faf13911ffe532fdf67befe0f410}'
+          scopes:
+            - user:email
+            - read:user
+            - public_repo
+          authorization:
+            url: 'https://github.com/login/oauth/authorize'
+          token:
+            url: 'https://github.com/login/oauth/access_token'
+            auth-method: client-secret-post
+    intercept-url-map:
+      - pattern: /graphql
+        access:
+          - isAnonymous()
+      - pattern: /graphiql
+        access:
+          - isAnonymous()
+    endpoints:
+      logout:
+        get-allowed: true
+
   server:
     cors:
       enabled: true
+
+  http:
+    services:
+      githubv3:
+        url: "https://api.github.com"
+
+endpoints:
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+    jdbc:
+      enabled: true
+
 datasources:
   default:
     url: jdbc:postgresql://${postgres.host:localhost}/${postgres.database:postgres}
@@ -13,6 +65,8 @@ datasources:
     username: ${postgres.username:postgres}
     password: ${postgres.password:postgres}
     dialect: postgres
+    maximumPoolSize: 15
+    minimumIdle: 5
 graphql:
   enabled: true
   path: /graphql
