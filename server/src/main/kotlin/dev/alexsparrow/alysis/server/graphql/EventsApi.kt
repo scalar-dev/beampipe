@@ -29,7 +29,7 @@ import javax.inject.Singleton
 @Singleton
 class EventsApi {
     @Inject
-    lateinit var securityService: SecurityService
+    lateinit var userApi: UserApi
 
     data class Bucket(val time: Instant, val count: Long)
     data class Count(val key: String, val count: Long)
@@ -125,8 +125,8 @@ class EventsApi {
         else -> throw Exception("Invalid time period")
     }
 
-    fun events(domain: String, timePeriodStart: String?): EventsQuery = transaction {
-        val userName = securityService.authentication.map { it.name }.orElse(null)
+    suspend fun events(context: Context, domain: String, timePeriodStart: String?): EventsQuery = newSuspendedTransaction {
+        val userName = userApi.user(context)?.name
 
         val matchingDomain = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
                 .select {

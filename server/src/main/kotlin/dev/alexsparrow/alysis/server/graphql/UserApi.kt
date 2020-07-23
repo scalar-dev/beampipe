@@ -6,21 +6,25 @@ import io.micronaut.security.utils.SecurityService
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserApi {
-    @Inject
-    lateinit var securityService: SecurityService
-
     data class User(val name: String, val id: UUID)
     data class Domain(val domain: String)
 
-    fun user(): User? = securityService.authentication.map { User(it.name, UUID.fromString(it.attributes["accountId"] as String)) } .orElse(null)
+    fun user(context: Context) = if (context.authentication != null) {
+        User(context.authentication.name, UUID.fromString(context.authentication.attributes["accountId"] as String))
+    } else {
+        null
+    }
 
-    fun domains(): List<String> = transaction {
-        val user = user()
+    suspend fun domains(context: Context): List<String> = newSuspendedTransaction {
+        val user = user(context)
 
         if (user != null) {
             Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
