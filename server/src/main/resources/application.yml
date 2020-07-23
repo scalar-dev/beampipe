@@ -41,6 +41,10 @@ micronaut:
     endpoints:
       logout:
         get-allowed: true
+      health:
+        enabled: true
+        jdbc:
+          enabled: true
   server:
     cors:
       enabled: true
