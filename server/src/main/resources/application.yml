@@ -41,10 +41,7 @@ micronaut:
     endpoints:
       logout:
         get-allowed: true
-      health:
-        enabled: true
-        jdbc:
-          enabled: true
+
   server:
     cors:
       enabled: true
@@ -53,6 +50,13 @@ micronaut:
     services:
       githubv3:
         url: "https://api.github.com"
+
+endpoints:
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+    jdbc:
+      enabled: true
 
 datasources:
   default:
