@@ -125,25 +125,23 @@ class EventsApi {
         else -> throw Exception("Invalid time period")
     }
 
-    fun events(domain: String, timePeriodStart: String?): EventsQuery {
+    fun events(domain: String, timePeriodStart: String?): EventsQuery = transaction {
         val userName = securityService.authentication.map { it.name }.orElse(null)
 
-        val matchingDomain = transaction {
-            Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                    .select {
-                        Domains.domain.eq(domain) and (
-                                if (userName != null) {
-                                    Domains.public or Accounts.username.eq(userName)
-                                } else {
-                                    Domains.public
-                                }
+        val matchingDomain = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                .select {
+                    Domains.domain.eq(domain) and (
+                            if (userName != null) {
+                                Domains.public or Accounts.username.eq(userName)
+                            } else {
+                                Domains.public
+                            }
                             )
-                    }
-                    .firstOrNull()
-        }
+                }
+                .firstOrNull()
 
         if (matchingDomain != null) {
-            return EventsQuery(domain, timePeriodToStartTime(timePeriodStart), Instant.now())
+            EventsQuery(domain, timePeriodToStartTime(timePeriodStart), Instant.now())
         } else {
             throw Exception("Not found")
         }
