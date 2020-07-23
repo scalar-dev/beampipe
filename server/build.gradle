@@ -42,7 +42,7 @@ dependencies {
 
     implementation 'io.micronaut.flyway:micronaut-flyway'
     runtimeOnly 'io.micronaut.sql:micronaut-jdbc-hikari'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.10'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
 
     implementation "org.jetbrains.exposed:exposed-core:$exposedVersion"
     implementation "org.jetbrains.exposed:exposed-dao:$exposedVersion"
