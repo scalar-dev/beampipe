@@ -20,10 +20,14 @@ class UserApi {
     fun user(): User? = securityService.authentication.map { User(it.name, UUID.fromString(it.attributes["accountId"] as String)) } .orElse(null)
 
     fun domains() = transaction {
-        Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                .select {
-                   Accounts.id.eq(user()!!.id)
-                }
-                .map { it[Domains.domain] }
+        val user = user()
+
+        if (user != null) {
+            Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                    .select {
+                        Accounts.id.eq(user.id)
+                    }
+                    .map { it[Domains.domain] }
+        }
     }
 }
