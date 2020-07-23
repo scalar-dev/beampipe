@@ -19,33 +19,32 @@ import javax.inject.Singleton
 @Singleton
 class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUserDetailsMapper {
     override fun createUserDetails(tokenResponse: TokenResponse): Publisher<UserDetails> {
-        println("Fetching user details")
         return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)!!
                 .map { login ->
-                    val accountId = transaction {
+                    transaction {
                         val existingUser = Accounts
                                 .slice(Accounts.id)
                                 .select { Accounts.username.eq(stringLiteral(login.login)) }
                                 .firstOrNull()
 
-                        if (existingUser == null) {
+                        val accountId = if (existingUser == null) {
                             Accounts.insertAndGetId {
                                 it[username] = login.login
                             }
                         } else {
                             existingUser[Accounts.id]
                         }
-                    }
 
-                    UserDetails(
-                            login.login,
-                            listOf(ROLE_GITHUB),
-                            mapOf(
-                                OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
-                                "accountId" to accountId.toString(),
-                                "email" to login.email
-                            )
-                    )
+                        UserDetails(
+                                login.login,
+                                listOf(ROLE_GITHUB),
+                                mapOf(
+                                        OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
+                                        "accountId" to accountId.toString(),
+                                        "email" to login.email
+                                )
+                        )
+                    }
                 }
     }
 
