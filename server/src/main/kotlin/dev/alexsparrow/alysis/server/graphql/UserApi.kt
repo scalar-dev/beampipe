@@ -19,7 +19,7 @@ class UserApi {
 
     fun user(): User? = securityService.authentication.map { User(it.name, UUID.fromString(it.attributes["accountId"] as String)) } .orElse(null)
 
-    fun domains() = transaction {
+    fun domains(): List<String> = transaction {
         val user = user()
 
         if (user != null) {
@@ -28,6 +28,8 @@ class UserApi {
                         Accounts.id.eq(user.id)
                     }
                     .map { it[Domains.domain] }
+        } else {
+            emptyList()
         }
     }
 }
