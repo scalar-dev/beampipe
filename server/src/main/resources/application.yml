@@ -65,6 +65,8 @@ datasources:
     username: ${postgres.username:postgres}
     password: ${postgres.password:postgres}
     dialect: postgres
+    maximumPoolSize: 15
+    minimumIdle: 5
 graphql:
   enabled: true
   path: /graphql
