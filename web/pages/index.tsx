@@ -154,7 +154,10 @@ const DomainList = ({
       {domains.map((domain: string) => (
         <Card key={domain} style={{ height: "15rem" }}>
           <CardTitle>
-            <Link href="/domain/[domain]" as={`/domain/${domain}`}>
+            <Link
+              href="/domain/[domain]"
+              as={`/domain/${encodeURIComponent(domain)}`}
+            >
               <a>{domain}</a>
             </Link>
           </CardTitle>
