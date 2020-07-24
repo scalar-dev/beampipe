@@ -6,29 +6,7 @@ import { useState } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import { timePeriodToBucket, LineChart } from "../../components/LineChart";
-
-interface ButtonProps
-  extends React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > {
-  selected: Boolean;
-}
-
-const Button: React.FunctionComponent<ButtonProps> = ({
-  selected,
-  children,
-  ...otherProps
-}) => (
-  <button
-    className={`border-gray-300 text-xs font-bold py-2 px-4 border rounded ${
-      selected ? "bg-gray-100 shadow-inner" : ""
-    }`}
-    {...otherProps}
-  >
-    {children}
-  </button>
-);
+import { Button } from "../../components/BoldButton";
 
 const Root = () => {
   const router = useRouter();
@@ -126,11 +104,14 @@ const Root = () => {
           </div>
 
           <div className="flex-1">
-            <LineChart data={stats.data?.events?.bucketed} timePeriod={timePeriod} />
+            <LineChart
+              data={stats.data?.events?.bucketed}
+              timePeriod={timePeriod}
+            />
           </div>
         </Card>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+        <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Pages</CardTitle>
           <div className="flex-1">
             <table className="w-full">
@@ -162,7 +143,7 @@ const Root = () => {
           </div>
         </Card>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+        <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Countries</CardTitle>
           <div className="flex-1">
             <table className="w-full">

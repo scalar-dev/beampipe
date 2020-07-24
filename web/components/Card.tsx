@@ -12,7 +12,7 @@ export const Card: React.FunctionComponent<CardProps> = ({
   classNames,
   ...otherProps
 }) => (
-  <div className={`pb-4 pr-4 ${classNames}`}>
+  <div className={`pb-4 ${classNames}`}>
     <div
       className={`flex flex-col rounded overflow-hidden shadow-lg bg-white p-4`}
       {...otherProps}
