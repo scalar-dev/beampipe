@@ -23,13 +23,13 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   });
 
   return (
-    <div>
+    <>
       <Head>
         <title>{title}</title>
         <link rel="icon" href="/static/favicon.ico" />
       </Head>
 
-      <div className="w-full min-h-screen bg-gray-100">
+      <div className="w-screen min-h-screen bg-gray-100">
         <div className="container m-auto">
           <nav className="flex items-center justify-between flex-wrap py-6">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
@@ -77,6 +77,6 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
