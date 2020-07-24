@@ -8,7 +8,7 @@ import { LineChart } from "../components/LineChart";
 import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEvent, MouseEventHandler } from "react";
+import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 
