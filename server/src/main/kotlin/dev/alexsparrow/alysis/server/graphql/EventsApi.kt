@@ -119,6 +119,7 @@ class EventsApi {
         "day" -> Instant.now().minus(1, ChronoUnit.DAYS)
         "hour" -> Instant.now().minus(1, ChronoUnit.HOURS)
         "week" -> Instant.now().minus(7, ChronoUnit.DAYS)
+        "month" -> Instant.now().minus(28, ChronoUnit.DAYS)
         else -> throw Exception("Invalid time period")
     }
 

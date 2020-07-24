@@ -87,22 +87,29 @@ const Root = () => {
                 onClick={() => setTimePeriod("hour")}
                 selected={timePeriod === "hour"}
               >
-                Last Hour
+                Hour
               </Button>
 
               <Button
                 onClick={() => setTimePeriod("day")}
                 selected={timePeriod === "day"}
               >
-                Today
+                24 hours
               </Button>
 
               <Button
                 onClick={() => setTimePeriod("week")}
                 selected={timePeriod === "week"}
               >
-                This week
+                7 days
               </Button>
+              <Button
+                onClick={() => setTimePeriod("month")}
+                selected={timePeriod === "month"}
+              >
+                28 days 
+              </Button>
+ 
             </div>
           </div>
 
