@@ -7,29 +7,34 @@ export const timePeriodToBucket = (timePeriod: string) => {
   else if (timePeriod === "week") return "day";
   else return "day";
 };
-  
-export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string }) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const chart = useRef<Chart>();
-  
-    useEffect(() => {
-      chart.current = new Chart(canvasRef.current!, {
-        type: "line",
-        options: {
-          legend: undefined,
-          maintainAspectRatio: false,
-          scales: {
-         
-          },
-        },
-      });
-    }, []);
-  
+
+export const LineChart = ({
+  data,
+  timePeriod,
+}: {
+  data: any;
+  timePeriod: string;
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chart = useRef<Chart>();
+
+  useEffect(() => {
+    chart.current = new Chart(canvasRef.current!, {
+      type: "line",
+      options: {
+        legend: undefined,
+        maintainAspectRatio: false,
+        scales: {},
+      },
+    });
+  }, []);
+
+  useEffect(() => {
     if (chart.current && data) {
       const gradient = canvasRef.current
         ?.getContext("2d")
         ?.createLinearGradient(0, 0, 0, 400);
-  
+
       gradient!.addColorStop(0, "rgba(11, 163, 96, 255)");
       gradient!.addColorStop(1, "rgba(255,255,255,0)");
 
@@ -43,7 +48,7 @@ export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string 
           },
         ],
       };
-  
+
       chart.current.data.datasets = [
         {
           lineTension: 0,
@@ -60,6 +65,7 @@ export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string 
       ];
       chart.current.update();
     }
-  
-    return <canvas ref={canvasRef} />;
-  };
+  }, [data, chart]);
+
+  return <canvas ref={canvasRef} />;
+};
