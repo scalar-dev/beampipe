@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, createContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useQuery } from "urql";
@@ -8,6 +8,8 @@ import { BoldButton } from "./BoldButton";
 interface LayoutProps {
   title: string;
 }
+
+export const UserContext = createContext(null);
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   const [query] = useQuery({
@@ -68,7 +70,11 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             </div>
           </nav>
 
-          <div>{children}</div>
+          <div>
+            <UserContext.Provider value={query.data?.user}>
+              {children}
+            </UserContext.Provider>
+          </div>
         </div>
       </div>
     </div>
