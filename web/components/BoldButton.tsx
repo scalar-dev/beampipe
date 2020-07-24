@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+
 interface ButtonProps
   extends React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -27,14 +29,15 @@ export const Button: React.FunctionComponent<ButtonProps> = ({
   </button>
 );
 
-export const BoldButton: React.FunctionComponent<AnchorProps> = ({
-  children,
-  ...otherProps
-}) => (
-  <a
-    {...otherProps}
-    className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-  >
-    {children}
-  </a>
+export const BoldButton = forwardRef<HTMLAnchorElement, AnchorProps>(
+  ({ children, href = "#", ...otherProps }, ref) => (
+    <a
+      {...otherProps}
+      ref={ref}
+      href={href}
+      className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+    >
+      {children}
+    </a>
+  )
 );
