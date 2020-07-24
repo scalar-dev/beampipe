@@ -7,8 +7,8 @@ import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/LineChart";
 import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { faPlus, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { useState, useRef, MouseEvent, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 
@@ -29,8 +29,56 @@ const DomainChart = ({ domain }: { domain: string }) => {
     },
   });
 
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+
+  const html = `<script async defer src="https://alysis.alexsparrow.dev/tracker.js" data-alysis-domain="${domain}">`;
+
+  const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
+    e.preventDefault();
+    if (ref.current) {
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = html;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+    }
+  };
+
   return (
-    <NonIdealState isIdeal={!_.every(query.data?.events?.bucketed, x => x.count == 0)}>
+    <NonIdealState
+      nonIdeal={
+        <div className="text-center">
+          <div className="text-xl text-gray-500 pb-4">No data to display</div>
+          <div>
+            Add the following snippet to your page to start collecting data.
+            <div className="pt-4 flex flex-row max-w-full">
+              <div className="flex-1 overflow-auto">
+                <pre>
+                  <code
+                    ref={ref}
+                    className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-4 w-full"
+                  >
+                    {html}
+                  </code>
+                </pre>
+              </div>
+              <div className="overflow-auto flex">
+                <div className="m-auto px-2">
+                  <a href="#" onClick={onCopy}>
+                    <FontAwesomeIcon
+                      className="ml-2 text-gray-600 hover:text-gray-300 fill-current w-4 h-4 mr-2"
+                      icon={faCopy}
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
+    >
       <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
     </NonIdealState>
   );
