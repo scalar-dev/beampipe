@@ -244,7 +244,7 @@ const Page = () => {
 
   return user ? (
     <DomainList
-      domains={query.data.domains}
+      domains={query.data?.domains}
       refetchDomains={() => reexecuteQuery({ requestPolicy: "network-only" })}
     />
   ) : (
