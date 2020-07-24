@@ -9,6 +9,8 @@ import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { NonIdealState } from "../components/NonIdealState";
+import _ from "lodash";
 
 const DomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
@@ -28,9 +30,9 @@ const DomainChart = ({ domain }: { domain: string }) => {
   });
 
   return (
-    <>
+    <NonIdealState isIdeal={!_.every(query.data?.events?.bucketed, x => x.count == 0)}>
       <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
-    </>
+    </NonIdealState>
   );
 };
 
