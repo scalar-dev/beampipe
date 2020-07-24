@@ -2,11 +2,9 @@ package dev.alexsparrow.alysis.server.graphql
 
 import com.expediagroup.graphql.SchemaGeneratorConfig
 import com.expediagroup.graphql.TopLevelObject
-import com.expediagroup.graphql.execution.SimpleKotlinDataFetcherFactoryProvider
 import com.expediagroup.graphql.hooks.SchemaGeneratorHooks
 import com.expediagroup.graphql.toSchema
 import graphql.GraphQL
-import graphql.schema.DataFetcherFactory
 import graphql.schema.GraphQLSchema
 import graphql.schema.GraphQLType
 import io.micronaut.context.annotation.Bean
@@ -17,7 +15,6 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 
 @Factory
