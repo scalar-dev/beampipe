@@ -1,26 +1,23 @@
 package dev.alexsparrow.alysis.server.graphql
 
+import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
-import org.jetbrains.exposed.sql.alias
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.stringLiteral
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import dev.alexsparrow.alysis.server.db.Events
 import dev.alexsparrow.alysis.server.db.TimeBucketGapFill
-import dev.alexsparrow.alysis.server.db.Accounts
-import io.micronaut.http.context.ServerRequestContext
-import io.micronaut.security.utils.SecurityService
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
+import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.stringLiteral
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -122,6 +119,7 @@ class EventsApi {
         "day" -> Instant.now().minus(1, ChronoUnit.DAYS)
         "hour" -> Instant.now().minus(1, ChronoUnit.HOURS)
         "week" -> Instant.now().minus(7, ChronoUnit.DAYS)
+        "month" -> Instant.now().minus(28, ChronoUnit.DAYS)
         else -> throw Exception("Invalid time period")
     }
 
