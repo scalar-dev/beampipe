@@ -55,10 +55,12 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 {query.data?.user ? (
                   <>
                     <span className="pr-4">{query.data.user.name}</span>
-                    <BoldButton href="/logout">Logout</BoldButton>
+                    <Link href="/logout" passHref>
+                      <BoldButton>Logout</BoldButton>
+                    </Link>
                   </>
                 ) : (
-                  <Link href="/login">
+                  <Link href="/login" passHref>
                     <BoldButton>Login</BoldButton>
                   </Link>
                 )}
