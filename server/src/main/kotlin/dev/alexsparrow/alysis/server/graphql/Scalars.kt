@@ -19,13 +19,10 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.GraphQLScalarType
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.UUID
 import java.util.stream.Collectors
-import kotlin.collections.LinkedHashMap
 
 object Scalars {
     val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss Z yyyy")

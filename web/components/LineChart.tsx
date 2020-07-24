@@ -11,7 +11,6 @@ export const timePeriodToBucket = (timePeriod: string) => {
 export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chart = useRef<Chart>();
-    console.log(data);
   
     useEffect(() => {
       chart.current = new Chart(canvasRef.current!, {
@@ -20,14 +19,7 @@ export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string 
           legend: undefined,
           maintainAspectRatio: false,
           scales: {
-            xAxes: [
-              {
-                type: "time",
-                time: {
-                  unit: timePeriodToBucket(timePeriod),
-                },
-              },
-            ],
+         
           },
         },
       });
@@ -40,6 +32,17 @@ export const LineChart = ({ data, timePeriod }: { data: any; timePeriod: string 
   
       gradient!.addColorStop(0, "rgba(11, 163, 96, 255)");
       gradient!.addColorStop(1, "rgba(255,255,255,0)");
+
+      chart.current.options.scales = {
+        xAxes: [
+          {
+            type: "time",
+            time: {
+              unit: timePeriodToBucket(timePeriod),
+            },
+          },
+        ],
+      };
   
       chart.current.data.datasets = [
         {
