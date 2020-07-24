@@ -6,29 +6,10 @@ import { useState } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import { timePeriodToBucket, LineChart } from "../../components/LineChart";
-
-interface ButtonProps
-  extends React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > {
-  selected: Boolean;
-}
-
-const Button: React.FunctionComponent<ButtonProps> = ({
-  selected,
-  children,
-  ...otherProps
-}) => (
-  <button
-    className={`border-gray-300 text-xs font-bold py-2 px-4 border rounded ${
-      selected ? "bg-gray-100 shadow-inner" : ""
-    }`}
-    {...otherProps}
-  >
-    {children}
-  </button>
-);
+import { Button } from "../../components/BoldButton";
+import { Table } from "../../components/Table";
+import { NonIdealState } from "../../components/NonIdealState";
+import _ from "lodash";
 
 const Root = () => {
   const router = useRouter();
@@ -106,91 +87,79 @@ const Root = () => {
                 onClick={() => setTimePeriod("hour")}
                 selected={timePeriod === "hour"}
               >
-                Last Hour
+                Hour
               </Button>
 
               <Button
                 onClick={() => setTimePeriod("day")}
                 selected={timePeriod === "day"}
               >
-                Today
+                24 hours
               </Button>
 
               <Button
                 onClick={() => setTimePeriod("week")}
                 selected={timePeriod === "week"}
               >
-                This week
+                7 days
               </Button>
+              <Button
+                onClick={() => setTimePeriod("month")}
+                selected={timePeriod === "month"}
+              >
+                28 days 
+              </Button>
+ 
             </div>
           </div>
 
           <div className="flex-1">
-            <LineChart data={stats.data?.events?.bucketed} timePeriod={timePeriod} />
+            <NonIdealState
+              isIdeal={
+                !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
+              }
+            >
+              <LineChart
+                data={stats.data?.events?.bucketed}
+                timePeriod={timePeriod}
+              />
+            </NonIdealState>
           </div>
         </Card>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+        <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Pages</CardTitle>
           <div className="flex-1">
-            <table className="w-full">
-              <tbody>
-                {stats.data?.events.topPages.map((page: any) => (
-                  <tr key={page.key}>
-                    <td className="border px-4">{page.key || "none"}</td>
-                    <td className="border px-4">{page.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <NonIdealState isIdeal={stats.data?.events.topPages.length > 0}>
+              <Table data={stats.data?.events.topPages} />
+            </NonIdealState>
           </div>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
           <CardTitle>Top Referrers</CardTitle>
-          <div className="flex-1">
-            <table className="w-full">
-              <tbody>
-                {stats.data?.events.topReferrers.map((referrer: any) => (
-                  <tr key={referrer.key}>
-                    <td className="border px-4">{referrer.key || "none"}</td>
-                    <td className="border px-4">{referrer.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex-1 max-w-full">
+            <NonIdealState isIdeal={stats.data?.events.topReferrers.length > 0}>
+              <Table data={stats.data?.events.topReferrers} />
+            </NonIdealState>
           </div>
         </Card>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+        <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Countries</CardTitle>
           <div className="flex-1">
-            <table className="w-full">
-              <tbody>
-                {stats.data?.events.topCountries.map((country: any) => (
-                  <tr key={country.key}>
-                    <td className="border px-4">{country.key || "none"}</td>
-                    <td className="border px-4">{country.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <NonIdealState isIdeal={stats.data?.events.topCountries.length > 0}>
+              <Table data={stats.data?.events.topCountries} />
+            </NonIdealState>
           </div>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
           <CardTitle>Top Devices</CardTitle>
           <div className="flex-1">
-            <table className="w-full">
-              <tbody>
-                {stats.data?.events.topDevices.map((device: any) => (
-                  <tr key={device.key}>
-                    <td className="border px-4">{device.key || "none"}</td>
-                    <td className="border px-4">{device.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <NonIdealState isIdeal={stats.data?.events.topDevices.length > 0}>
+              <Table data={stats.data?.events.topDevices} />
+            </NonIdealState>
           </div>
         </Card>
       </div>

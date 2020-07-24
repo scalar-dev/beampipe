@@ -1,16 +1,25 @@
-import { Layout } from "../components/Layout"
+import { Layout } from "../components/Layout";
+import { BoldButton } from "../components/BoldButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { Card } from "../components/Card";
 
 export default () => {
-    return (
-      <Layout title="alysis.io - login">
-        <div className="text-center m-16">
-          <a
-            href="/oauth/login/github"
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-          >
-            Login with GitHub
-          </a>
-        </div>
-      </Layout>
-    );
-}
+  return (
+    <Layout title="alysis.io - login">
+      <div className="m-auto w-full md:max-w-xl">
+        <Card>
+          <div className="w-64 p-4 flex flex-col m-auto">
+            <BoldButton href="/oauth/login/github">
+              <FontAwesomeIcon
+                className="fill-current w-4 h-4 mr-2"
+                icon={faGithub}
+              />
+              Login with GitHub
+            </BoldButton>
+          </div>
+        </Card>
+      </div>
+    </Layout>
+  );
+};

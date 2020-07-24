@@ -1,27 +1,28 @@
 package dev.alexsparrow.alysis.server.graphql
 
 import dev.alexsparrow.alysis.server.db.Domains
-import io.micronaut.security.utils.SecurityService
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.UUID
 import javax.inject.Inject
 
 class AccountApi {
     @Inject
-    lateinit var securityService: SecurityService
+    lateinit var userApi: UserApi
 
-    suspend fun createDomain(domain: String): String {
-       println(securityService.authentication)
+    suspend fun createDomain(context: Context, domain: String, public: Boolean): UUID {
+        if (context.authentication == null) {
+            throw Exception("Not allowed")
+        } else {
+            val user = userApi.user(context)!!
 
-        newSuspendedTransaction {
-            Domains.insert {
-                it[accountId] = UUID.randomUUID()
-                it[Domains.domain] = domain
-                it[public] = false
-            }
+            return newSuspendedTransaction {
+                Domains.insertAndGetId {
+                    it[accountId] = user.id
+                    it[Domains.domain] = domain
+                    it[Domains.public] = public
+                }
+            }.value
         }
-
-        return "hello"
     }
 }

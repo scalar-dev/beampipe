@@ -2,14 +2,10 @@ package dev.alexsparrow.alysis.server.graphql
 
 import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
-import io.micronaut.security.utils.SecurityService
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
