@@ -201,7 +201,7 @@ const DomainList = ({
         />
       )}
 
-      {domains.map((domain: string) => (
+      {domains?.map((domain: string) => (
         <Card key={domain} style={{ height: "15rem" }}>
           <CardTitle>
             <Link
