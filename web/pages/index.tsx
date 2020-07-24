@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Layout } from "../components/Layout";
+import { Layout, UserContext } from "../components/Layout";
 import { withUrql } from "../utils/withUrql";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
@@ -8,7 +8,7 @@ import { LineChart } from "../components/LineChart";
 import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEventHandler } from "react";
+import { useState, useRef, MouseEventHandler, useContext } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 
@@ -231,7 +231,7 @@ const Leader = () => (
   </>
 );
 
-const IndexPage = () => {
+const Page = () => {
   const [query, reexecuteQuery] = useQuery({
     query: gql`
       query domains {
@@ -240,18 +240,22 @@ const IndexPage = () => {
     `,
   });
 
+  const user = useContext(UserContext);
+
+  return user ? (
+    <DomainList
+      domains={query.data.domains}
+      refetchDomains={() => reexecuteQuery({ requestPolicy: "network-only" })}
+    />
+  ) : (
+    <Leader />
+  );
+};
+
+const IndexPage = () => {
   return (
     <Layout title="alysis.io | dead simple web analytics">
-      {query.data?.domains.length > 0 ? (
-        <DomainList
-          domains={query.data.domains}
-          refetchDomains={() =>
-            reexecuteQuery({ requestPolicy: "network-only" })
-          }
-        />
-      ) : (
-        <Leader />
-      )}
+      <Page />
     </Layout>
   );
 };
