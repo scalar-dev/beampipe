@@ -5,6 +5,7 @@ export const timePeriodToBucket = (timePeriod: string) => {
   if (timePeriod === "day") return "hour";
   else if (timePeriod === "hour") return "minute";
   else if (timePeriod === "week") return "day";
+  else if (timePeriod === "month") return "week";
   else return "day";
 };
 
