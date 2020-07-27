@@ -1,28 +1,18 @@
-import { FunctionComponent, createContext } from "react";
+import { FunctionComponent, useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { useQuery } from "urql";
-import gql from "graphql-tag";
 import { BoldButton } from "./BoldButton";
 import { faFish } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { UserContext } from "../utils/auth";
 
 interface LayoutProps {
   title: string;
 }
 
-export const UserContext = createContext(null);
-
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
-  const [query] = useQuery({
-    query: gql`
-      query user {
-        user {
-          name
-        }
-      }
-    `,
-  });
+  const user = useContext(UserContext);
+  console.log(user);
 
   return (
     <>
@@ -63,9 +53,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
               <div className="text-sm lg:flex-grow"></div>
               <div>
-                {query.data?.user ? (
+                {user ? (
                   <>
-                    <span className="pr-4">{query.data.user.name}</span>
+                    <span className="pr-4">{user?.name}</span>
                     <Link href="/logout" passHref>
                       <BoldButton>Logout</BoldButton>
                     </Link>
@@ -79,11 +69,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             </div>
           </nav>
 
-          <div>
-            <UserContext.Provider value={query.data?.user}>
-              {children}
-            </UserContext.Provider>
-          </div>
+          <div>{children}</div>
         </div>
       </div>
     </>
