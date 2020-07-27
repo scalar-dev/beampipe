@@ -55,7 +55,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               <div>
                 {user ? (
                   <>
-                    <span className="pr-4">{user?.name}</span>
+                    <span className="pr-4 text-sm text-gray-600">{user?.name}</span>
                     <Link href="/logout" passHref>
                       <BoldButton>Logout</BoldButton>
                     </Link>
