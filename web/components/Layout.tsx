@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
 import { BoldButton } from "./BoldButton";
+import { faFish } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface LayoutProps {
   title: string;
@@ -31,11 +33,18 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
       <div className="w-screen min-h-screen bg-gray-100">
         <div className="container m-auto">
-          <nav className="flex items-center justify-between flex-wrap py-6">
+          <nav className="flex items-center justify-between flex-wrap py-4">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
-              <span className="font-semibold text-3xl tracking-tight">
+              <span className="font-extrabold text-3xl tracking-tight align-middle">
                 <Link href="/">
-                  <a>alysis</a>
+                  <a>
+                    <FontAwesomeIcon
+                      size="sm"
+                      className="fill-current w-4 h-4 mr-2"
+                      icon={faFish}
+                    />
+                    poisson
+                  </a>
                 </Link>
               </span>
             </div>

@@ -14,6 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "chart.js": "^2.9.3",
+    "fontsource-inter": "^2.2.6",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.10.4",
     "isomorphic-unfetch": "^3.0.0",
