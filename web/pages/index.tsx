@@ -78,6 +78,7 @@ const DomainChart = ({ domain }: { domain: string }) => {
         </div>
       }
       isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
+      isLoading={query.fetching}
     >
       <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
     </NonIdealState>
@@ -226,7 +227,7 @@ const Leader = () => (
       dead simple web analytics
     </div>
     <div className="text-xl">
-      alysis offers simple, privacy-preserving web analytics starting from £0
+      poisson offers simple, privacy-preserving web analytics starting from £0
     </div>
   </>
 );
@@ -254,7 +255,7 @@ const Page = () => {
 
 const IndexPage = () => {
   return (
-    <Layout title="alysis.io | dead simple web analytics">
+    <Layout title="poisson.dev | dead simple web analytics">
       <Page />
     </Layout>
   );

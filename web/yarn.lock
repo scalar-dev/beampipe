@@ -3046,6 +3046,16 @@ follow-redirects@^1.0.0:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.12.1.tgz#de54a6205311b93d60398ebc01cf7015682312b6"
   integrity sha512-tmRv0AVuR7ZyouUHLeNSiO6pqulF7dYa3s19c6t+wz9LD69/uSzdMxJ2S91nTI9U3rt/IldxpzMOFejp6f0hjg==
 
+fontsource-inter@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/fontsource-inter/-/fontsource-inter-2.2.6.tgz#9b3c50df08cff9f3b08fc0756454ada05d662b6a"
+  integrity sha512-Ia+dmhZfhSSRhkeEeDKmFS/hqg5W9JEHDh7g5xZe4dAjAEXRLbW+SOtQGUPPwHB87FNTVaqYqtR1Vyh6Wm8Y+A==
+
+fontsource-recursive@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/fontsource-recursive/-/fontsource-recursive-2.2.6.tgz#a243f59c288297e3c1c2627e3040b0769a0a3d73"
+  integrity sha512-jLn1zhTeag2ucnD5kNkfh0XipCqNDdNlzngXm/D8gZni85sF6ZvDPo+I27Bycp4ksCXQFMucyOgYzutsZOcu5Q==
+
 for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"

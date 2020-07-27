@@ -107,14 +107,14 @@ const Root = () => {
                 onClick={() => setTimePeriod("month")}
                 selected={timePeriod === "month"}
               >
-                28 days 
+                28 days
               </Button>
- 
             </div>
           </div>
 
           <div className="flex-1">
             <NonIdealState
+              isLoading={stats.fetching}
               isIdeal={
                 !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
               }
@@ -130,7 +130,10 @@ const Root = () => {
         <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Pages</CardTitle>
           <div className="flex-1">
-            <NonIdealState isIdeal={stats.data?.events.topPages.length > 0}>
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topPages.length > 0}
+            >
               <Table data={stats.data?.events.topPages} />
             </NonIdealState>
           </div>
@@ -139,7 +142,10 @@ const Root = () => {
         <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
           <CardTitle>Top Referrers</CardTitle>
           <div className="flex-1 max-w-full">
-            <NonIdealState isIdeal={stats.data?.events.topReferrers.length > 0}>
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topReferrers.length > 0}
+            >
               <Table data={stats.data?.events.topReferrers} />
             </NonIdealState>
           </div>
@@ -148,7 +154,10 @@ const Root = () => {
         <Card classNames="w-full md:w-1/2 md:pr-4" style={{ height: "22rem" }}>
           <CardTitle>Top Countries</CardTitle>
           <div className="flex-1">
-            <NonIdealState isIdeal={stats.data?.events.topCountries.length > 0}>
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topCountries.length > 0}
+            >
               <Table data={stats.data?.events.topCountries} />
             </NonIdealState>
           </div>
@@ -157,7 +166,10 @@ const Root = () => {
         <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
           <CardTitle>Top Devices</CardTitle>
           <div className="flex-1">
-            <NonIdealState isIdeal={stats.data?.events.topDevices.length > 0}>
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topDevices.length > 0}
+            >
               <Table data={stats.data?.events.topDevices} />
             </NonIdealState>
           </div>
