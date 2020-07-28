@@ -1067,6 +1067,11 @@
   resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-9.4.4.tgz#d94cbb3b354a07f1f5b80e554d6b9e34aba99e41"
   integrity sha512-9nKENeWRI6kQk44TbeqleIVtNLfcS3klVUepzl/ZCqzR5Bi06uqBCD277hdVvG/wL1pxA+R/pgJQLqnF5E2wPQ==
 
+"@stripe/stripe-js@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.8.0.tgz#100f102d757cd024f94635dba231993554c8cfba"
+  integrity sha512-VsIohJw70LIdB4b621RN6pTyw49ZMy+QjB81fl+Psu5X5ppiq/c+rG0F+XKHSVpp4JZRNDkQnsOGeuHow0aluA==
+
 "@types/chart.js@^2.9.23":
   version "2.9.23"
   resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.9.23.tgz#5de713e801f5aff4d042c7d49ab9691489c11848"
@@ -3050,11 +3055,6 @@ fontsource-inter@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/fontsource-inter/-/fontsource-inter-2.2.6.tgz#9b3c50df08cff9f3b08fc0756454ada05d662b6a"
   integrity sha512-Ia+dmhZfhSSRhkeEeDKmFS/hqg5W9JEHDh7g5xZe4dAjAEXRLbW+SOtQGUPPwHB87FNTVaqYqtR1Vyh6Wm8Y+A==
-
-fontsource-recursive@^2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/fontsource-recursive/-/fontsource-recursive-2.2.6.tgz#a243f59c288297e3c1c2627e3040b0769a0a3d73"
-  integrity sha512-jLn1zhTeag2ucnD5kNkfh0XipCqNDdNlzngXm/D8gZni85sF6ZvDPo+I27Bycp4ksCXQFMucyOgYzutsZOcu5Q==
 
 for-in@^1.0.2:
   version "1.0.2"

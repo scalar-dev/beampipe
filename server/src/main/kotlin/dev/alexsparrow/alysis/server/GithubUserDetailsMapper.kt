@@ -21,30 +21,29 @@ class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUse
     override fun createUserDetails(tokenResponse: TokenResponse): Publisher<UserDetails> {
         return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)!!
                 .map { login ->
-                    transaction {
+                    val accountId = transaction {
                         val existingUser = Accounts
                                 .slice(Accounts.id)
-                                .select { Accounts.username.eq(stringLiteral(login.login)) }
+                                .select { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
                                 .firstOrNull()
 
-                        val accountId = if (existingUser == null) {
+                        if (existingUser == null) {
                             Accounts.insertAndGetId {
-                                it[username] = login.login
+                                it[githubUserId] = login.id.toString()
                             }
                         } else {
                             existingUser[Accounts.id]
                         }
-
-                        UserDetails(
-                                login.login,
-                                listOf(ROLE_GITHUB),
-                                mapOf(
-                                        OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
-                                        "accountId" to accountId.toString(),
-                                        "email" to login.email
-                                )
-                        )
                     }
+                    UserDetails(
+                            login.name,
+                            listOf(ROLE_GITHUB),
+                            mapOf(
+                                    OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
+                                    "accountId" to accountId.toString(),
+                                    "email" to login.email
+                            )
+                    )
                 }
     }
 

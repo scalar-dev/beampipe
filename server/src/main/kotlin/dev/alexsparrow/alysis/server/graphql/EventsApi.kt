@@ -124,13 +124,13 @@ class EventsApi {
     }
 
     suspend fun events(context: Context, domain: String, timePeriodStart: String?): EventsQuery = newSuspendedTransaction {
-        val userName = userApi.user(context)?.name
+        val userId = userApi.user(context)?.id
 
         val matchingDomain = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
                 .select {
                     Domains.domain.eq(domain) and (
-                            if (userName != null) {
-                                Domains.public or Accounts.username.eq(userName)
+                            if (userId != null) {
+                                Domains.public or Accounts.id.eq(userId)
                             } else {
                                 Domains.public
                             }

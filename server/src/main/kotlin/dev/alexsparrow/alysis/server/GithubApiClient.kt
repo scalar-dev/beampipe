@@ -13,9 +13,14 @@ import io.reactivex.Flowable
 )
 @Client(id = "githubv3")
 interface GithubApiClient {
-    data class GithubUser(val login: String, val name: String, val email: String?)
+    data class GithubUser(val id: Long, val name: String, val email: String?)
+    data class GithubUserEmail(val email: String, val primary: Boolean)
 
     @Get("/user")
     fun getUser(
             @Header(HttpHeaders.AUTHORIZATION) authorization: String?): Flowable<GithubUser?>?
+
+    @Get("/user/emails")
+    fun getUserEmails(
+            @Header(HttpHeaders.AUTHORIZATION) authorization: String?): Flowable<List<GithubUserEmail>>?
 }
