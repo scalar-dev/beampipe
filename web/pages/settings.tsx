@@ -8,9 +8,7 @@ import { Spinner } from "../components/Spinner";
 import { loadStripe } from "@stripe/stripe-js";
 import { Title } from "../components/Title";
 
-const stripePromise = loadStripe(
-  "pk_test_51H9w9rKrGSqzIeMTQCYV0kZQiXM4DFTIYGNbLOaIuMch6ORbzeUrsAyb4kiEtPfAzjmT3FA2KYwuvCwixfn5Rhxi00TVRtmxz8"
-);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
 export default () => {
   const [query, rexecuteQuery] = useQuery({
