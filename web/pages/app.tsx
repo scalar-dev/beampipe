@@ -12,6 +12,7 @@ import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
+import { Title } from "../components/Title";
 
 const DomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
@@ -181,7 +182,7 @@ const DomainList = ({
   return (
     <>
       <div className="flex flex-row">
-        <div className="text-2xl pb-4 flex-1">Domains</div>
+        <Title>Domains</Title>
         <div className="float-right">
           <BoldButton onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
