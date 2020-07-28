@@ -77,7 +77,11 @@ class AccountApi {
             val subscriptionId = Customer.retrieve(stripeId)
                     .subscriptions.data[0].id
 
-            Subscription.retrieve(subscriptionId).cancel()
+            val subscription = Subscription.retrieve(subscriptionId).cancel()
+
+            Accounts.update({  Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }) {
+                it[Accounts.subscription] = "cancelled"
+            }
 
             subscriptionId
         }
