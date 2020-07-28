@@ -12,7 +12,7 @@ interface User {
 const userQuery = gql`
   query user {
     user {
-      name
+      email
     }
   }
 `;
@@ -24,7 +24,7 @@ export const AuthProvider: React.FunctionComponent<{}> = ({ children }) => {
 
   const user = query.data?.user
     ? {
-        name: query.data?.user?.name,
+        name: query.data?.user?.email,
         loggedIn: query.data && query.data.user !== null,
       }
     : null;
@@ -47,7 +47,7 @@ export const secured = async (ctx: NextUrqlPageContext) => {
 
   return {
     user: {
-      name: user.data.user.name,
+      name: user.data?.user?.email,
       loggedIn: true,
     },
   };
