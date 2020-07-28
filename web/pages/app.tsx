@@ -233,7 +233,7 @@ const Page = () => {
   });
 
   return (
-    <Layout title="poisson | domains">
+    <Layout title="beampipe | domains">
       <div className="container mx-auto">
         <DomainList
           domains={query.data?.domains}
