@@ -233,10 +233,14 @@ const Page = () => {
 
   return (
     <Layout title="poisson | domains">
-      <DomainList
-        domains={query.data?.domains}
-        refetchDomains={() => reexecuteQuery({ requestPolicy: "network-only" })}
-      />
+      <div className="container mx-auto">
+        <DomainList
+          domains={query.data?.domains}
+          refetchDomains={() =>
+            reexecuteQuery({ requestPolicy: "network-only" })
+          }
+        />
+      </div>
     </Layout>
   );
 };
