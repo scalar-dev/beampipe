@@ -6,7 +6,7 @@ import { Card } from "../components/Card";
 
 export default () => {
   return (
-    <Layout title="alysis.io - login">
+    <Layout title="beampipe - login">
       <div className="m-auto w-full md:max-w-xl">
         <Card>
           <div className="w-64 p-4 flex flex-col m-auto">
