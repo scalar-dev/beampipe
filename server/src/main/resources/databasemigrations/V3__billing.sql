@@ -1,0 +1,8 @@
+
+ALTER TABLE account
+ADD COLUMN subscription TEXT NOT NULL DEFAULT 'basic',
+ADD COLUMN github_user_id TEXT,
+ADD COLUMN name TEXT,
+ADD COLUMN email TEXT,
+ADD COLUMN stripe_id TEXT UNIQUE,
+DROP COLUMN username;

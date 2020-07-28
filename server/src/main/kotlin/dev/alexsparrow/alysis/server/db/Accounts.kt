@@ -3,5 +3,9 @@ package dev.alexsparrow.alysis.server.db
 import org.jetbrains.exposed.dao.id.UUIDTable
 
 object Accounts : UUIDTable("account") {
-    val username = text("username")
+    val githubUserId = text("github_user_id")
+    val name = text("name")
+    val email = text("email")
+    val subscription = text("subscription")
+    val stripeId = text("stripe_id").nullable()
 }

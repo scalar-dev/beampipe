@@ -2,7 +2,7 @@ import { FunctionComponent, useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { BoldButton } from "./BoldButton";
-import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../utils/auth";
 
@@ -54,8 +54,13 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               <div>
                 {user ? (
                   <>
-                    <span className="pr-4 text-sm text-gray-600">
-                      {user?.name}
+                    <span className="pr-4 text-md text-gray-600">
+                      <Link href="/settings">
+                        <a>
+                          {user?.name}
+                          <FontAwesomeIcon className="ml-2" icon={faCog} />
+                        </a>
+                      </Link>
                     </span>
                     <Link href="/logout" passHref>
                       <BoldButton>Logout</BoldButton>

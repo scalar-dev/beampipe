@@ -64,7 +64,7 @@ const Root = () => {
 
   return (
     <AuthProvider>
-      <Layout title={`alysis.io | ${router.query.domain}`}>
+      <Layout title={`beampipe | ${router.query.domain}`}>
         <div className="container mx-auto">
           <div className="flex flex-row flex-wrap">
             <Card classNames="w-full">

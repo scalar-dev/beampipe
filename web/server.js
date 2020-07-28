@@ -7,6 +7,7 @@ const devProxy = {
   '/graphql': { target: 'http://localhost:8080' },
   '/oauth': { target: 'http://localhost:8080' },
   '/logout': { target: 'http://localhost:8080' },
+  '/stripe': { target: 'http://localhost:8080' },
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000
