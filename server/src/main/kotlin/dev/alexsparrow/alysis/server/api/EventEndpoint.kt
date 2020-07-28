@@ -64,7 +64,6 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
 
         val uri = URI.create(event.url)
         val userId: Long = container.hash("${event.domain}_${clientIp}_${event.userAgent}".toByteArray())
-        LOG.info(clientIp)
 
         newSuspendedTransaction{
             Events.insert {

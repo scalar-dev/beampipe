@@ -164,7 +164,7 @@ const Pricing = () => {
           </PricingBox>
 
           <PricingBox title="Enterprise" price="Contact us">
-            <ul>
+            <ul className="pb-4">
               <Bullet>unlimited domains</Bullet>
               <Bullet>unlimited page views per month</Bullet>
               <Bullet>Powerful analytics tools</Bullet>
