@@ -2,7 +2,7 @@ import { FunctionComponent, useContext } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { BoldButton } from "./BoldButton";
-import { faFish } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../utils/auth";
 
@@ -12,7 +12,6 @@ interface LayoutProps {
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   const user = useContext(UserContext);
-  console.log(user);
 
   return (
     <>
@@ -21,7 +20,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
         <link rel="icon" href="/static/favicon.ico" />
       </Head>
 
-      <div className="w-screen min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100">
         <div className="container m-auto">
           <nav className="flex items-center justify-between flex-wrap py-4">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
@@ -31,9 +30,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                     <FontAwesomeIcon
                       size="sm"
                       className="fill-current w-4 h-4 mr-2"
-                      icon={faFish}
+                      icon={faAsterisk}
                     />
-                    poisson
+                    beampipe
                   </a>
                 </Link>
               </span>
@@ -55,7 +54,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               <div>
                 {user ? (
                   <>
-                    <span className="pr-4 text-sm text-gray-600">{user?.name}</span>
+                    <span className="pr-4 text-sm text-gray-600">
+                      {user?.name}
+                    </span>
                     <Link href="/logout" passHref>
                       <BoldButton>Logout</BoldButton>
                     </Link>
