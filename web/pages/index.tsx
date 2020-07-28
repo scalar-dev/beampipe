@@ -115,6 +115,29 @@ const Features = () => (
   </div>
 );
 
+const Tick = () => (
+  <svg
+    className="h-6 w-6 text-pink-500"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M5 13l4 4L19 7"
+    ></path>
+  </svg>
+);
+
+const Bullet: React.FunctionComponent = ({ children }) => (
+  <li className="flex py-2">
+    <Tick />
+    <div className="pl-2">{children}</div>
+  </li>
+);
+
 const Pricing = () => {
   return (
     <div className="pt-8">
@@ -123,28 +146,28 @@ const Pricing = () => {
         <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
           <PricingBox title="Free" price="$0 / month">
             <ul>
-              <li>5 domains</li>
-              <li>10k page views per month</li>
-              <li>Powerful analytics tools</li>
+              <Bullet>5 domains</Bullet>
+              <Bullet>10k page views per month</Bullet>
+              <Bullet>Powerful analytics tools</Bullet>
             </ul>
           </PricingBox>
 
           <PricingBox title="Pro" price="$10 / month">
             <ul>
-              <li>20 domains</li>
-              <li>100k page views per month</li>
-              <li>Powerful analytics tools</li>
-              <li>Advanced analytics: conversions, A/B testing</li>
+              <Bullet>20 domains</Bullet>
+              <Bullet>100k page views per month</Bullet>
+              <Bullet>Powerful analytics tools</Bullet>
+              <Bullet>Advanced analytics: conversions, A/B testing</Bullet>
             </ul>
           </PricingBox>
 
           <PricingBox title="Enterprise" price="Contact us">
             <ul>
-              <li>unlimited domains</li>
-              <li>unlimited page views per month</li>
-              <li>Powerful analytics tools</li>
-              <li>Advanced analytics: conversions, A/B testing</li>
-              <li>Slack integration</li>
+              <Bullet>unlimited domains</Bullet>
+              <Bullet>unlimited page views per month</Bullet>
+              <Bullet>Powerful analytics tools</Bullet>
+              <Bullet>Advanced analytics: conversions, A/B testing</Bullet>
+              <Bullet>Slack integration</Bullet>
             </ul>
           </PricingBox>
         </div>
