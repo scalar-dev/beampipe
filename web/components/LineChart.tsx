@@ -46,6 +46,9 @@ export const LineChart = ({
             time: {
               unit: timePeriodToBucket(timePeriod),
             },
+            gridLines: {
+              display: false,
+            },
           },
         ],
       };

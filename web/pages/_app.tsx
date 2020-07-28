@@ -1,10 +1,17 @@
 import "../styles/index.css";
 import { AppProps } from "next/app";
 
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-config.autoAddCss = false
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { UserContext } from "../utils/auth";
+config.autoAddCss = false;
 
 export default ({ Component, pageProps }: AppProps) => {
-  return <Component {...pageProps} />;
+  const { user, ...otherProps } = pageProps;
+
+  return (
+    <UserContext.Provider value={user}>
+      <Component {...otherProps} />
+    </UserContext.Provider>
+  );
 };
