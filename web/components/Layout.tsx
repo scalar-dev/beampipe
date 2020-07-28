@@ -69,9 +69,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
             </div>
           </nav>
-
-          <div>{children}</div>
         </div>
+
+        <div>{children}</div>
       </div>
     </>
   );

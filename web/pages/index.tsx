@@ -9,7 +9,7 @@ export const Hero = () => {
   const user = useContext(UserContext);
 
   return (
-    <div className="pt-12">
+    <div className="py-12 bg-green-600 text-white">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
         <div className="flex flex-col w-full md:w-full justify-center items-start text-center md:text-left">
           <h1 className="my-4 text-6xl font-extrabold">
@@ -71,40 +71,44 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
 
 const Features = () => (
   <div className="pt-8">
-    <div className="mx-auto text-6xl font-extrabold py-4">Features</div>
+    <div className="container mx-auto">
+      <div className="mx-auto text-6xl font-extrabold py-4">Features</div>
 
-    <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">
-          Full featured web analytics dashboard
+      <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Full featured web analytics dashboard
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">
-          Light-weight tracking script. No cookies.
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Light-weight tracking script. No cookies.
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">
-          Compliant with GDPR, PECR, CCPA.
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Compliant with GDPR, PECR, CCPA.
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">
-          Full featured GraphQL API for data access.
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Full featured GraphQL API for data access.
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">Goals and conversions.</div>
-      </div>
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Goals and conversions.
+          </div>
+        </div>
 
-      <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-        <div className="text-xlarge font-extrabold">
-          Slack integration (Enterprise)
+        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
+          <div className="text-xlarge font-extrabold">
+            Slack integration (Enterprise)
+          </div>
         </div>
       </div>
     </div>
@@ -114,34 +118,36 @@ const Features = () => (
 const Pricing = () => {
   return (
     <div className="pt-8">
-      <div className="mx-auto text-6xl font-extrabold py-4">Pricing</div>
-      <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
-        <PricingBox title="Free" price="$0 / month">
-          <ul>
-            <li>5 domains</li>
-            <li>10k page views per month</li>
-            <li>Powerful analytics tools</li>
-          </ul>
-        </PricingBox>
+      <div className="container mx-auto">
+        <div className="mx-auto text-6xl font-extrabold py-4">Pricing</div>
+        <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
+          <PricingBox title="Free" price="$0 / month">
+            <ul>
+              <li>5 domains</li>
+              <li>10k page views per month</li>
+              <li>Powerful analytics tools</li>
+            </ul>
+          </PricingBox>
 
-        <PricingBox title="Pro" price="$10 / month">
-          <ul>
-            <li>20 domains</li>
-            <li>100k page views per month</li>
-            <li>Powerful analytics tools</li>
-            <li>Advanced analytics: conversions, A/B testing</li>
-          </ul>
-        </PricingBox>
+          <PricingBox title="Pro" price="$10 / month">
+            <ul>
+              <li>20 domains</li>
+              <li>100k page views per month</li>
+              <li>Powerful analytics tools</li>
+              <li>Advanced analytics: conversions, A/B testing</li>
+            </ul>
+          </PricingBox>
 
-        <PricingBox title="Enterprise" price="Contact us">
-          <ul>
-            <li>unlimited domains</li>
-            <li>unlimited page views per month</li>
-            <li>Powerful analytics tools</li>
-            <li>Advanced analytics: conversions, A/B testing</li>
-            <li>Slack integration</li>
-          </ul>
-        </PricingBox>
+          <PricingBox title="Enterprise" price="Contact us">
+            <ul>
+              <li>unlimited domains</li>
+              <li>unlimited page views per month</li>
+              <li>Powerful analytics tools</li>
+              <li>Advanced analytics: conversions, A/B testing</li>
+              <li>Slack integration</li>
+            </ul>
+          </PricingBox>
+        </div>
       </div>
     </div>
   );
@@ -156,7 +162,9 @@ const IndexPage = () => {
         <Pricing />
 
         <div className="py-8 text-right">
-          Copyright © Sparrow Technologies 2020
+          <div className="container mx-auto">
+            Copyright © Sparrow Technologies 2020
+          </div>
         </div>
       </Layout>
     </AuthProvider>
