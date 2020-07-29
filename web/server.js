@@ -5,6 +5,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const devProxy = {
   '/graphql': { target: 'http://localhost:8080' },
+  '/graphiql': { target: 'http://localhost:8080' },
   '/oauth': { target: 'http://localhost:8080' },
   '/logout': { target: 'http://localhost:8080' },
   '/stripe': { target: 'http://localhost:8080' },
