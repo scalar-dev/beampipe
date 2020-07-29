@@ -146,12 +146,32 @@ const Root = () => {
             count
           }
 
-          topDevices {
+          topScreenSizes {
             key
             count
           }
 
           topCountries {
+            key
+            count
+          }
+
+          topDevices {
+            key
+            count
+          }
+
+          topDeviceClasses {
+            key
+            count
+          }
+
+          topOperatingSystems {
+            key
+            count
+          }
+
+          topAgents {
             key
             count
           }
@@ -260,6 +280,21 @@ const Root = () => {
             </Card>
 
             <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+              <CardTitle>Top Screen Sizes</CardTitle>
+              <div className="flex-1">
+                <NonIdealState
+                  isLoading={stats.fetching}
+                  isIdeal={stats.data?.events.topScreenSizes.length > 0}
+                >
+                  <Table data={stats.data?.events.topScreenSizes} />
+                </NonIdealState>
+              </div>
+            </Card>
+
+            <Card
+              classNames="w-full md:w-1/2 md:pr-4"
+              style={{ height: cardHeight }}
+            >
               <CardTitle>Top Devices</CardTitle>
               <div className="flex-1">
                 <NonIdealState
@@ -267,6 +302,45 @@ const Root = () => {
                   isIdeal={stats.data?.events.topDevices.length > 0}
                 >
                   <Table data={stats.data?.events.topDevices} />
+                </NonIdealState>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+              <CardTitle>Top Device Classes</CardTitle>
+              <div className="flex-1">
+                <NonIdealState
+                  isLoading={stats.fetching}
+                  isIdeal={stats.data?.events.topDeviceClasses.length > 0}
+                >
+                  <Table data={stats.data?.events.topDeviceClasses} />
+                </NonIdealState>
+              </div>
+            </Card>
+
+            <Card
+              classNames="w-full md:w-1/2 md:pr-4"
+              style={{ height: cardHeight }}
+            >
+              <CardTitle>Top Operating Systems</CardTitle>
+              <div className="flex-1">
+                <NonIdealState
+                  isLoading={stats.fetching}
+                  isIdeal={stats.data?.events.topOperatingSystems.length > 0}
+                >
+                  <Table data={stats.data?.events.topOperatingSystems} />
+                </NonIdealState>
+              </div>
+            </Card>
+
+            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+              <CardTitle>Top User Agents</CardTitle>
+              <div className="flex-1">
+                <NonIdealState
+                  isLoading={stats.fetching}
+                  isIdeal={stats.data?.events.topAgents.length > 0}
+                >
+                  <Table data={stats.data?.events.topAgents} />
                 </NonIdealState>
               </div>
             </Card>

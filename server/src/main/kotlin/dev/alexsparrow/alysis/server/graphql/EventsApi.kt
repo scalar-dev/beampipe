@@ -4,12 +4,15 @@ import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
 import dev.alexsparrow.alysis.server.db.Events
 import dev.alexsparrow.alysis.server.db.TimeBucketGapFill
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.StringColumnType
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
@@ -63,42 +66,30 @@ class EventsApi {
                     .count()
         }
 
-        suspend fun topPages(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.path, Events.path.count())
+        private suspend fun topBy(column: Column<*>, n: Int?) = newSuspendedTransaction {
+            Events.slice(column, column.count())
                     .select { preselect() }
-                    .groupBy(Events.path)
-                    .orderBy(Events.path.count(), SortOrder.DESC)
+                    .groupBy(column)
+                    .orderBy(column.count(), SortOrder.DESC)
                     .limit(n ?: 10)
-                    .map { Count(it[Events.path], it[Events.path.count()]) }
+                    .map { Count(it[column].toString(), it[column.count()]) }
         }
 
-        suspend fun topReferrers(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.referrer, Events.referrer.count())
-                    .select { preselect() }
-                    .groupBy(Events.referrer)
-                    .orderBy(Events.referrer.count(), SortOrder.DESC)
-                    .limit(n ?: 10)
-                    .map { Count(it[Events.referrer], it[Events.referrer.count()]) }
-        }
+        suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
+        suspend fun topReferrers(n: Int?) = topBy(Events.referrer, n)
 
-        suspend fun topDevices(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.device, Events.device.count())
-                    .select { preselect() }
-                    .groupBy(Events.device)
-                    .orderBy(Events.device.count(), SortOrder.DESC)
-                    .limit(n ?: 10)
-                    .map { Count(it[Events.device], it[Events.device.count()]) }
-        }
+        suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
-        suspend fun topCountries(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.country, Events.id.count())
-                    .select { preselect() }
-                    .groupBy(Events.country)
-                    .orderBy(Events.id.count(), SortOrder.DESC)
-                    .limit(n ?: 10)
-                    .map { Count(it[Events.country] ?: "unknown", it[Events.id.count()]) }
-        }
+        suspend fun topCountries(n: Int?) = topBy(Events.country, n)
+
+        suspend fun topDevices(n: Int?) = topBy(Events.deviceName, n)
+
+        suspend fun topDeviceClasses(n: Int?) = topBy(Events.deviceClass, n)
+
+        suspend fun topOperatingSystems(n: Int?) = topBy(Events.operationGystemName, n)
+
+        suspend fun topAgents(n: Int?) = topBy(Events.agentName, n)
 
         suspend fun countUnique() = newSuspendedTransaction {
             Events
