@@ -28,11 +28,18 @@ export const Hero = () => {
               </button>
             </Link>
           ) : (
-            <Link href="/sign-up">
-              <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                Sign up free today!
-              </button>
-            </Link>
+            <div className="flex flex-gap">
+              <Link href="/sign-up">
+                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                  Sign up free today!
+                </button>
+              </Link>
+              <Link href="/domain/beampipe.io">
+                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                  View live demo
+                </button>
+              </Link>
+            </div>
           )}
         </div>
       </div>
