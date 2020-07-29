@@ -13,6 +13,7 @@ import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
 import { Title } from "../components/Title";
+import { Domain } from "../interfaces";
 
 const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
@@ -50,7 +51,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
 
 const DomainChart = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
-  const html = `<script async defer src="https://beampipe.io/tracker.js" data-alysis-domain="${domain.domain}">`;
+  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}">`;
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
     e.preventDefault();
@@ -199,7 +200,7 @@ const DomainList = ({
     <>
       <div className="flex flex-row">
         <Title>Domains</Title>
-        <div className="float-right">
+        <div className="py-2">
           <BoldButton onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
               className="fill-current w-4 h-4 mr-2"
@@ -239,11 +240,6 @@ const DomainList = ({
   );
 };
 
-interface Domain {
-  id: string;
-  domain: string;
-  hasData: boolean;
-}
 
 const Page = () => {
   const [query, reexecuteQuery] = useQuery<{ domains: Domain[] }>({

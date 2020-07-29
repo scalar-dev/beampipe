@@ -1,4 +1,4 @@
-import { AuthProvider } from "../utils/auth";
+import { AuthProvider, secured } from "../utils/auth";
 import { Layout } from "../components/Layout";
 import { BoldButton } from "../components/BoldButton";
 import { useQuery, useMutation } from "urql";
@@ -7,10 +7,11 @@ import { Spinner } from "../components/Spinner";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Title } from "../components/Title";
+import { withUrql } from "../utils/withUrql";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
-export default () => {
+const Settings = () => {
   const [query, rexecuteQuery] = useQuery({
     query: gql`
       query settings {
@@ -91,3 +92,6 @@ export default () => {
     </AuthProvider>
   );
 };
+
+Settings.getInitialProps = secured;
+export default withUrql(Settings);

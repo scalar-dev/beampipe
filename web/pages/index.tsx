@@ -4,6 +4,7 @@ import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../utils/auth";
 import { useContext } from "react";
+import { Tick } from "../components/Tick";
 
 export const Hero = () => {
   const user = useContext(UserContext);
@@ -27,11 +28,18 @@ export const Hero = () => {
               </button>
             </Link>
           ) : (
-            <Link href="/sign-up">
-              <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                Sign up free today!
-              </button>
-            </Link>
+            <div className="flex flex-gap">
+              <Link href="/sign-up">
+                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                  Sign up free today!
+                </button>
+              </Link>
+              <Link href="/domain/beampipe.io">
+                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                  View live demo
+                </button>
+              </Link>
+            </div>
           )}
         </div>
       </div>
@@ -115,22 +123,6 @@ const Features = () => (
       </div>
     </div>
   </div>
-);
-
-const Tick = () => (
-  <svg
-    className="h-6 w-6 text-pink-500"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M5 13l4 4L19 7"
-    ></path>
-  </svg>
 );
 
 const Bullet: React.FunctionComponent = ({ children }) => (
