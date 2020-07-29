@@ -6,6 +6,7 @@ RUN yarn
 
 FROM node:12-alpine as base
 WORKDIR /src
+ENV NEXT_PUBLIC_STRIPE_KEY pk_live_51H9w9rKrGSqzIeMTh4OdxZoRVfXDMIIyHgPfSowosQOqkGxDd44lCIum78yVadFJaiwpBZWUW6iXkxWjAd5QL9aW00d0ECGDkV
 
 COPY . ./
 COPY --from=deps /src/node_modules ./node_modules
@@ -19,5 +20,6 @@ COPY --from=deps /src/node_modules ./node_modules
 COPY --from=deps /src/package.json /src/yarn.lock ./
 COPY --from=base /src/.next ./.next
 COPY --from=base /src/public ./public
+
 
 CMD [ "yarn", "start" ]
