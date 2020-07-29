@@ -13,6 +13,7 @@ import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
 import { Title } from "../components/Title";
+import { Domain } from "../interfaces";
 
 const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
@@ -239,11 +240,6 @@ const DomainList = ({
   );
 };
 
-interface Domain {
-  id: string;
-  domain: string;
-  hasData: boolean;
-}
 
 const Page = () => {
   const [query, reexecuteQuery] = useQuery<{ domains: Domain[] }>({

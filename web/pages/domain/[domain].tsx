@@ -12,6 +12,7 @@ import _ from "lodash";
 import { AuthProvider } from "../../utils/auth";
 import { Menu, MenuSection, MenuItem, MenuDivider } from "../../components/Menu";
 import { Tick } from "../../components/Tick";
+import { Domain } from "../../interfaces";
 
 const cardHeight = "27rem";
 
@@ -22,6 +23,57 @@ const displayTimePeriod = (timePeriod: string) => {
   else if (timePeriod == "day") return "Last 24 hours";
   else if (timePeriod == "week") return "Last 7 days";
   else if (timePeriod == "month") return "Last 28 days";
+}
+
+const DomainPicker = ({ }) => {
+  const router = useRouter();
+
+  const [query] = useQuery<{ domains: Domain[] }>({
+    query: gql`
+      query domains {
+        domains {
+          id
+          domain
+          hasData
+        }
+      }
+    `,
+  });
+
+  const [visible, setVisible] = useState(false);
+
+ return (
+   <Menu
+     value={router.query.domain}
+     visible={visible}
+     setVisible={setVisible}
+     align="left"
+     classNames="w-40 md:w-auto"
+   >
+     <MenuSection>
+       {query.data?.domains.map((item) => (
+         <MenuItem
+           key={item.domain}
+           onClick={() => {
+             router.push(
+               "/domain/[domain]",
+               `/domain/${encodeURIComponent(item.domain)}`,
+               {
+                 shallow: true,
+               }
+             );
+             setVisible(false);
+           }}
+         >
+           <div className="w-8">
+             {router.query.domain === item.domain && <Tick />}
+           </div>
+           {item.domain}
+         </MenuItem>
+       ))}
+     </MenuSection>
+   </Menu>
+ );
 }
 
 const TimePicker = ({
@@ -38,6 +90,8 @@ const TimePicker = ({
       value={displayTimePeriod(timePeriod)}
       visible={visible}
       setVisible={setVisible}
+      align="right"
+      classNames="w-40 md:w-auto"
     >
       <MenuSection>
         <MenuItem>
@@ -119,18 +173,22 @@ const Root = () => {
       <Layout title={`beampipe | ${router.query.domain}`}>
         <div className="container mx-auto flex flex-col">
           <div className="py-2">
-            <div className="float-right">
-              <TimePicker
-                timePeriod={timePeriod}
-                setTimePeriod={setTimePeriod}
-              />
+            <div className="flex flex-row">
+              <div className="flex-1">
+                <DomainPicker />
+              </div>
+              <div>
+                <TimePicker
+                  timePeriod={timePeriod}
+                  setTimePeriod={setTimePeriod}
+                />
+              </div>
             </div>
           </div>
           <div className="flex flex-row flex-wrap">
             <Card classNames="w-full">
               <div className="flex flex-row flex-wrap">
-                <div className="text-2xl flex-grow">
-                  <span className="text-gray-500 mr-2 text-sm">domain</span>
+                <div className="text-2xl font-extrabold flex-grow">
                   {router.query.domain}
                 </div>
                 <div className="text-2xl mr-4">
