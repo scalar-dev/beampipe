@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import { timePeriodToBucket, LineChart } from "../../components/LineChart";
-import { Button } from "../../components/BoldButton";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
@@ -145,37 +144,6 @@ const Root = () => {
               </div>
             </Card>
             <Card classNames="w-full" style={{ height: "22rem" }}>
-              <div>
-                <div className="float-right">
-                  <Button
-                    onClick={() => setTimePeriod("hour")}
-                    selected={timePeriod === "hour"}
-                  >
-                    Hour
-                  </Button>
-
-                  <Button
-                    onClick={() => setTimePeriod("day")}
-                    selected={timePeriod === "day"}
-                  >
-                    24 hours
-                  </Button>
-
-                  <Button
-                    onClick={() => setTimePeriod("week")}
-                    selected={timePeriod === "week"}
-                  >
-                    7 days
-                  </Button>
-                  <Button
-                    onClick={() => setTimePeriod("month")}
-                    selected={timePeriod === "month"}
-                  >
-                    28 days
-                  </Button>
-                </div>
-              </div>
-
               <div className="flex-1">
                 <NonIdealState
                   isLoading={stats.fetching}
