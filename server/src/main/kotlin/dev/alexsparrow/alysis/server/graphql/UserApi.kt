@@ -2,7 +2,10 @@ package dev.alexsparrow.alysis.server.graphql
 
 import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
+import dev.alexsparrow.alysis.server.db.Events
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,7 +16,7 @@ import javax.inject.Singleton
 class UserApi {
     data class User(val email: String?, val id: UUID)
     data class UserSettings(val email: String?, val subscription: String)
-    data class Domain(val domain: String)
+    data class Domain(val id: UUID, val domain: String, val hasData: Boolean)
 
     fun user(context: Context) = if (context.authentication != null) {
         User(context.authentication.attributes["email"] as String?,
@@ -32,15 +35,18 @@ class UserApi {
         null
     }
 
-    suspend fun domains(context: Context): List<String> = newSuspendedTransaction {
+    suspend fun domains(context: Context): List<Domain> = newSuspendedTransaction {
         val user = user(context)
 
         if (user != null) {
+            val hasData = exists(Events.select { Events.domain.eq(Domains.domain)}).alias("hasData")
+
             Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                    .slice(Domains.id, Domains.domain, hasData)
                     .select {
                         Accounts.id.eq(user.id)
                     }
-                    .map { it[Domains.domain] }
+                    .map { Domain(it[Domains.id].value, it[Domains.domain], it[hasData]) }
         } else {
             emptyList()
         }

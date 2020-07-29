@@ -23,5 +23,5 @@ export const Card: React.FunctionComponent<CardProps> = ({
 );
 
 export const CardTitle: React.FunctionComponent<{}> = ({ children }) => (
-  <h2 className="text-xl pb-2">{children}</h2>
+  <h2 className="text-xl pb-2 font-bold">{children}</h2>
 );
