@@ -200,7 +200,7 @@ const DomainList = ({
     <>
       <div className="flex flex-row">
         <Title>Domains</Title>
-        <div className="float-right">
+        <div className="py-2">
           <BoldButton onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
               className="fill-current w-4 h-4 mr-2"
