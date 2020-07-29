@@ -57,6 +57,8 @@ dependencies {
 
     implementation("com.stripe:stripe-java:19.35.0")
 
+    implementation("nl.basjes.parse.useragent:yauaa:5.19")
+
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
