@@ -12,8 +12,11 @@
       location.hostname
     ) || location.protocol === "file:";
 
-  const ele = document.querySelector("[data-alysis-domain]");
+  const ele = document.querySelector("[data-beampipe-domain]") 
+      || document.querySelector("[data-alysis-domain]");
+
   const domain =
+    ele.getAttribute("data-beampipe-domain") ||
     ele.getAttribute("data-alysis-domain") ||
     (isLocal ? "localhost" : location.host);
 

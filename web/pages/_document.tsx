@@ -5,7 +5,7 @@ class MyDocument extends Document {
       return (
         <Html>
           <Head>
-            <script async defer src="/tracker.js" data-alysis-domain="beampipe.io" />
+            <script async defer src="/tracker.js" data-beampipe-domain="beampipe.io" />
           </Head>
           <body>
             <Main />
