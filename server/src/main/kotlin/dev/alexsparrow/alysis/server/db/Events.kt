@@ -15,6 +15,9 @@ object Events : UUIDTable("event") {
     val referrer = varchar("referrer", 1024)
     val source_ = varchar("source", 1024).nullable()
     val userAgent = varchar("user_agent", 1024)
+    val deviceName = text("device_name")
+    val operationGystemName = text("operating_system_name")
+    val agentName = text("agent_name")
     val screenWidth = integer("screen_width")
     val data = jsonb("data", Map::class.java, defaultObjectMapper()).nullable()
 }

@@ -15,6 +15,8 @@ import io.micronaut.security.rules.SecurityRule
 import io.whitfin.siphash.SipHasher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import nl.basjes.parse.useragent.UserAgent
+import nl.basjes.parse.useragent.UserAgentAnalyzer
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.slf4j.LoggerFactory
@@ -24,7 +26,6 @@ import java.net.URI
 import java.time.Instant
 import javax.inject.Inject
 
-
 @Controller("/event")
 @Secured(SecurityRule.IS_ANONYMOUS)
 class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) {
@@ -32,6 +33,12 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
 
     @Inject
     lateinit var clientAddressResolver: HttpClientAddressResolver
+
+    val uaa =  UserAgentAnalyzer
+            .newBuilder()
+            .hideMatcherLoadStats()
+            .withCache(10000)
+            .build();
 
     var key: ByteArray = "0123456789ABCDEF".toByteArray()
     var container = SipHasher.container(key)
@@ -65,6 +72,8 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
         val uri = URI.create(event.url)
         val userId: Long = container.hash("${event.domain}_${clientIp}_${event.userAgent}".toByteArray())
 
+        val userAgent = uaa.parse(event.userAgent)
+
         newSuspendedTransaction{
             Events.insert {
                 it[type] = event.type
@@ -74,7 +83,10 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
                 it[country] = ipCity.map { it.country.name }.orElse(null)
                 it[referrer] = event.referrer
                 it[source_] = event.source
-                it[userAgent] = event.userAgent
+                it[Events.userAgent] = event.userAgent
+                it[Events.deviceName] = userAgent.getValue(UserAgent.DEVICE_NAME)
+                it[Events.agentName] = userAgent.getValue(UserAgent.AGENT_NAME)
+                it[Events.operationGystemName] = userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME)
                 it[screenWidth] = event.screenWidth
                 it[device] = screenWidthToDevice(event.screenWidth)
                 it[Events.userId] = userId
