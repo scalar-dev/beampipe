@@ -6,8 +6,10 @@
     var document = window.document;
     var history = window.history;
     var isLocal = /^localhost$|^127(?:\.[0-9]+){0,2}\.[0-9]+$|^(?:0*\:)*?:?0*1$/.test(location.hostname) || location.protocol === "file:";
-    var ele = document.querySelector("[data-alysis-domain]");
-    var domain = ele.getAttribute("data-alysis-domain") ||
+    var ele = document.querySelector("[data-beampipe-domain]")
+        || document.querySelector("[data-alysis-domain]");
+    var domain = ele.getAttribute("data-beampipe-domain") ||
+        ele.getAttribute("data-alysis-domain") ||
         (isLocal ? "localhost" : location.host);
     var track = function (event) {
         var _a;
