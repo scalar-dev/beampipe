@@ -8,6 +8,7 @@ import com.stripe.param.checkout.SessionCreateParams
 import dev.alexsparrow.alysis.server.StripeClient
 import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
+import io.micronaut.context.annotation.Property
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
@@ -17,7 +18,7 @@ import org.jetbrains.exposed.sql.update
 import java.util.UUID
 import javax.inject.Inject
 
-class AccountApi {
+class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa") val stripeProduct: String) {
     @Inject
     lateinit var userApi: UserApi
 
@@ -57,7 +58,7 @@ class AccountApi {
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
                                 .setQuantity(1L)
-                                .setPrice("price_1H9wLyKrGSqzIeMTIkqhJVDa")
+                                .setPrice(stripeProduct)
                                 .build()
                 )
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
