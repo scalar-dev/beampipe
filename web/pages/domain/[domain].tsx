@@ -11,8 +11,59 @@ import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
 import { AuthProvider } from "../../utils/auth";
+import { Menu, MenuSection, MenuItem, MenuDivider } from "../../components/Menu";
+import { Tick } from "../../components/Tick";
 
 const cardHeight = "27rem";
+
+const timePeriods = ["hour", "day", "week", "month"];
+
+const displayTimePeriod = (timePeriod: string) => {
+  if (timePeriod == "hour") return "Last hour";
+  else if (timePeriod == "day") return "Last 24 hours";
+  else if (timePeriod == "week") return "Last 7 days";
+  else if (timePeriod == "month") return "Last 28 days";
+}
+
+const TimePicker = ({
+  timePeriod,
+  setTimePeriod,
+}: {
+  timePeriod: string;
+  setTimePeriod: (timePeriod: string) => void;
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <Menu
+      value={displayTimePeriod(timePeriod)}
+      visible={visible}
+      setVisible={setVisible}
+    >
+      <MenuSection>
+        <MenuItem>
+          <div className="w-8"></div>
+          Real time
+        </MenuItem>
+        <MenuDivider />
+      </MenuSection>
+      <MenuSection>
+        {timePeriods.map((tp) => (
+          <MenuItem
+            key={tp}
+            onClick={() => {
+              setTimePeriod(tp);
+              setVisible(false);
+            }}
+          >
+            <div className="w-8">{timePeriod === tp && <Tick />}</div>
+            {displayTimePeriod(tp)}
+          </MenuItem>
+        ))}
+      </MenuSection>
+    </Menu>
+  );
+};
 
 const Root = () => {
   const router = useRouter();
@@ -67,7 +118,15 @@ const Root = () => {
   return (
     <AuthProvider>
       <Layout title={`beampipe | ${router.query.domain}`}>
-        <div className="container mx-auto">
+        <div className="container mx-auto flex flex-col">
+          <div className="py-2">
+            <div className="float-right">
+              <TimePicker
+                timePeriod={timePeriod}
+                setTimePeriod={setTimePeriod}
+              />
+            </div>
+          </div>
           <div className="flex flex-row flex-wrap">
             <Card classNames="w-full">
               <div className="flex flex-row flex-wrap">
