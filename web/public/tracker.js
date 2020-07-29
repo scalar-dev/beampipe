@@ -44,4 +44,4 @@
         window.addEventListener("popstate", log);
     }
     log();
-})(window, "https://alysis.alexsparrow.dev/event");
+})(window, "https://beampipe.io/event");
