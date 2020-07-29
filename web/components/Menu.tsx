@@ -20,22 +20,25 @@ export const MenuItem: React.FunctionComponent<MenutItemProps> = ({
   </a>
 );
 
-export const MenuDivider = () => <div className="border-t border-gray-100"></div>;
+export const MenuDivider = () => (
+  <div className="border-t border-gray-100"></div>
+);
 
 export const MenuSection: React.FunctionComponent = ({ children }) => (
   <div className="py-1">{children}</div>
 );
 
-export const Menu: React.FunctionComponent<{ value: React.ReactNode, visible: boolean; setVisible: (visible: boolean) => void }> = ({
-  value,
-  visible,
-  setVisible,
-  children,
-}) => {
+export const Menu: React.FunctionComponent<{
+  value: React.ReactNode;
+  visible: boolean;
+  classNames?: string;
+  setVisible: (visible: boolean) => void;
+  align: "left" | "right";
+}> = ({ value, visible, classNames, setVisible, align, children }) => {
   const ref = useOnclickOutside(() => setVisible(false));
 
   return (
-    <div className="relative inline-block text-left" ref={ref}>
+    <div className={`relative inline-block text-left ${classNames}`} ref={ref}>
       <div>
         <span className="rounded-md shadow-sm">
           <button
@@ -46,7 +49,7 @@ export const Menu: React.FunctionComponent<{ value: React.ReactNode, visible: bo
             aria-expanded="true"
             onClick={() => setVisible(!visible)}
           >
-            {value}
+            <span className="truncate">{value}</span>
             <svg
               className="-mr-1 ml-2 h-5 w-5"
               viewBox="0 0 20 20"
@@ -63,7 +66,12 @@ export const Menu: React.FunctionComponent<{ value: React.ReactNode, visible: bo
       </div>
 
       {visible && (
-        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+        <div
+          className={`origin-top-right absolute ${
+            align == "left" ? "left-0" : "right-0"
+          } mt-2 rounded-md shadow-lg`}
+          style={{ minWidth: "14rem" }}
+        >
           <div
             className="rounded-md bg-white shadow-xs"
             role="menu"
