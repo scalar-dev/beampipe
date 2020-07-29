@@ -14,7 +14,7 @@ import _ from "lodash";
 import { secured } from "../utils/auth";
 import { Title } from "../components/Title";
 
-const DomainChart = ({ domain }: { domain: string }) => {
+const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
     query: gql`
       query stats($domain: String!) {
@@ -31,9 +31,26 @@ const DomainChart = ({ domain }: { domain: string }) => {
     },
   });
 
-  const ref = useRef<HTMLTextAreaElement | null>(null);
+  return (
+    <NonIdealState
+      nonIdeal={
+        <div className="text-center">
+          <div className="text-xl text-gray-500 pb-4">
+            No events recorded in the past week
+          </div>
+        </div>
+      }
+      isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
+      isLoading={query.fetching}
+    >
+      <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+    </NonIdealState>
+  );
+};
 
-  const html = `<script async defer src="https://alysis.alexsparrow.dev/tracker.js" data-alysis-domain="${domain}">`;
+const DomainChart = ({ domain }: { domain: Domain }) => {
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+  const html = `<script async defer src="https://beampipe.io/tracker.js" data-alysis-domain="${domain.domain}">`;
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
     e.preventDefault();
@@ -51,7 +68,7 @@ const DomainChart = ({ domain }: { domain: string }) => {
     <NonIdealState
       nonIdeal={
         <div className="text-center">
-          <div className="text-xl text-gray-500 pb-4">No data to display</div>
+          <div className="text-xl text-gray-500 pb-4">This domain has not recorded any data</div>
           <div>
             Add the following snippet to your page to start collecting data.
             <div className="pt-4 flex flex-row max-w-full">
@@ -79,10 +96,9 @@ const DomainChart = ({ domain }: { domain: string }) => {
           </div>
         </div>
       }
-      isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
-      isLoading={query.fetching}
+      isIdeal={domain.hasData}
     >
-      <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      <InnerDomainChart domain={domain.domain} />
     </NonIdealState>
   );
 };
@@ -174,7 +190,7 @@ const DomainList = ({
   domains,
   refetchDomains,
 }: {
-  domains: any[];
+  domains?: Domain[];
   refetchDomains: () => void;
 }) => {
   const [showAddDomain, setShowAddDomain] = useState(false);
@@ -204,14 +220,14 @@ const DomainList = ({
         />
       )}
 
-      {domains?.map((domain: string) => (
-        <Card key={domain} style={{ height: "15rem" }}>
+      {domains?.map((domain) => (
+        <Card key={domain.id} style={{ height: "15rem" }}>
           <CardTitle>
             <Link
               href="/domain/[domain]"
-              as={`/domain/${encodeURIComponent(domain)}`}
+              as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a>{domain}</a>
+              <a className="hover:text-gray-500">{domain.domain}</a>
             </Link>
           </CardTitle>
           <div className="flex-1 h-full w-full">
@@ -223,11 +239,21 @@ const DomainList = ({
   );
 };
 
+interface Domain {
+  id: string;
+  domain: string;
+  hasData: boolean;
+}
+
 const Page = () => {
-  const [query, reexecuteQuery] = useQuery({
+  const [query, reexecuteQuery] = useQuery<{ domains: Domain[] }>({
     query: gql`
       query domains {
-        domains
+        domains {
+          id
+          domain
+          hasData
+        }
       }
     `,
   });
