@@ -12,6 +12,8 @@ import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
 import { AuthProvider } from "../../utils/auth";
 
+const cardHeight = "27rem";
+
 const Root = () => {
   const router = useRouter();
 
@@ -132,7 +134,7 @@ const Root = () => {
 
             <Card
               classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: "22rem" }}
+              style={{ height: cardHeight }}
             >
               <CardTitle>Top Pages</CardTitle>
               <div className="flex-1">
@@ -145,7 +147,7 @@ const Root = () => {
               </div>
             </Card>
 
-            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
               <CardTitle>Top Referrers</CardTitle>
               <div className="flex-1 max-w-full">
                 <NonIdealState
@@ -159,7 +161,7 @@ const Root = () => {
 
             <Card
               classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: "22rem" }}
+              style={{ height: cardHeight }}
             >
               <CardTitle>Top Countries</CardTitle>
               <div className="flex-1">
@@ -172,7 +174,7 @@ const Root = () => {
               </div>
             </Card>
 
-            <Card classNames="w-full md:w-1/2" style={{ height: "22rem" }}>
+            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
               <CardTitle>Top Devices</CardTitle>
               <div className="flex-1">
                 <NonIdealState
