@@ -184,7 +184,7 @@ const IndexPage = () => {
 
         <div className="py-8 text-right">
           <div className="container mx-auto">
-            Copyright © Sparrow Technologies 2020
+            Copyright © Beampipe 2020
           </div>
         </div>
       </Layout>
