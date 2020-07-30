@@ -122,7 +122,7 @@ const AddDomain = ({
   return (
     <Card>
       <div className="flex-1 h-full w-full">
-        <form className="w-full max-w-sm">
+        <form className="w-full max-w-xl">
           <div className="md:flex md:items-center mb-6">
             <div className="md:w-1/3">
               <label
@@ -152,7 +152,7 @@ const AddDomain = ({
                 checked={isPublic}
                 onChange={(e) => setPublic(e.target.checked)}
               />
-              <span className="text-sm">Public</span>
+              <span className="text-sm">Make statistics publicly accessible</span>
             </label>
           </div>
           <div className="md:flex md:items-center">
