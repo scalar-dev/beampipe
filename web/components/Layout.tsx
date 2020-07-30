@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../utils/auth";
 
@@ -70,10 +70,21 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="text-sm">
+                <a
+                  href="mailto:hello@beampipe.io"
+                  className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4"
+                >
+                  Contact us
+                </a>
+
                 {user ? (
                   <>
                     <Link href="/settings">
                       <a className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4">
+                        <FontAwesomeIcon
+                          className="fill-current w-4 h-4 mr-2"
+                          icon={faCog}
+                        />
                         Settings
                       </a>
                     </Link>
