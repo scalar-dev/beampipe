@@ -15,7 +15,7 @@ export const Hero = () => {
   return (
     <div className="py-12 bg-green-600 text-white">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-        <div className="flex flex-col w-full md:w-full justify-center items-start text-center md:text-left">
+        <div className="flex flex-col w-full md:w-3/5 justify-center items-start text-center md:text-left">
           <h1 className="my-4 text-6xl font-extrabold">
             dead simple web analytics
           </h1>
@@ -44,6 +44,9 @@ export const Hero = () => {
               </Link>
             </div>
           )}
+        </div>
+        <div className="w-full md:w-2/5 py-6 text-center">
+          <img className="w-full z-50 shadow" src="/screenshot.png" />
         </div>
       </div>
     </div>
