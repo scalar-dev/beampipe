@@ -5,6 +5,9 @@ import _ from "lodash";
 import { AuthProvider, UserContext } from "../utils/auth";
 import { useContext } from "react";
 import { Tick } from "../components/Tick";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartLine, IconDefinition, faCookieBite, faClipboardList, faProjectDiagram, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSlack } from "@fortawesome/free-brands-svg-icons";
 
 export const Hero = () => {
   const user = useContext(UserContext);
@@ -12,7 +15,7 @@ export const Hero = () => {
   return (
     <div className="py-12 bg-green-600 text-white">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-        <div className="flex flex-col w-full md:w-full justify-center items-start text-center md:text-left">
+        <div className="flex flex-col w-full md:w-3/5 justify-center items-start text-center md:text-left">
           <h1 className="my-4 text-6xl font-extrabold">
             dead simple web analytics
           </h1>
@@ -31,16 +34,19 @@ export const Hero = () => {
             <div className="flex flex-gap">
               <Link href="/sign-up">
                 <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                  Sign up free today!
+                  Sign up free
                 </button>
               </Link>
               <Link href="/domain/beampipe.io">
                 <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                  View live demo
+                  Live demo
                 </button>
               </Link>
             </div>
           )}
+        </div>
+        <div className="w-full md:w-2/5 py-6 text-center">
+          <img className="w-full z-50 shadow" src="/screenshot.png" />
         </div>
       </div>
     </div>
@@ -67,7 +73,7 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
       <div className="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
         <div className="flex-1">{children}</div>
 
-        <div className="pt-2">
+        <div className="pt-4">
           <Link href="/sign-up">
             <a className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
               Sign up
@@ -79,47 +85,47 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
   );
 };
 
+const FeatureCard: React.FunctionComponent<{ icon: IconDefinition }> = ({
+  icon,
+  children,
+}) => (
+  <div className="flex mt-4 rounded-lg shadow-lg bg-white p-8">
+    <div>
+      <FontAwesomeIcon
+        size="2x"
+        className="fill-current w-4 h-4 mr-2"
+        icon={icon}
+      />
+    </div>
+    <div className="text-xlarge font-extrabold">{children}</div>
+  </div>
+);
+
 const Features = () => (
   <div className="pt-8">
     <div className="container mx-auto">
       <div className="mx-auto text-6xl font-extrabold py-4">Features</div>
 
       <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Full featured web analytics dashboard
-          </div>
-        </div>
+        <FeatureCard icon={faChartLine}>
+          Full featured web analytics dashboard
+        </FeatureCard>
 
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Light-weight tracking script. No cookies.
-          </div>
-        </div>
+        <FeatureCard icon={faCookieBite}>
+          Light-weight tracking script. No cookies.
+        </FeatureCard>
 
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Compliant with GDPR, PECR, CCPA.
-          </div>
-        </div>
+        <FeatureCard icon={faClipboardList}>
+          Compliant with GDPR, PECR, CCPA.
+        </FeatureCard>
 
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Full featured GraphQL API for data access.
-          </div>
-        </div>
+        <FeatureCard icon={faProjectDiagram}>
+          Full featured GraphQL API for data access.
+        </FeatureCard>
 
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Goals and conversions.
-          </div>
-        </div>
+        <FeatureCard icon={faCheckCircle}>Goals and conversions.</FeatureCard>
 
-        <div className="mt-4 rounded-lg shadow-lg bg-white p-8">
-          <div className="text-xlarge font-extrabold">
-            Slack integration (Enterprise)
-          </div>
-        </div>
+        <FeatureCard icon={faSlack}>Slack integration (Enterprise)</FeatureCard>
       </div>
     </div>
   </div>
@@ -151,16 +157,14 @@ const Pricing = () => {
               <Bullet>20 domains</Bullet>
               <Bullet>100k page views per month</Bullet>
               <Bullet>Powerful analytics tools</Bullet>
-              <Bullet>Advanced analytics: conversions, A/B testing</Bullet>
             </ul>
           </PricingBox>
 
           <PricingBox title="Enterprise" price="Contact us">
-            <ul className="pb-4">
+            <ul>
               <Bullet>unlimited domains</Bullet>
               <Bullet>unlimited page views per month</Bullet>
               <Bullet>Powerful analytics tools</Bullet>
-              <Bullet>Advanced analytics: conversions, A/B testing</Bullet>
               <Bullet>Slack integration</Bullet>
             </ul>
           </PricingBox>
@@ -180,7 +184,7 @@ const IndexPage = () => {
 
         <div className="py-8 text-right">
           <div className="container mx-auto">
-            Copyright © Sparrow Technologies 2020
+            Copyright © Beampipe 2020
           </div>
         </div>
       </Layout>
