@@ -8,9 +8,8 @@ interface TableProps {
 }
 
 const Bar = ({ percentage }: { percentage: number }) => (
-  <svg width="100%" height="0.5rem">
+  <svg width="100%" height="0.5rem" className="fill-current text-green-600 hover:text-green-500">
       <rect
-        fill="#0ba360"
         width={`${100.0 * percentage}%`}
         height="100%"
       ></rect>
@@ -31,7 +30,7 @@ export const Table = ({ data }: TableProps) => {
           <tr key={item.key}>
             <td className="max-w-xs px-4 text-xs font-mono truncate py-1 border-t-2">
               {item.key || "none"}
-              <Bar percentage={item.count / maxCount} />
+              <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />
             </td>
             <td className="border-t-2 px-4">{item.count}</td>
           </tr>

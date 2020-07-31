@@ -120,12 +120,31 @@ const Features = () => (
         </FeatureCard>
 
         <FeatureCard icon={faProjectDiagram}>
+          <div className="pb-2">
+            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
+              Coming soon
+            </span>
+          </div>
           Full featured GraphQL API for data access.
         </FeatureCard>
 
-        <FeatureCard icon={faCheckCircle}>Goals and conversions.</FeatureCard>
+        <FeatureCard icon={faCheckCircle}>
+          <div className="pb-2">
+            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
+              Coming soon
+            </span>
+          </div>
+          Goals and conversions.
+        </FeatureCard>
 
-        <FeatureCard icon={faSlack}>Slack integration (Enterprise)</FeatureCard>
+        <FeatureCard icon={faSlack}>
+          <div className="pb-2">
+            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
+              Coming soon
+            </span>
+          </div>
+          Slack integration (Enterprise)
+        </FeatureCard>
       </div>
     </div>
   </div>
@@ -160,7 +179,17 @@ const Pricing = () => {
             </ul>
           </PricingBox>
 
-          <PricingBox title="Enterprise" price="Contact us">
+          <PricingBox
+            title="Enterprise"
+            price={
+              <a
+                className="hover:text-gray-500"
+                href="mailto:hello@beampipe.io"
+              >
+                Contact us
+              </a>
+            }
+          >
             <ul>
               <Bullet>unlimited domains</Bullet>
               <Bullet>unlimited page views per month</Bullet>
