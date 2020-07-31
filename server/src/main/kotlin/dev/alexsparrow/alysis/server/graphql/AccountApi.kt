@@ -9,6 +9,8 @@ import dev.alexsparrow.alysis.server.StripeClient
 import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
 import io.micronaut.context.annotation.Property
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -70,7 +72,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         return newSuspendedTransaction {
             val stripeId = Accounts
                     .slice(Accounts.stripeId)
-                    .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
+                    .select { Accounts.id.eq(context.accountId) }
                     .first()[Accounts.stripeId]
 
             val subscriptionId = Customer.retrieve(stripeId)
@@ -86,19 +88,47 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         }
     }
 
-    suspend fun createDomain(context: Context, domain: String, public: Boolean): UUID {
+
+    suspend fun deleteDomain(context: Context, id: UUID): UUID {
+        if (context.authentication == null) {
+            throw Exception("Not allowed")
+        } else {
+            newSuspendedTransaction {
+                Domains.deleteWhere {
+                    Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
+                }
+            }
+
+            return id
+        }
+    }
+
+    suspend fun createOrUpdateDomain(context: Context, id: UUID?, domain: String, public: Boolean): UUID {
         if (context.authentication == null) {
             throw Exception("Not allowed")
         } else {
             val user = userApi.user(context)!!
 
             return newSuspendedTransaction {
-                Domains.insertAndGetId {
-                    it[accountId] = user.id
-                    it[Domains.domain] = domain
-                    it[Domains.public] = public
+                if (id != null) {
+                    Domains.slice(Domains.id).select {
+                        Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
+                    }.firstOrNull() ?: throw Exception("Domain not found")
+
+                    Domains.update({ Domains.id.eq(id) }) {
+                        it[Domains.domain] = domain
+                        it[Domains.public] = public
+                    }
+
+                    id
+                } else {
+                    Domains.insertAndGetId {
+                        it[accountId] = user.id
+                        it[Domains.domain] = domain
+                        it[Domains.public] = public
+                    }.value
                 }
-            }.value
+            }
         }
     }
 }

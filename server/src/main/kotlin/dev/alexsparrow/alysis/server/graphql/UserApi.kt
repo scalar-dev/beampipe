@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class UserApi {
     data class User(val email: String?, val id: UUID)
     data class UserSettings(val email: String?, val subscription: String)
-    data class Domain(val id: UUID, val domain: String, val hasData: Boolean)
+    data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
     fun user(context: Context) = if (context.authentication != null) {
         User(context.authentication.attributes["email"] as String?,
@@ -42,11 +42,12 @@ class UserApi {
             val hasData = exists(Events.select { Events.domain.eq(Domains.domain)}).alias("hasData")
 
             Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                    .slice(Domains.id, Domains.domain, hasData)
+                    .slice(Domains.id, Domains.domain, Domains.public, hasData)
                     .select {
                         Accounts.id.eq(user.id)
                     }
-                    .map { Domain(it[Domains.id].value, it[Domains.domain], it[hasData]) }
+                    .orderBy(Domains.domain)
+                    .map { Domain(it[Domains.id].value, it[Domains.domain], it[hasData], it[Domains.public]) }
         } else {
             emptyList()
         }
