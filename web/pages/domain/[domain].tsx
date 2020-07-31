@@ -2,15 +2,15 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import { timePeriodToBucket, LineChart } from "../../components/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
-import { AuthProvider } from "../../utils/auth";
-import { Menu, MenuSection, MenuItem, MenuDivider } from "../../components/Menu";
+import { AuthProvider, UserContext } from "../../utils/auth";
+import { Menu, MenuSection, MenuItem } from "../../components/Menu";
 import { Tick } from "../../components/Tick";
 import { Domain } from "../../interfaces";
 
@@ -93,13 +93,13 @@ const TimePicker = ({
       align="right"
       classNames="w-40 md:w-auto"
     >
-      <MenuSection>
+      {/* <MenuSection>
         <MenuItem>
           <div className="w-8"></div>
           Real time
         </MenuItem>
         <MenuDivider />
-      </MenuSection>
+      </MenuSection> */}
       <MenuSection>
         {timePeriods.map((tp) => (
           <MenuItem
@@ -118,9 +118,7 @@ const TimePicker = ({
   );
 };
 
-const Root = () => {
-  const router = useRouter();
-
+const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState("day");
 
   const [stats] = useQuery({
@@ -182,173 +180,178 @@ const Root = () => {
       }
     `,
     variables: {
-      domain: router.query.domain,
+      domain,
       bucketDuration: timePeriodToBucket(timePeriod),
       timePeriodStart: timePeriod,
     },
   });
 
+  const user = useContext(UserContext);
+
   return (
-    <AuthProvider>
-      <Layout title={`beampipe | ${router.query.domain}`}>
-        <div className="container mx-auto flex flex-col">
-          <div className="py-2">
-            <div className="flex flex-row">
-              <div className="flex-1">
-                <DomainPicker />
-              </div>
-              <div>
-                <TimePicker
-                  timePeriod={timePeriod}
-                  setTimePeriod={setTimePeriod}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row flex-wrap">
-            <Card classNames="w-full">
-              <div className="flex flex-row flex-wrap">
-                <div className="text-2xl font-extrabold flex-grow">
-                  {router.query.domain}
-                </div>
-                <div className="text-2xl mr-4">
-                  <span className="text-gray-500 mr-2 text-sm">total</span>
-                  {stats.data?.events.count}
-                </div>
-                <div className="text-2xl">
-                  <span className="text-gray-500 mr-2 text-sm">unique</span>
-                  {stats.data?.events.countUnique}
-                </div>
-              </div>
-            </Card>
-            <Card classNames="w-full" style={{ height: "22rem" }}>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={
-                    !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
-                  }
-                >
-                  <LineChart
-                    data={stats.data?.events?.bucketed}
-                    timePeriod={timePeriod}
-                  />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card
-              classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: cardHeight }}
-            >
-              <CardTitle>Top Pages</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topPages.length > 0}
-                >
-                  <Table data={stats.data?.events.topPages} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
-              <CardTitle>Top Referrers</CardTitle>
-              <div className="flex-1 max-w-full">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topReferrers.length > 0}
-                >
-                  <Table data={stats.data?.events.topReferrers} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card
-              classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: cardHeight }}
-            >
-              <CardTitle>Top Countries</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topCountries.length > 0}
-                >
-                  <Table data={stats.data?.events.topCountries} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
-              <CardTitle>Top Screen Sizes</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topScreenSizes.length > 0}
-                >
-                  <Table data={stats.data?.events.topScreenSizes} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card
-              classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: cardHeight }}
-            >
-              <CardTitle>Top Devices</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topDevices.length > 0}
-                >
-                  <Table data={stats.data?.events.topDevices} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
-              <CardTitle>Top Device Classes</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topDeviceClasses.length > 0}
-                >
-                  <Table data={stats.data?.events.topDeviceClasses} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card
-              classNames="w-full md:w-1/2 md:pr-4"
-              style={{ height: cardHeight }}
-            >
-              <CardTitle>Top Operating Systems</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topOperatingSystems.length > 0}
-                >
-                  <Table data={stats.data?.events.topOperatingSystems} />
-                </NonIdealState>
-              </div>
-            </Card>
-
-            <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
-              <CardTitle>Top User Agents</CardTitle>
-              <div className="flex-1">
-                <NonIdealState
-                  isLoading={stats.fetching}
-                  isIdeal={stats.data?.events.topAgents.length > 0}
-                >
-                  <Table data={stats.data?.events.topAgents} />
-                </NonIdealState>
-              </div>
-            </Card>
+    <div className="container mx-auto flex flex-col">
+      <div className="py-2">
+        <div className="flex flex-row">
+          <div className="flex-1">{user && <DomainPicker />}</div>
+          <div>
+            <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
           </div>
         </div>
-      </Layout>
-    </AuthProvider>
+      </div>
+      <div className="flex flex-row flex-wrap">
+        <Card classNames="w-full">
+          <div className="flex flex-row flex-wrap">
+            <div className="text-2xl font-extrabold flex-grow">
+              {domain}
+            </div>
+            <div className="text-2xl mr-4">
+              <span className="text-gray-500 mr-2 text-sm">total</span>
+              {stats.data?.events.count}
+            </div>
+            <div className="text-2xl">
+              <span className="text-gray-500 mr-2 text-sm">unique</span>
+              {stats.data?.events.countUnique}
+            </div>
+          </div>
+        </Card>
+        <Card classNames="w-full" style={{ height: "22rem" }}>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={
+                !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
+              }
+            >
+              <LineChart
+                data={stats.data?.events?.bucketed}
+                timePeriod={timePeriod}
+              />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card
+          classNames="w-full md:w-1/2 md:pr-4"
+          style={{ height: cardHeight }}
+        >
+          <CardTitle>Top Pages</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topPages.length > 0}
+            >
+              <Table data={stats.data?.events.topPages} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+          <CardTitle>Top Referrers</CardTitle>
+          <div className="flex-1 max-w-full">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topReferrers.length > 0}
+            >
+              <Table data={stats.data?.events.topReferrers} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card
+          classNames="w-full md:w-1/2 md:pr-4"
+          style={{ height: cardHeight }}
+        >
+          <CardTitle>Top Countries</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topCountries.length > 0}
+            >
+              <Table data={stats.data?.events.topCountries} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+          <CardTitle>Top Screen Sizes</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topScreenSizes.length > 0}
+            >
+              <Table data={stats.data?.events.topScreenSizes} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card
+          classNames="w-full md:w-1/2 md:pr-4"
+          style={{ height: cardHeight }}
+        >
+          <CardTitle>Top Devices</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topDevices.length > 0}
+            >
+              <Table data={stats.data?.events.topDevices} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+          <CardTitle>Top Device Classes</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topDeviceClasses.length > 0}
+            >
+              <Table data={stats.data?.events.topDeviceClasses} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card
+          classNames="w-full md:w-1/2 md:pr-4"
+          style={{ height: cardHeight }}
+        >
+          <CardTitle>Top Operating Systems</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topOperatingSystems.length > 0}
+            >
+              <Table data={stats.data?.events.topOperatingSystems} />
+            </NonIdealState>
+          </div>
+        </Card>
+
+        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+          <CardTitle>Top User Agents</CardTitle>
+          <div className="flex-1">
+            <NonIdealState
+              isLoading={stats.fetching}
+              isIdeal={stats.data?.events.topAgents.length > 0}
+            >
+              <Table data={stats.data?.events.topAgents} />
+            </NonIdealState>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 };
 
-export default withUrql(Root);
+const DomainPage = () => {
+  const router = useRouter();
+
+    return (
+      <AuthProvider>
+        <Layout title={`beampipe | ${router.query.domain}`}>
+          <Root domain={router.query.domain as string} />
+        </Layout>
+      </AuthProvider>
+    );
+}
+
+export default withUrql(DomainPage);
