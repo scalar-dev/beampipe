@@ -104,6 +104,12 @@ const DomainChart = ({ domain }: { domain: Domain }) => {
   );
 };
 
+const isValidDomain = (v:string) => {
+  if (!v) return false;
+  var re = /^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?$/gi;
+  return re.test(v);
+}
+
 const AddDomain = ({
   onCancel,
   onCreateComplete,
@@ -112,6 +118,7 @@ const AddDomain = ({
   onCreateComplete: () => void;
 }) => {
   const [domain, setDomain] = useState("");
+  const [validDomain, setValidDomain] = useState(false);
   const [isPublic, setPublic] = useState(false);
   const [, executeMutation] = useMutation(gql`
     mutation AddDomain($domain: String!, $public: Boolean!) {
@@ -139,8 +146,16 @@ const AddDomain = ({
                 type="text"
                 placeholder="foo.com"
                 value={domain}
-                onChange={(e) => setDomain(e.target.value)}
+                onChange={(e) => {
+                  setValidDomain(isValidDomain(e.target.value));
+                  setDomain(e.target.value);
+                }}
               />
+              {!validDomain && (
+                <p className="text-red-500 text-xs italic">
+                  Enter a valid domain name (e.g. foo.com)
+                </p>
+              )}
             </div>
           </div>
           <div className="md:flex md:items-center mb-6">
@@ -152,14 +167,19 @@ const AddDomain = ({
                 checked={isPublic}
                 onChange={(e) => setPublic(e.target.checked)}
               />
-              <span className="text-sm">Make statistics publicly accessible</span>
+              <span className="text-sm">
+                Make statistics publicly accessible
+              </span>
             </label>
           </div>
           <div className="md:flex md:items-center">
             <div className="md:w-1/3"></div>
             <div className="md:w-2/3">
               <button
-                className="mr-2 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                disabled={!validDomain}
+                className={`${
+                  !validDomain && "cursor-not-allowed opacity-75"
+                } mr-2 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
                 type="button"
                 onClick={async () => {
                   await executeMutation({
