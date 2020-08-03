@@ -16,7 +16,10 @@ export default () => {
             Registration is free of charge and doesn't require a credit card.
           </p>
           <div className="w-64 p-4 flex flex-col m-auto">
-            <BoldButton href="/oauth/login/github">
+            <BoldButton
+              href="/oauth/login/github"
+              onClick={() => window.beampipe("signup")}
+            >
               <FontAwesomeIcon
                 className="fill-current w-4 h-4 mr-2"
                 icon={faGithub}

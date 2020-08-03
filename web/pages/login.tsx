@@ -13,12 +13,15 @@ export default () => {
           <Title>Login</Title>
 
           <p className="text-sm">
-            We only request minimal permissions to your GitHub account so that we can
-            authenticate you.
+            We only request minimal permissions to your GitHub account so that
+            we can authenticate you.
           </p>
 
           <div className="w-64 p-4 flex flex-col m-auto">
-            <BoldButton href="/oauth/login/github">
+            <BoldButton
+              href="/oauth/login/github"
+              onClick={() => window.beampipe("login")}
+            >
               <FontAwesomeIcon
                 className="fill-current w-4 h-4 mr-2"
                 icon={faGithub}

@@ -1,5 +1,5 @@
 (function (window: Window, apiHost: string) {
-  if ((window as any).alysis) {
+  if ((window as any).beampipe) {
     return;
   }
 
@@ -51,7 +51,7 @@
 
   const log = () => track("page_view");
 
-  (window as any).alysis = track;
+  (window as any).beampipe = track;
 
   if (history.pushState) {
     const pushState_ = history["pushState"];
