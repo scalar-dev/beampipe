@@ -1,5 +1,5 @@
 (function (window, apiHost) {
-    if (window.alysis) {
+    if (window.beampipe) {
         return;
     }
     var location = window.location;
@@ -36,7 +36,7 @@
         request.send(JSON.stringify(payload));
     };
     var log = function () { return track("page_view"); };
-    window.alysis = track;
+    window.beampipe = track;
     if (history.pushState) {
         var pushState_1 = history["pushState"];
         history.pushState = function () {
