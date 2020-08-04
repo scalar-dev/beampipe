@@ -27,7 +27,6 @@ class AppFactory {
 
         app.command("/beampipe") { req, ctx ->
             val parts = req.payload.text.split("\\s+".toRegex())
-            println(parts)
 
             if (parts[0] == "subscribe") {
                 val domain = parts[1]
@@ -56,7 +55,7 @@ class AppFactory {
                     }
                 }
             } else {
-                ctx.ack("Unrecognised command")
+                ctx.ack("Usage: /beampipe subscribe <domain> <event>")
             }
         }
 
