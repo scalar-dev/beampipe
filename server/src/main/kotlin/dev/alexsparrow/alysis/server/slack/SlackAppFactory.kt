@@ -1,11 +1,13 @@
 package dev.alexsparrow.alysis.server.slack
 
-import com.slack.api.Slack
 import com.slack.api.bolt.App
 import com.slack.api.bolt.AppConfig
+import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
 import dev.alexsparrow.alysis.server.db.SlackSubscriptions
 import io.micronaut.context.annotation.Factory
+import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -25,15 +27,16 @@ class AppFactory {
 
         app.command("/beampipe") { req, ctx ->
             val parts = req.payload.text.split("\\s+".toRegex())
-            println(parts)
 
             if (parts[0] == "subscribe") {
                 val domain = parts[1]
                 val event = parts[2]
 
                 transaction {
-                    val domainId = Domains.slice(Domains.id)
-                            .select { Domains.domain.eq(domain) }
+                    val domainId = Domains
+                            .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
+                            .slice(Domains.id)
+                            .select { Domains.domain.eq(domain) and Accounts.slackTeamId.eq(req.payload.teamId)}
                             .map { it[Domains.id] }
                             .firstOrNull()
 
@@ -45,14 +48,14 @@ class AppFactory {
                             it[teamId] = req.payload.teamId
                         }
 
-                        slackNotifier.isDirty = true
+                        slackNotifier.isDirty.set(true)
                         ctx.ack("Created subscription with id: $subscriptionId")
                     } else {
                         ctx.ack("Domain not found")
                     }
                 }
             } else {
-                ctx.ack("Unrecognised command")
+                ctx.ack("Usage: /beampipe subscribe <domain> <event>")
             }
         }
 
