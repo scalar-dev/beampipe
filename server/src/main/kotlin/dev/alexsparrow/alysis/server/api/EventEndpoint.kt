@@ -2,6 +2,7 @@ package dev.alexsparrow.alysis.server.api
 
 import com.maxmind.geoip2.DatabaseReader
 import dev.alexsparrow.alysis.server.db.Events
+import dev.alexsparrow.alysis.server.slack.SlackNotifier
 import io.micronaut.context.annotation.Property
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -33,6 +34,9 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
 
     @Inject
     lateinit var clientAddressResolver: HttpClientAddressResolver
+
+    @Inject
+    lateinit var slackNotifier: SlackNotifier
 
     val uaa =  UserAgentAnalyzer
             .newBuilder()
@@ -73,11 +77,14 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
         val userId: Long = container.hash("${event.domain}_${clientIp}_${event.userAgent}".toByteArray())
 
         val userAgent = uaa.parse(event.userAgent)
+        val domain = event.domain?.removePrefix("www.") ?: uri.host.removePrefix("www.")
+
+        slackNotifier.events.send(SlackNotifier.Event(domain, event.type))
 
         newSuspendedTransaction{
             Events.insert {
                 it[type] = event.type
-                it[domain] = event.domain?.removePrefix("www.") ?: uri.host.removePrefix("www.")
+                it[Events.domain] = domain
                 it[path] = uri.path ?: "/"
                 it[city] = ipCity.map { it.city.name }.orElse(null)
                 it[country] = ipCity.map { it.country.name }.orElse(null)
