@@ -2,9 +2,11 @@ package dev.alexsparrow.alysis.server.slack
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
+import com.slack.api.methods.request.team.TeamInfoRequest
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import com.slack.api.model.block.composition.TextObject
+import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
 import dev.alexsparrow.alysis.server.db.SlackSubscriptions
 import io.micronaut.context.annotation.Property
@@ -17,6 +19,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.annotation.PostConstruct
 import javax.inject.Singleton
 
@@ -25,15 +28,15 @@ inline fun <reified T> T.logger(): Logger {
 }
 
 @Singleton
-class SlackNotifier(@Property(name = "slack.token") val slackToken: String) {
+class SlackNotifier {
     val LOG = logger()
 
     data class Event(val domain: String, val event: String)
-    data class Subscription(val channelId: String, val teamId: String)
+    data class Subscription(val channelId: String, val teamId: String, val token: String)
 
     var subscriptionCache = mapOf<String, Subscription>()
     val events: Channel<Event> = Channel(1024)
-    var isDirty = true
+    val isDirty = AtomicBoolean(true)
 
     @PostConstruct
     fun start() = GlobalScope.launch {
@@ -45,25 +48,30 @@ class SlackNotifier(@Property(name = "slack.token") val slackToken: String) {
         for (event in events) {
             val key = "${event.domain}_${event.event}"
 
-            if (isDirty) {
+            if (isDirty.get()) {
                 LOG.info("Reloading subscription cache")
                 subscriptionCache = newSuspendedTransaction {
                     SlackSubscriptions
                             .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
+                            .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
                             .selectAll()
                             .map {
-                                "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(it[SlackSubscriptions.channelId], it[SlackSubscriptions.teamId])
+                                "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
+                                        it[SlackSubscriptions.channelId],
+                                        it[SlackSubscriptions.teamId],
+                                        it[Accounts.slackToken]
+                                )
                             }
                             .toMap()
                 }
-                isDirty = false
+                isDirty.compareAndSet(true, false)
             }
 
             val subscription = subscriptionCache[key]
 
             if (subscription != null) {
                 val response = Slack.getInstance()
-                        .methodsAsync(slackToken)
+                        .methodsAsync(subscription.token)
                         .chatPostMessage(
                                 ChatPostMessageRequest.builder()
                                         .channel(subscription.channelId)
