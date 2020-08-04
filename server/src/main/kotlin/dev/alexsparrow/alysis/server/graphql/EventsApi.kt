@@ -3,16 +3,14 @@ package dev.alexsparrow.alysis.server.graphql
 import dev.alexsparrow.alysis.server.db.Accounts
 import dev.alexsparrow.alysis.server.db.Domains
 import dev.alexsparrow.alysis.server.db.Events
-import dev.alexsparrow.alysis.server.db.TimeBucketGapFill
+import dev.alexsparrow.alysis.server.db.util.TimeBucketGapFill
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
-import org.jetbrains.exposed.sql.StringColumnType
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo

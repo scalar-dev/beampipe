@@ -1,5 +1,7 @@
 package dev.alexsparrow.alysis.server.db
 
+import dev.alexsparrow.alysis.server.db.util.defaultObjectMapper
+import dev.alexsparrow.alysis.server.db.util.jsonb
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.`java-time`.timestamp
 
