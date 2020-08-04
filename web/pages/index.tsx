@@ -6,7 +6,14 @@ import { AuthProvider, UserContext } from "../utils/auth";
 import { useContext } from "react";
 import { Tick } from "../components/Tick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartLine, IconDefinition, faCookieBite, faClipboardList, faProjectDiagram, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChartLine,
+  IconDefinition,
+  faCookieBite,
+  faClipboardList,
+  faProjectDiagram,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { faSlack } from "@fortawesome/free-brands-svg-icons";
 
 export const Hero = () => {
@@ -51,18 +58,18 @@ export const Hero = () => {
 
         <div className="w-full flex justify-center md:justify-end">
           <div>
-          <a
-            href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
-            target="_blank"
-          >
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
-              alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
-              style={{ width: "250px", height: "54px" }}
-              width="250px"
-              height="54px"
-            />
-          </a>
+            <a
+              href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
+              target="_blank"
+            >
+              <img
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
+                alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
+                style={{ width: "250px", height: "54px" }}
+                width="250px"
+                height="54px"
+              />
+            </a>
           </div>
         </div>
       </div>
@@ -71,7 +78,7 @@ export const Hero = () => {
 };
 
 interface PricingBoxProps {
-  title: string;
+  title: React.ReactNode;
   price: React.ReactNode;
 }
 
@@ -154,9 +161,7 @@ const Features = () => (
           Goals and conversions.
         </FeatureCard>
 
-        <FeatureCard icon={faSlack}>
-          Slack integration (Pro)
-        </FeatureCard>
+        <FeatureCard icon={faSlack}>Slack integration (Pro)</FeatureCard>
       </div>
     </div>
   </div>
@@ -167,6 +172,12 @@ const Bullet: React.FunctionComponent = ({ children }) => (
     <Tick />
     <div className="pl-2">{children}</div>
   </li>
+);
+
+const GreenTag: React.FunctionComponent = ({ children }) => (
+  <span className="text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle">
+    {children}
+  </span>
 );
 
 const Pricing = () => {
@@ -183,7 +194,14 @@ const Pricing = () => {
             </ul>
           </PricingBox>
 
-          <PricingBox title="Pro" price="$10 / month">
+          <PricingBox
+            title={
+              <>
+                Pro <GreenTag>7 day free trial</GreenTag>
+              </>
+            }
+            price="$10 / month"
+          >
             <ul>
               <Bullet>20 domains</Bullet>
               <Bullet>100k page views per month</Bullet>
@@ -193,7 +211,11 @@ const Pricing = () => {
           </PricingBox>
 
           <PricingBox
-            title="Enterprise"
+            title={
+              <>
+                Enterprise <GreenTag>7 day free trial</GreenTag>
+              </>
+            }
             price={
               <a
                 className="hover:text-gray-500"
