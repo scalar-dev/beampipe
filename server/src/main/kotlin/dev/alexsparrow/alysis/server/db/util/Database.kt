@@ -1,4 +1,4 @@
-package dev.alexsparrow.alysis.server.db
+package dev.alexsparrow.alysis.server.db.util
 
 import io.micronaut.context.annotation.Context
 import org.jetbrains.exposed.sql.Database

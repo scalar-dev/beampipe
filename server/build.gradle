@@ -59,6 +59,9 @@ dependencies {
 
     implementation("nl.basjes.parse.useragent:yauaa:5.19")
 
+    implementation("com.slack.api:bolt-micronaut:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.8")
+
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
     testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
