@@ -6,6 +6,7 @@ micronaut:
     authentication: cookie
     redirect:
       login-success: /app
+      login-failure: /settings
     token:
       jwt:
         enabled: true
@@ -20,8 +21,8 @@ micronaut:
     oauth2:
       clients:
         github:
-          client-id:  '${OAUTH_CLIENT_ID:Iv1.c513f06b5e8a3c39}'
-          client-secret: '${OAUTH_CLIENT_SECRET:0e7051d02a98faf13911ffe532fdf67befe0f410}'
+          client-id:  '${GITHUB_CLIENT_ID:Iv1.c513f06b5e8a3c39}'
+          client-secret: '${GITHUB_CLIENT_SECRET:0e7051d02a98faf13911ffe532fdf67befe0f410}'
           scopes:
             - user:email
             - read:user
@@ -30,6 +31,20 @@ micronaut:
             url: 'https://github.com/login/oauth/authorize'
           token:
             url: 'https://github.com/login/oauth/access_token'
+            auth-method: client-secret-post
+
+        slack:
+          client-id:  '${SLACK_CLIENT_ID:1214303684884.1287705576788}'
+          client-secret: '${SLACK_CLIENT_SECRET:6bc5d2b9479ea561a4096ae5fb5139ca}'
+          scopes:
+            - chat:write
+            - chat:write.public
+            - commands
+            - team:read
+          authorization:
+            url: 'https://slack.com/oauth/v2/authorize'
+          token:
+            url: 'https://slack.com/api/oauth.v2.access'
             auth-method: client-secret-post
     intercept-url-map:
       - pattern: /graphql
