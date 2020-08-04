@@ -8,6 +8,7 @@ import { Spinner } from "../components/Spinner";
 import { loadStripe } from "@stripe/stripe-js";
 import { Title } from "../components/Title";
 import { withUrql } from "../utils/withUrql";
+import Link from "next/link";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
@@ -62,28 +63,47 @@ const Settings = () => {
           <Title>Settings</Title>
 
           <div className="p-4 bg-white rounded overflow-hidden shadow-lg w-full">
-            <div className="grid grid-cols-2">
-              <div className="text-right pr-4">Current subscription</div>
-              <div>
-                {settings?.subscription === "pro" ? (
-                  <>
-                    <div className="font-extrabold">pro</div>
-                    <div>
-                      <BoldButton onClick={onCancelClick}>Cancel</BoldButton>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="font-extrabold">
-                      {settings?.subscription}
-                    </div>
-                    <div>
-                      <BoldButton onClick={onSubscribeClick}>
-                        Upgrade
-                      </BoldButton>
-                    </div>
-                  </>
-                )}
+            <div className="flex flex-col">
+              <div className="flex flex-row p-4">
+                <div className="text-right pr-4 w-1/2">Current subscription</div>
+                <div>
+                  {settings?.subscription === "pro" ? (
+                    <>
+                      <div className="font-extrabold">pro</div>
+                      <div>
+                        <BoldButton onClick={onCancelClick}>Cancel</BoldButton>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-extrabold">
+                        {settings?.subscription}
+                      </div>
+                      <div>
+                        <BoldButton onClick={onSubscribeClick}>
+                          Upgrade
+                        </BoldButton>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-row p-4">
+                <div className="text-right pr-4 w-1/2">Slack integration</div>
+                <div>
+                  <Link href="/oauth/login/slack">
+                    <a>
+                      <img
+                        alt="Add to Slack"
+                        height="40"
+                        width="139"
+                        src="https://platform.slack-edge.com/img/add_to_slack.png"
+                        srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+                      />
+                    </a>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
