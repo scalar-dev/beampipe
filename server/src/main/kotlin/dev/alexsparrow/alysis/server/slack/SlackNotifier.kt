@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.slf4j.Logger
@@ -54,7 +55,7 @@ class SlackNotifier {
                     SlackSubscriptions
                             .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
                             .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
-                            .selectAll()
+                            .select { Accounts.slackToken.isNotNull() }
                             .map {
                                 "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
                                         it[SlackSubscriptions.channelId],
