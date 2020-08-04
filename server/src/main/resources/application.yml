@@ -38,6 +38,9 @@ micronaut:
       - pattern: /graphiql
         access:
           - isAnonymous()
+      - pattern: /slack/events
+        access:
+          - isAnonymous()
     endpoints:
       logout:
         get-allowed: true

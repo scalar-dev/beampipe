@@ -1,4 +1,4 @@
-package dev.alexsparrow.alysis.server.db
+package dev.alexsparrow.alysis.server.db.util
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.jetbrains.exposed.sql.Column
