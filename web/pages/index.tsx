@@ -48,6 +48,23 @@ export const Hero = () => {
         <div className="w-full md:w-2/5 py-6 text-center">
           <img className="w-full z-50 shadow" src="/screenshot.png" />
         </div>
+
+        <div className="w-full flex justify-center md:justify-end">
+          <div>
+          <a
+            href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
+            target="_blank"
+          >
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
+              alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
+              style={{ width: "250px", height: "54px" }}
+              width="250px"
+              height="54px"
+            />
+          </a>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -138,12 +155,7 @@ const Features = () => (
         </FeatureCard>
 
         <FeatureCard icon={faSlack}>
-          <div className="pb-2">
-            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
-              Coming soon
-            </span>
-          </div>
-          Slack integration (Enterprise)
+          Slack integration (Pro)
         </FeatureCard>
       </div>
     </div>
@@ -176,6 +188,7 @@ const Pricing = () => {
               <Bullet>20 domains</Bullet>
               <Bullet>100k page views per month</Bullet>
               <Bullet>Powerful analytics tools</Bullet>
+              <Bullet>Slack integration</Bullet>
             </ul>
           </PricingBox>
 
@@ -211,9 +224,9 @@ const IndexPage = () => {
         <Features />
         <Pricing />
 
-        <div className="py-8 text-right">
-          <div className="container mx-auto">
-            Copyright © Beampipe 2020
+        <div className="py-8">
+          <div className="container mx-auto flex flex-row justify-end">
+            <div>Copyright © Beampipe 2020</div>
           </div>
         </div>
       </Layout>
