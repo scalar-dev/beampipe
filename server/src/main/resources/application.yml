@@ -62,7 +62,7 @@ micronaut:
 
   server:
     cors:
-      enabled: true
+      enabled: false
 
   http:
     services:
