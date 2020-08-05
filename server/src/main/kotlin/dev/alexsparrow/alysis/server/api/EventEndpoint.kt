@@ -9,6 +9,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Options
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.server.util.HttpClientAddressResolver
 import io.micronaut.security.annotation.Secured
@@ -26,6 +27,7 @@ import java.net.InetAddress
 import java.net.URI
 import java.time.Instant
 import javax.inject.Inject
+
 
 @Controller("/event")
 @Secured(SecurityRule.IS_ANONYMOUS)
@@ -103,6 +105,9 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
         }
     }
 
+    @Options
+    fun options(): MutableHttpResponse<String>? = CORS_PREFLIGHT
+
     @Post
     suspend fun post(request: HttpRequest<*>, @Body event: Event): MutableHttpResponse<String>? {
         val clientIp = clientAddressResolver.resolve(request)
@@ -114,6 +119,6 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
             return HttpResponse.serverError<String>()
         }
 
-        return HttpResponse.ok()
+        return CORS_OK
     }
 }
