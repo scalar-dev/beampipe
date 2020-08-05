@@ -106,7 +106,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     }
 
     @Options
-    fun options(): MutableHttpResponse<String>? = CORS_PREFLIGHT
+    fun options(): MutableHttpResponse<String>? = corsPreflight()
 
     @Post
     suspend fun post(request: HttpRequest<*>, @Body event: Event): MutableHttpResponse<String>? {
@@ -119,6 +119,6 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
             return HttpResponse.serverError<String>()
         }
 
-        return CORS_OK
+        return corsOk()
     }
 }
