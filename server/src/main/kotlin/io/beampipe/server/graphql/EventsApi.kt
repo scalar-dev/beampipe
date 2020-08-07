@@ -43,10 +43,12 @@ class EventsApi {
     data class EventsQuery(
             private val domain: String,
             private val startTime: Instant,
+            private val comparisonStartTime: Instant,
             private val endTime: Instant
     ) {
+        private fun preselect() = Events.domain.eq(domain).and(Events.time.greaterEq(startTime)) and Events.time.less(endTime)
+        private fun preselectPreviousPeriod() = Events.domain.eq(domain).and(Events.time.greaterEq(comparisonStartTime)) and Events.time.less(startTime)
 
-        private fun preselect() = Events.domain.eq(domain).and(Events.time.greaterEq(startTime)) and Events.time.less(Instant.now())
         suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
            val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
            val count = Events.time.count().castTo<Long?>(LongColumnType())
@@ -63,6 +65,11 @@ class EventsApi {
         suspend fun count() = newSuspendedTransaction {
             Events
                     .select { preselect() }
+                    .count()
+        }
+
+        suspend fun previousCount() = newSuspendedTransaction {
+            Events.select { preselectPreviousPeriod() }
                     .count()
         }
 
@@ -99,18 +106,27 @@ class EventsApi {
                     .count()
         }
 
-        suspend fun events(domain: String, timePeriodStart: String?) = newSuspendedTransaction {
+        suspend fun previousCountUnique() = newSuspendedTransaction {
             Events
-                    .select { preselect() }
-                    .map { Event(it[Events.type], it[Events.time], it[Events.source_], it[Events.city], it[Events.country]) }
+                    .slice(Events.userId)
+                    .select { preselectPreviousPeriod() }
+                    .withDistinct()
+                    .count()
         }
+
+
+//        suspend fun events() = newSuspendedTransaction {
+//            Events
+//                    .select { preselect() }
+//                    .map { Event(it[Events.type], it[Events.time], it[Events.source_], it[Events.city], it[Events.country]) }
+//        }
     }
 
-    private fun timePeriodToStartTime(timePeriodStart: String?) = when (timePeriodStart ?: "day") {
-        "day" -> Instant.now().minus(1, ChronoUnit.DAYS)
-        "hour" -> Instant.now().minus(1, ChronoUnit.HOURS)
-        "week" -> Instant.now().minus(7, ChronoUnit.DAYS)
-        "month" -> Instant.now().minus(28, ChronoUnit.DAYS)
+    private fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?) = when (timePeriodStart ?: "day") {
+        "day" -> origin.minus(1, ChronoUnit.DAYS)
+        "hour" -> origin.minus(1, ChronoUnit.HOURS)
+        "week" -> origin.minus(7, ChronoUnit.DAYS)
+        "month" -> origin.minus(28, ChronoUnit.DAYS)
         else -> throw Exception("Invalid time period")
     }
 
@@ -130,7 +146,8 @@ class EventsApi {
                 .firstOrNull()
 
         if (matchingDomain != null) {
-            EventsQuery(domain, timePeriodToStartTime(timePeriodStart), Instant.now())
+            val startTime = timePeriodToStartTime(Instant.now(), timePeriodStart)
+            EventsQuery(domain, startTime, timePeriodToStartTime(startTime, timePeriodStart), Instant.now())
         } else {
             throw Exception("Not found")
         }

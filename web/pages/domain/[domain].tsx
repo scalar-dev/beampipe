@@ -13,6 +13,9 @@ import { AuthProvider, UserContext } from "../../utils/auth";
 import { Menu, MenuSection, MenuItem } from "../../components/Menu";
 import { Tick } from "../../components/Tick";
 import { Domain } from "../../interfaces";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import numeral from "numeral";
 
 const cardHeight = "27rem";
 
@@ -23,9 +26,9 @@ const displayTimePeriod = (timePeriod: string) => {
   else if (timePeriod == "day") return "Last 24 hours";
   else if (timePeriod == "week") return "Last 7 days";
   else if (timePeriod == "month") return "Last 28 days";
-}
+};
 
-const DomainPicker = ({ }) => {
+const DomainPicker = ({}) => {
   const router = useRouter();
 
   const [query] = useQuery<{ domains: Domain[] }>({
@@ -42,39 +45,39 @@ const DomainPicker = ({ }) => {
 
   const [visible, setVisible] = useState(false);
 
- return (
-   <Menu
-     value={router.query.domain}
-     visible={visible}
-     setVisible={setVisible}
-     align="left"
-     classNames="w-40 md:w-auto"
-   >
-     <MenuSection>
-       {query.data?.domains.map((item) => (
-         <MenuItem
-           key={item.domain}
-           onClick={() => {
-             router.push(
-               "/domain/[domain]",
-               `/domain/${encodeURIComponent(item.domain)}`,
-               {
-                 shallow: true,
-               }
-             );
-             setVisible(false);
-           }}
-         >
-           <div className="w-8">
-             {router.query.domain === item.domain && <Tick />}
-           </div>
-           {item.domain}
-         </MenuItem>
-       ))}
-     </MenuSection>
-   </Menu>
- );
-}
+  return (
+    <Menu
+      value={router.query.domain}
+      visible={visible}
+      setVisible={setVisible}
+      align="left"
+      classNames="w-40 md:w-auto"
+    >
+      <MenuSection>
+        {query.data?.domains.map((item) => (
+          <MenuItem
+            key={item.domain}
+            onClick={() => {
+              router.push(
+                "/domain/[domain]",
+                `/domain/${encodeURIComponent(item.domain)}`,
+                {
+                  shallow: true,
+                }
+              );
+              setVisible(false);
+            }}
+          >
+            <div className="w-8">
+              {router.query.domain === item.domain && <Tick />}
+            </div>
+            {item.domain}
+          </MenuItem>
+        ))}
+      </MenuSection>
+    </Menu>
+  );
+};
 
 const TimePicker = ({
   timePeriod,
@@ -115,6 +118,26 @@ const TimePicker = ({
         ))}
       </MenuSection>
     </Menu>
+  );
+};
+
+const PercentageChange: React.FunctionComponent<{
+  current: number;
+  previous: number;
+}> = ({ current, previous }) => {
+  const change = previous > 0 ? (current - previous) / previous : 0;
+
+  return (
+    <div className="text-sm">
+      <FontAwesomeIcon
+        size="sm"
+        className={`fill-current w-4 h-4 mr-2 ${
+          change >= 0 ? "text-green-600" : "text-red-600"
+        }`}
+        icon={change >= 0 ? faArrowUp : faArrowDown}
+      />
+      {numeral(Math.abs(change)).format("0%")}
+    </div>
   );
 };
 
@@ -175,7 +198,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           }
 
           countUnique
+          previousCountUnique
           count
+          previousCount
         }
       }
     `,
@@ -201,16 +226,24 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       <div className="flex flex-row flex-wrap">
         <Card classNames="w-full">
           <div className="flex flex-row flex-wrap">
-            <div className="text-2xl font-extrabold flex-grow">
+            <div className="text-2xl font-extrabold flex-grow my-auto">
               {domain}
             </div>
             <div className="text-2xl mr-4">
               <span className="text-gray-500 mr-2 text-sm">total</span>
               {stats.data?.events.count}
+              <PercentageChange
+                current={stats.data?.events.count}
+                previous={stats.data?.events.previousCount}
+              />
             </div>
             <div className="text-2xl">
               <span className="text-gray-500 mr-2 text-sm">unique</span>
               {stats.data?.events.countUnique}
+              <PercentageChange
+                current={stats.data?.events.countUnique}
+                previous={stats.data?.events.previousCountUnique}
+              />
             </div>
           </div>
         </Card>
@@ -345,13 +378,13 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
 const DomainPage = () => {
   const router = useRouter();
 
-    return (
-      <AuthProvider>
-        <Layout title={`beampipe | ${router.query.domain}`}>
-          <Root domain={router.query.domain as string} />
-        </Layout>
-      </AuthProvider>
-    );
-}
+  return (
+    <AuthProvider>
+      <Layout title={`beampipe | ${router.query.domain}`}>
+        <Root domain={router.query.domain as string} />
+      </Layout>
+    </AuthProvider>
+  );
+};
 
 export default withUrql(DomainPage);
