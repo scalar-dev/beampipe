@@ -78,7 +78,7 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "server.ApplicationKt"
+mainClassName = "io.beampipe.server.ApplicationKt"
 
 // use JUnit 5 platform
 test {
