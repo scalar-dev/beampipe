@@ -16,6 +16,7 @@ import { Domain } from "../../interfaces";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import numeral from "numeral";
+import { Spinner } from "../../components/Spinner";
 
 const cardHeight = "27rem";
 
@@ -141,6 +142,33 @@ const PercentageChange: React.FunctionComponent<{
   );
 };
 
+const Stats = ({ stats }: { stats?: any }) => (
+  <div>
+    {stats ? (
+      <div className="flex flex-row">
+        <div className="text-2xl mr-4">
+          <span className="text-gray-500 mr-2 text-sm">total</span>
+          {stats.count}
+          <PercentageChange
+            current={stats.count}
+            previous={stats.previousCount}
+          />
+        </div>
+        <div className="text-2xl">
+          <span className="text-gray-500 mr-2 text-sm">unique</span>
+          {stats.countUnique}
+          <PercentageChange
+            current={stats.countUnique}
+            previous={stats.previousCountUnique}
+          />
+        </div>
+      </div>
+    ) : (
+      <Spinner />
+    )}
+  </div>
+);
+
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState("day");
 
@@ -229,22 +257,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             <div className="text-2xl font-extrabold flex-grow my-auto">
               {domain}
             </div>
-            <div className="text-2xl mr-4">
-              <span className="text-gray-500 mr-2 text-sm">total</span>
-              {stats.data?.events.count}
-              <PercentageChange
-                current={stats.data?.events.count}
-                previous={stats.data?.events.previousCount}
-              />
-            </div>
-            <div className="text-2xl">
-              <span className="text-gray-500 mr-2 text-sm">unique</span>
-              {stats.data?.events.countUnique}
-              <PercentageChange
-                current={stats.data?.events.countUnique}
-                previous={stats.data?.events.previousCountUnique}
-              />
-            </div>
+            <Stats stats={stats.data?.events} /> 
           </div>
         </Card>
         <Card classNames="w-full" style={{ height: "22rem" }}>
