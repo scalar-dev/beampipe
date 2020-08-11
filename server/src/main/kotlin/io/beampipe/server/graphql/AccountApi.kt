@@ -5,7 +5,12 @@ import com.stripe.model.Subscription
 import com.stripe.model.checkout.Session
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.checkout.SessionCreateParams
+import graphql.ErrorClassification
+import graphql.ErrorType
+import graphql.GraphQLError
+import graphql.language.SourceLocation
 import io.beampipe.server.StripeClient
+import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.micronaut.context.annotation.Property
@@ -15,8 +20,15 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
+import java.lang.RuntimeException
+import java.security.SecureRandom
+import java.security.spec.KeySpec
+import java.util.Base64
 import java.util.UUID
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 import javax.inject.Inject
+
 
 class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa") val stripeProduct: String) {
     @Inject
@@ -86,6 +98,39 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
             }
 
             subscriptionId
+        }
+    }
+
+    // See: https://stackoverflow.com/questions/51185242/runtimeexception-and-graphqlerror-in-kotlin-and-java
+    class CustomException(@JvmField override val message: String) : GraphQLError, RuntimeException() {
+        override fun getMessage(): String = message
+
+        override fun getErrorType() = ErrorType.ExecutionAborted
+        override fun getExtensions(): Map<String, Any> {
+            return mapOf("userMessage" to message)
+        }
+
+        override fun getLocations() = emptyList<SourceLocation>()
+    }
+
+    suspend fun createUser(context: Context, email: String, password: String) = newSuspendedTransaction {
+        val existingAccount = Accounts.slice(Accounts.id)
+                .select { Accounts.email.eq(email) }
+                .limit(1)
+                .firstOrNull()
+
+        if (existingAccount != null) {
+            throw CustomException("Account already registered with this email address")
+        } else {
+            val salt = ByteArray(16)
+            SecureRandom().nextBytes(salt)
+            val enc: Base64.Encoder = Base64.getEncoder()
+
+            Accounts.insertAndGetId {
+                it[Accounts.email] = email
+                it[Accounts.password] = hashPassword(password, salt)
+                it[Accounts.salt] = enc.encodeToString(salt)
+            }.value
         }
     }
 

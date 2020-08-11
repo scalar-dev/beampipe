@@ -38,10 +38,10 @@ export const secured = async (ctx: NextUrqlPageContext) => {
 
   if (!user.data.user) {
     if (ctx && ctx.req) {
-      ctx?.res?.writeHead(302, { Location: `/login` });
+      ctx?.res?.writeHead(302, { Location: `/sign-in` });
       ctx?.res?.end();
     } else {
-      Router.push(`/login`);
+      Router.push(`/sign-in`);
     }
   }
 
