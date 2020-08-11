@@ -141,6 +141,9 @@ export const LoginForm = () => {
           className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
           onClick={async () => {
             if (await login(email, password)) {
+              // For some reason this is needed to trigger a full page refresh
+              // or logging out and then logging in causes the redirect not to happen
+              // at all. Also see above.
               window.location.assign("/app");
             } else {
               setError("Invalid username or password");
