@@ -72,6 +72,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               <div className="text-sm">
                 <a
                   href="mailto:hello@beampipe.io"
+                  onClick={() => setMenuVisible((visible) => !visible)}
                   className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4"
                 >
                   Contact us
@@ -80,7 +81,10 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 {user ? (
                   <>
                     <Link href="/settings">
-                      <a className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4">
+                      <a
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                        className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4"
+                      >
                         <FontAwesomeIcon
                           className="fill-current w-4 h-4 mr-2"
                           icon={faCog}
@@ -90,14 +94,20 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                     </Link>
 
                     <Link href="/logout">
-                      <a className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                      <a
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                        className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                      >
                         Logout
                       </a>
                     </Link>
                   </>
                 ) : (
                   <Link href="/sign-in" passHref>
-                    <a className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                    <a
+                      onClick={() => setMenuVisible((visible) => !visible)}
+                      className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+                    >
                       Login
                     </a>
                   </Link>
