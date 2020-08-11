@@ -6,7 +6,7 @@ import { Card } from "../components/Card";
 import { Title } from "../components/Title";
 import { LoginForm } from "../components/Auth";
 
-export default () => {
+const SignIn = () => {
   return (
     <Layout title="beampipe - login">
       <div className="m-auto w-full p-8 md:max-w-xl">
@@ -32,3 +32,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default SignIn;
