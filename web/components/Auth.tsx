@@ -3,13 +3,8 @@ import { useRouter } from "next/router";
 import { useMutation } from "urql";
 import gql from "graphql-tag";
 
-const login = (
-  email: string,
-  password: string,
-  onSuccess: () => void,
-  onFailure: () => void
-) => {
-  fetch("/login", {
+const login = async (email: string, password: string): Promise<boolean> => {
+  const result = await fetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,14 +13,10 @@ const login = (
       username: email,
       password: password,
     }),
-  }).then((resp) => {
-    if (resp.url.endsWith("/app")) {
-      onSuccess();
-    } else {
-      onFailure();
-    }
   });
+
   window.beampipe("login");
+  return result.url.endsWith("/app");
 };
 
 export const SignupForm = () => {
@@ -46,12 +37,11 @@ export const SignupForm = () => {
     if (result.error) {
       setError(result.error.graphQLErrors[0].extensions?.userMessage);
     } else {
-      login(
-        email,
-        password,
-        () => router.push("/app"),
-        () => setError("Exception while logging in")
-      );
+      if (await login(email, password)) {
+        window.location.assign("/app");
+      } else {
+        setError("Exception while logging in");
+      }
     }
 
     window.beampipe("signup");
@@ -152,14 +142,13 @@ export const LoginForm = () => {
       <div className="flex items-center justify-between">
         <button
           className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-          onClick={() =>
-            login(
-              email,
-              password,
-              () => router.push("/app"),
-              () => setError("Invalid username or password")
-            )
-          }
+          onClick={async () => {
+            if (await login(email, password)) {
+              window.location.assign("/app");
+            } else {
+              setError("Invalid username or password");
+            }
+          }}
         >
           Sign In
         </button>
