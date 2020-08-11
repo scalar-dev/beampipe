@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Card } from "../components/Card";
 import { Title } from "../components/Title";
+import { SignupForm } from "../components/Auth";
 
 export default () => {
   return (
     <Layout title="beampipe - login">
-      <div className="m-auto w-full md:max-w-xl">
+      <div className="m-auto w-full p-8 md:max-w-xl">
         <Card>
           <Title>Sign up</Title>
 
@@ -27,6 +28,8 @@ export default () => {
               Sign up with GitHub
             </BoldButton>
           </div>
+
+          <SignupForm />
         </Card>
       </div>
     </Layout>
