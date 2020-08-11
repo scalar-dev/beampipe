@@ -1,5 +1,4 @@
 import { Layout } from "../components/Layout";
-import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Card } from "../components/Card";
@@ -16,8 +15,14 @@ export default () => {
           <p className="text-xl">
             Registration is free of charge and doesn't require a credit card.
           </p>
-          <div className="w-64 p-4 flex flex-col m-auto">
-            <BoldButton
+
+          <div className="border-b-2 pt-4 pb-4">
+            <SignupForm />
+          </div>
+
+          <div className="w-64 p-4 flex flex-col m-auto text-center">
+            <a
+              className="text-green-600 hover:text-green-500"
               href="/oauth/login/github"
               onClick={() => window.beampipe("signup")}
             >
@@ -26,13 +31,10 @@ export default () => {
                 icon={faGithub}
               />
               Sign up with GitHub
-            </BoldButton>
+            </a>
           </div>
-
-          <SignupForm />
         </Card>
       </div>
     </Layout>
   );
 };
-

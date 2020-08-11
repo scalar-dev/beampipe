@@ -1,5 +1,4 @@
 import { Layout } from "../components/Layout";
-import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Card } from "../components/Card";
@@ -13,20 +12,23 @@ const SignIn = () => {
         <Card>
           <Title>Sign in</Title>
 
-          <div className="w-64 p-4 flex flex-col m-auto">
-            <BoldButton
+          <div className="border-b-2 pb-4">
+            <LoginForm />
+          </div>
+
+          <div className="w-64 p-4 flex flex-col m-auto text-center">
+            <a
+              className="text-green-600 hover:text-green-500"
               href="/oauth/login/github"
-              onClick={() => window.beampipe("login")}
+              onClick={() => window.beampipe("signup")}
             >
               <FontAwesomeIcon
                 className="fill-current w-4 h-4 mr-2"
                 icon={faGithub}
               />
               Sign in with GitHub
-            </BoldButton>
+            </a>
           </div>
-
-          <LoginForm />
         </Card>
       </div>
     </Layout>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { useMutation } from "urql";
 import gql from "graphql-tag";
 
@@ -23,7 +22,6 @@ export const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const [, executeMutation] = useMutation(gql`
     mutation SignUp($email: String!, $password: String!) {
@@ -66,7 +64,7 @@ export const SignupForm = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="password"
@@ -100,7 +98,6 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
@@ -121,7 +118,7 @@ export const LoginForm = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="password"
