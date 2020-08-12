@@ -51,7 +51,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
 
 const DomainChart = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
-  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}">`;
+  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
     e.preventDefault();
