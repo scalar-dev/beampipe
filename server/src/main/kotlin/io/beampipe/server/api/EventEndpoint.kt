@@ -108,6 +108,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
                 it[Events.sourceClean] = source
                 it[Events.userAgent] = event.userAgent
                 it[Events.deviceName] = userAgent.getValue(UserAgent.DEVICE_NAME)
+                it[Events.deviceClass] = userAgent.getValue(UserAgent.DEVICE_CLASS)
                 it[Events.agentName] = userAgent.getValue(UserAgent.AGENT_NAME)
                 it[Events.operationGystemName] = userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME)
                 it[screenWidth] = event.screenWidth
