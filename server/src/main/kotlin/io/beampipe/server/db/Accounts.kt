@@ -13,4 +13,6 @@ object Accounts : UUIDTable("account") {
 
     val password = text("password")
     val salt = text("salt")
+
+    val emailOk = bool("email_ok")
 }
