@@ -16,6 +16,8 @@ object Events : UUIDTable("event") {
     val device = varchar("device", 64)
     val referrer = varchar("referrer", 1024)
     val source_ = varchar("source", 1024).nullable()
+    val referrerClean = text("referrer_clean").nullable()
+    val sourceClean = text("source_clean").nullable()
     val userAgent = varchar("user_agent", 1024)
     val deviceName = text("device_name")
     val deviceClass = text("device_class")
