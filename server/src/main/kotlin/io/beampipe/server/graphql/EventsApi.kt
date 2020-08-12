@@ -85,7 +85,7 @@ class EventsApi {
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
-        suspend fun topSources(n: Int?) = topBy(Events.source_, n)
+        suspend fun topSources(n: Int?) = topBy(Events.sourceClean, n)
 
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 

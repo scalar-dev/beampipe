@@ -1,6 +1,8 @@
 package io.beampipe.server.api
 
 import com.maxmind.geoip2.DatabaseReader
+import com.snowplowanalytics.refererparser.Parser
+import com.snowplowanalytics.refererparser.Referer
 import io.beampipe.server.db.Events
 import io.beampipe.server.slack.SlackNotifier
 import io.beampipe.server.slack.logger
@@ -25,6 +27,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import java.io.File
 import java.net.InetAddress
 import java.net.URI
+import java.net.URISyntaxException
 import java.time.Instant
 import javax.inject.Inject
 
@@ -44,7 +47,9 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
             .newBuilder()
             .hideMatcherLoadStats()
             .withCache(10000)
-            .build();
+            .build()
+
+    val referrerParser = Parser()
 
     var key: ByteArray = "0123456789ABCDEF".toByteArray()
     var container = SipHasher.container(key)
@@ -86,6 +91,10 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
             LOG.warn("Slack notification channel is full. Dropping.")
         }
 
+        val parsedReferrer = referrerParser.parse(event.referrer, uri)
+        val referrer = cleanReferrer(domain, event.referrer)
+        val source = cleanSource(event.source, referrer, parsedReferrer)
+
         newSuspendedTransaction{
             Events.insert {
                 it[type] = event.type
@@ -93,10 +102,13 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
                 it[path] = uri.path ?: "/"
                 it[city] = ipCity.map { it.city.name }.orElse(null)
                 it[country] = ipCity.map { it.country.name }.orElse(null)
-                it[referrer] = event.referrer
+                it[Events.referrer] = event.referrer
+                it[Events.referrerClean] = referrer
                 it[source_] = event.source
+                it[Events.sourceClean] = source
                 it[Events.userAgent] = event.userAgent
                 it[Events.deviceName] = userAgent.getValue(UserAgent.DEVICE_NAME)
+                it[Events.deviceClass] = userAgent.getValue(UserAgent.DEVICE_CLASS)
                 it[Events.agentName] = userAgent.getValue(UserAgent.AGENT_NAME)
                 it[Events.operationGystemName] = userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME)
                 it[screenWidth] = event.screenWidth
