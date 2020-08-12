@@ -102,7 +102,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         }
     }
 
-    suspend fun createUser(context: Context, email: String, password: String) = newSuspendedTransaction {
+    suspend fun createUser(context: Context, email: String, password: String, emailOk: Boolean) = newSuspendedTransaction {
         if (!EmailValidator.getInstance().isValid(email)) {
            throw CustomException("Email address is invalid")
         }
@@ -123,6 +123,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
                 it[Accounts.email] = email
                 it[Accounts.password] = hashPassword(password, salt)
                 it[Accounts.salt] = enc.encodeToString(salt)
+                it[Accounts.emailOk] = emailOk
             }.value
         }
     }
