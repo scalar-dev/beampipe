@@ -6,7 +6,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { UserContext } from "../utils/auth";
 config.autoAddCss = false;
 
-export default ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   const { user, ...otherProps } = pageProps;
 
   return (
@@ -15,3 +15,5 @@ export default ({ Component, pageProps }: AppProps) => {
     </UserContext.Provider>
   );
 };
+
+export default App;

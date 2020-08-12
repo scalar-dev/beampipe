@@ -190,7 +190,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             count
           }
 
-          topReferrers {
+          topSources {
             key
             count
           }
@@ -292,13 +292,13 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
-          <CardTitle>Top Referrers</CardTitle>
+          <CardTitle>Top Sources</CardTitle>
           <div className="flex-1 max-w-full">
             <NonIdealState
               isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topReferrers.length > 0}
+              isIdeal={stats.data?.events.topSources.length > 0}
             >
-              <Table data={stats.data?.events.topReferrers} />
+              <Table data={stats.data?.events.topSources} />
             </NonIdealState>
           </div>
         </Card>
