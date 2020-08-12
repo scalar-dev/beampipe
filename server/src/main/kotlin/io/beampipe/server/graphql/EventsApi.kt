@@ -77,6 +77,7 @@ class EventsApi {
             Events.slice(column, column.count())
                     .select { preselect() }
                     .groupBy(column)
+                    .having { column.count().greaterEq(1L) }
                     .orderBy(column.count(), SortOrder.DESC)
                     .limit(n ?: 10)
                     .map { Count(it[column]?.toString() ?: null, it[column.count()]) }
