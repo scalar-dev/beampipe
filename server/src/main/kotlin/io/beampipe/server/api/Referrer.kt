@@ -14,13 +14,13 @@ fun safeParseURI(uri: String?) = try {
    null
 }
 
-fun cleanReferrer(host: String, referrer: String?): String? {
+fun cleanReferrer(host: String?, referrer: String?): String? {
    val referrerURI = safeParseURI(referrer)
 
    if (referrerURI != null && referrerURI.host != null) {
       val referrerHost = referrerURI.host.removePrefix("www.")
 
-      if (host.removePrefix("www.") == referrerHost || referrerHost == "localhost") {
+      if (host != null && (host.removePrefix("www.") == referrerHost || referrerHost == "localhost")) {
          return null
       } else {
          return referrerHost
