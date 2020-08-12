@@ -14,6 +14,7 @@ import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.micronaut.context.annotation.Property
+import org.apache.commons.validator.routines.EmailValidator
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -101,19 +102,11 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         }
     }
 
-    // See: https://stackoverflow.com/questions/51185242/runtimeexception-and-graphqlerror-in-kotlin-and-java
-    class CustomException(@JvmField override val message: String) : GraphQLError, RuntimeException() {
-        override fun getMessage(): String = message
-
-        override fun getErrorType() = ErrorType.ExecutionAborted
-        override fun getExtensions(): Map<String, Any> {
-            return mapOf("userMessage" to message)
+    suspend fun createUser(context: Context, email: String, password: String) = newSuspendedTransaction {
+        if (!EmailValidator.getInstance().isValid(email)) {
+           throw CustomException("Email address is invalid")
         }
 
-        override fun getLocations() = emptyList<SourceLocation>()
-    }
-
-    suspend fun createUser(context: Context, email: String, password: String) = newSuspendedTransaction {
         val existingAccount = Accounts.slice(Accounts.id)
                 .select { Accounts.email.eq(email) }
                 .limit(1)
