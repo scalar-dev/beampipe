@@ -10,4 +10,7 @@ object Accounts : UUIDTable("account") {
     val stripeId = text("stripe_id").nullable()
     val slackTeamId = text("slack_team_id")
     val slackToken = text("slack_token")
+
+    val password = text("password")
+    val salt = text("salt")
 }

@@ -1,36 +1,38 @@
 import { Layout } from "../components/Layout";
-import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Card } from "../components/Card";
 import { Title } from "../components/Title";
+import { LoginForm } from "../components/Auth";
 
-export default () => {
+const SignIn = () => {
   return (
     <Layout title="beampipe - login">
-      <div className="m-auto w-full md:max-w-xl">
+      <div className="m-auto w-full p-8 md:max-w-xl">
         <Card>
-          <Title>Login</Title>
+          <Title>Sign in</Title>
 
-          <p className="text-sm">
-            We only request minimal permissions to your GitHub account so that
-            we can authenticate you.
-          </p>
+          <div className="border-b-2 pb-4">
+            <LoginForm />
+          </div>
 
-          <div className="w-64 p-4 flex flex-col m-auto">
-            <BoldButton
+          <div className="w-64 p-4 flex flex-col m-auto text-center">
+            <a
+              className="text-green-600 hover:text-green-500"
               href="/oauth/login/github"
-              onClick={() => window.beampipe("login")}
+              onClick={() => window.beampipe("signup")}
             >
               <FontAwesomeIcon
                 className="fill-current w-4 h-4 mr-2"
                 icon={faGithub}
               />
-              Login with GitHub
-            </BoldButton>
+              Sign in with GitHub
+            </a>
           </div>
         </Card>
       </div>
     </Layout>
   );
 };
+
+export default SignIn;

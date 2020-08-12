@@ -30,7 +30,7 @@ class EventsApi {
     lateinit var userApi: UserApi
 
     data class Bucket(val time: Instant, val count: Long)
-    data class Count(val key: String, val count: Long)
+    data class Count(val key: String?, val count: Long)
 
     data class Event(
             val type: String,
@@ -77,14 +77,15 @@ class EventsApi {
             Events.slice(column, column.count())
                     .select { preselect() }
                     .groupBy(column)
+                    .having { column.count().greaterEq(1L) }
                     .orderBy(column.count(), SortOrder.DESC)
                     .limit(n ?: 10)
-                    .map { Count(it[column].toString(), it[column.count()]) }
+                    .map { Count(it[column]?.toString() ?: null, it[column.count()]) }
         }
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
-        suspend fun topReferrers(n: Int?) = topBy(Events.referrer, n)
+        suspend fun topSources(n: Int?) = topBy(Events.source_, n)
 
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
