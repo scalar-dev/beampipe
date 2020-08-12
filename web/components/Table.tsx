@@ -8,12 +8,15 @@ interface TableProps {
 }
 
 const Bar = ({ percentage }: { percentage: number }) => (
-  <svg width="100%" height="0.5rem" className="fill-current text-green-600 hover:text-green-500">
-      <rect
-        width={`${100.0 * percentage}%`}
-        height="100%"
-      ></rect>
-  </svg>
+  <div style={{ height: "0.5rem" }}>
+    <svg
+      width="100%"
+      height="100%"
+      className="fill-current text-green-600 hover:text-green-500"
+    >
+      <rect width={`${100.0 * percentage}%`} height="100%"></rect>
+    </svg>
+  </div>
 );
 
 export const Table = ({ data }: TableProps) => {

@@ -10,7 +10,7 @@ const apiRootUrl = (isServer: boolean) => {
   } else {
     return isServer
       ? "http://localhost:8080/graphql"
-      : "http://localhost:3000/graphql";
+      : `${location.origin}/graphql`;
   }
 };
 

@@ -26,16 +26,17 @@ const login = async (email: string, password: string): Promise<boolean> => {
 export const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailOk, setEmailOk] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [, executeMutation] = useMutation(gql`
-    mutation SignUp($email: String!, $password: String!) {
-      createUser(email: $email, password: $password)
+    mutation SignUp($email: String!, $password: String!, $emailOk: Boolean!) {
+      createUser(email: $email, password: $password, emailOk: $emailOk)
     }
   `);
 
   const signUp = async () => {
-    const result = await executeMutation({ email, password });
+    const result = await executeMutation({ email, password, emailOk });
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
@@ -43,7 +44,15 @@ export const SignupForm = () => {
     }
 
     if (result.error) {
-      setError(result.error.graphQLErrors[0].extensions?.userMessage);
+      const userMessage = result.error.graphQLErrors[0].extensions?.userMessage;
+
+      if (userMessage) {
+        setError(userMessage);
+      } else {
+        setError(
+          "There was an errror creating your account :-(. Please get in touch hello@beampipe.io"
+        );
+      }
     } else {
       if (await login(email, password)) {
         window.location.assign("/app");
@@ -90,6 +99,20 @@ export const SignupForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+      </div>
+
+      <div className="md:flex md:items-center mb-6">
+        <label className="md:w-full block text-gray-500 font-bold">
+          <input
+            className="mr-2 leading-tight"
+            type="checkbox"
+            checked={emailOk}
+            onChange={(e) => setEmailOk(e.target.checked)}
+          />
+          <span className="text-sm">
+            It's ok to email me occasionally with updates on Beampipe
+          </span>
+        </label>
       </div>
 
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
