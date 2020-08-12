@@ -63,6 +63,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.8")
 
     implementation("commons-validator:commons-validator:1.7")
+    implementation("com.snowplowanalytics:java-referer-parser:0.4.0-rc4")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
