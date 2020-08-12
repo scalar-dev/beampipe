@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useMutation } from "urql";
 import gql from "graphql-tag";
 
+const validateEmail = (email: string) => {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+};
+
 const login = async (email: string, password: string): Promise<boolean> => {
   const result = await fetch("/login", {
     method: "POST",
@@ -31,6 +36,11 @@ export const SignupForm = () => {
 
   const signUp = async () => {
     const result = await executeMutation({ email, password });
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
 
     if (result.error) {
       setError(result.error.graphQLErrors[0].extensions?.userMessage);
@@ -81,6 +91,7 @@ export const SignupForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
         <button
