@@ -7,13 +7,68 @@ import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/LineChart";
 import { BoldButton } from "../components/BoldButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCopy, faCog } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faCopy,
+  faCog,
+  faQuestionCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
 import { Title } from "../components/Title";
 import { Domain } from "../interfaces";
+
+const ScriptSnippet = ({ domain }: { domain: Domain }) => {
+  const ref = useRef<HTMLTextAreaElement | null>(null);
+  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
+  const [hasCopied, setHasCopied] = useState(false);
+
+  const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
+    e.preventDefault();
+    if (ref.current) {
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = html;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      setHasCopied(true);
+    }
+  };
+
+  return (
+    <div className="text-center text-sm">
+      Add the following snippet to your page to start collecting data.
+      <div className="pt-4 flex flex-row max-w-full">
+        <div className="flex-1 overflow-auto">
+          <pre>
+            <code
+              ref={ref}
+              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-4 w-full"
+            >
+              {html}
+            </code>
+          </pre>
+        </div>
+        <div className="overflow-auto flex">
+          <div className="m-auto px-2 text-gray-600">
+            <a href="#" onClick={onCopy}>
+              <FontAwesomeIcon
+                className="ml-2 hover:text-gray-300 fill-current w-4 h-4 mr-2"
+                icon={faCopy}
+              />
+            </a>
+            {hasCopied ? (
+              <div className="text-sm font-extrabold">Copied!</div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
@@ -50,21 +105,6 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
 };
 
 const DomainChart = ({ domain }: { domain: Domain }) => {
-  const ref = useRef<HTMLTextAreaElement | null>(null);
-  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
-
-  const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
-    e.preventDefault();
-    if (ref.current) {
-      const dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.value = html;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-    }
-  };
-
   return (
     <NonIdealState
       nonIdeal={
@@ -72,31 +112,7 @@ const DomainChart = ({ domain }: { domain: Domain }) => {
           <div className="text-xl text-gray-500 pb-4">
             This domain has not recorded any data
           </div>
-          <div>
-            Add the following snippet to your page to start collecting data.
-            <div className="pt-4 flex flex-row max-w-full">
-              <div className="flex-1 overflow-auto">
-                <pre>
-                  <code
-                    ref={ref}
-                    className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-4 w-full"
-                  >
-                    {html}
-                  </code>
-                </pre>
-              </div>
-              <div className="overflow-auto flex">
-                <div className="m-auto px-2">
-                  <a href="#" onClick={onCopy}>
-                    <FontAwesomeIcon
-                      className="ml-2 text-gray-600 hover:text-gray-300 fill-current w-4 h-4 mr-2"
-                      icon={faCopy}
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ScriptSnippet domain={domain} />
         </div>
       }
       isIdeal={domain.hasData}
@@ -236,11 +252,33 @@ const AddOrEditDomain = ({
   );
 };
 
+type DomainCardState = "chart" | "editing" | "code";
+
 const DomainCard: React.FunctionComponent<{
   domain: Domain;
   refetchDomains: () => void;
 }> = ({ domain, refetchDomains }) => {
-  const [editing, setEditing] = useState(false);
+  const [state, setState] = useState<DomainCardState>("chart");
+
+  const renderInner = (state: DomainCardState) => {
+    switch (state) {
+      case "chart":
+        return <DomainChart domain={domain} />;
+      case "code":
+        return <ScriptSnippet domain={domain} />;
+      case "editing":
+        return (
+          <AddOrEditDomain
+            domain={domain}
+            onComplete={() => {
+              setState("chart");
+              refetchDomains();
+            }}
+            onCancel={() => setState("chart")}
+          />
+        );
+    }
+  };
 
   return (
     <Card key={domain.id} style={{ height: "15rem" }}>
@@ -256,39 +294,46 @@ const DomainCard: React.FunctionComponent<{
           </div>
 
           <div>
-            {!editing && (
-              <a
-                href="#"
-                className="text-gray-600 hover:text-gray-500"
-                onClick={(e) => {
-                  setEditing(true);
-                  e.preventDefault();
-                }}
-              >
-                <FontAwesomeIcon
-                  size="sm"
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faCog}
-                />
-              </a>
+            {state !== "editing" && (
+              <>
+                <a
+                  href="#"
+                  className="text-gray-600 hover:text-gray-500"
+                  onClick={(e) => {
+                    setState("editing");
+                    e.preventDefault();
+                  }}
+                >
+                  <FontAwesomeIcon
+                    size="sm"
+                    className="fill-current w-4 h-4 mr-2"
+                    icon={faCog}
+                  />
+                </a>
+                <a
+                  href="#"
+                  className={`${
+                    state === "code"
+                      ? "text-green-600 hover:text-green-500"
+                      : "hover:text-gray-500 text-gray-600"
+                  }`}
+                  onClick={(e) => {
+                    setState((state) => (state === "code" ? "chart" : "code"));
+                    e.preventDefault();
+                  }}
+                >
+                  <FontAwesomeIcon
+                    size="sm"
+                    className="fill-current w-4 h-4 mr-2"
+                    icon={faQuestionCircle}
+                  />
+                </a>
+              </>
             )}
           </div>
         </div>
       </CardTitle>
-      <div className="flex-1 h-full w-full">
-        {editing ? (
-          <AddOrEditDomain
-            domain={domain}
-            onComplete={() => {
-              setEditing(false);
-              refetchDomains();
-            }}
-            onCancel={() => setEditing(false)}
-          />
-        ) : (
-          <DomainChart domain={domain} />
-        )}
-      </div>
+      <div className="flex-1 h-full w-full">{renderInner(state)}</div>
     </Card>
   );
 };
