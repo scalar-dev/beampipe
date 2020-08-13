@@ -326,8 +326,15 @@ const LaptopThing = () => (
       </div>
       <Laptop />
     </div>
-    <div className="flex">
-      <div className="m-auto p-4">
+    <div className="flex flex-col">
+      <div className="m-auto py-8">
+        <Link href="/sign-up">
+          <a className="rounded-lg p-6 hover:bg-purple-500 bg-purple-600 text-white text-3xl font-semibold leading-tight shadow-md">
+            Get started now.
+          </a>
+        </Link>
+      </div>
+      <div className="m-auto py-8">
         <a
           href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
           target="_blank"
