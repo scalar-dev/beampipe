@@ -20,7 +20,7 @@ const SignIn = () => {
             <a
               className="text-green-600 hover:text-green-500"
               href="/oauth/login/github"
-              onClick={() => window.beampipe("signup")}
+              onClick={() => window.beampipe("login")}
             >
               <FontAwesomeIcon
                 className="fill-current w-4 h-4 mr-2"

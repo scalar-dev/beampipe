@@ -148,7 +148,7 @@ const Stats = ({ stats }: { stats?: any }) => (
       <div className="flex flex-row">
         <div className="text-2xl mr-4">
           <span className="text-gray-500 mr-2 text-sm">total</span>
-          {stats.count}
+          {numeral(stats.count).format("0.[0]a")}
           <PercentageChange
             current={stats.count}
             previous={stats.previousCount}
@@ -156,7 +156,7 @@ const Stats = ({ stats }: { stats?: any }) => (
         </div>
         <div className="text-2xl">
           <span className="text-gray-500 mr-2 text-sm">unique</span>
-          {stats.countUnique}
+          {numeral(stats.countUnique).format("0.[0]a")}
           <PercentageChange
             current={stats.countUnique}
             previous={stats.previousCountUnique}
