@@ -1,4 +1,4 @@
-package io.beampipe.server
+package io.beampipe.server.github
 
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.annotation.Get

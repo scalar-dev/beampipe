@@ -1,4 +1,4 @@
-package io.beampipe.server
+package io.beampipe.server.slack
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.team.TeamInfoRequest
