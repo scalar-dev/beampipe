@@ -15,14 +15,15 @@ import {
   faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faSlack } from "@fortawesome/free-brands-svg-icons";
+import { Laptop } from "../components/Laptop";
 
 export const Hero = () => {
   const user = useContext(UserContext);
 
   return (
-    <div className="py-12 bg-green-600 text-white">
+    <div className="py-12 bg-green-600 text-white text-center">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-        <div className="flex flex-col w-full md:w-3/5 justify-center items-start text-center md:text-left">
+        <div className="flex flex-col w-full justify-center items-center text-center">
           <h1 className="my-4 text-6xl font-extrabold">
             dead simple web analytics
           </h1>
@@ -52,26 +53,8 @@ export const Hero = () => {
             </div>
           )}
         </div>
-        <div className="w-full md:w-2/5 py-6 text-center">
-          <img className="w-full z-50 shadow" src="/screenshot.png" />
-        </div>
 
-        <div className="w-full flex justify-center md:justify-end">
-          <div>
-            <a
-              href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
-              target="_blank"
-            >
-              <img
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
-                alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
-                style={{ width: "250px", height: "54px" }}
-                width="250px"
-                height="54px"
-              />
-            </a>
-          </div>
-        </div>
+      
       </div>
     </div>
   );
@@ -128,7 +111,7 @@ const FeatureCard: React.FunctionComponent<{ icon: IconDefinition }> = ({
 const Features = () => (
   <div className="pt-8">
     <div className="container mx-auto">
-      <div className="mx-auto text-6xl font-extrabold py-4">Features</div>
+      <div className="mx-auto text-6xl text-center font-extrabold py-4">Features</div>
 
       <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
         <FeatureCard icon={faChartLine}>
@@ -184,7 +167,7 @@ const Pricing = () => {
   return (
     <div className="pt-8">
       <div className="container mx-auto">
-        <div className="mx-auto text-6xl font-extrabold py-4">Pricing</div>
+        <div className="mx-auto text-6xl font-extrabold py-4 text-center">Pricing</div>
         <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
           <PricingBox title="Free" price="$0 / month">
             <ul>
@@ -243,6 +226,27 @@ const IndexPage = () => {
     <AuthProvider>
       <Layout title="beampipe.io | dead simple web analytics">
         <Hero />
+        <div>
+          <div>
+            <Laptop />
+          </div>
+          <div className="flex">
+            <div className="m-auto p-4">
+              <a
+                href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
+                target="_blank"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
+                  alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
+                  style={{ width: "250px", height: "54px" }}
+                  width="250px"
+                  height="54px"
+                />
+              </a>
+            </div>
+          </div>
+        </div>
         <Features />
         <Pricing />
 
