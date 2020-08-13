@@ -5,29 +5,23 @@ import com.stripe.model.Subscription
 import com.stripe.model.checkout.Session
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.checkout.SessionCreateParams
-import graphql.ErrorClassification
-import graphql.ErrorType
-import graphql.GraphQLError
-import graphql.language.SourceLocation
-import io.beampipe.server.StripeClient
+import io.beampipe.server.stripe.StripeClient
 import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.micronaut.context.annotation.Property
 import org.apache.commons.validator.routines.EmailValidator
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
-import java.lang.RuntimeException
+import org.postgresql.util.PSQLException
 import java.security.SecureRandom
-import java.security.spec.KeySpec
 import java.util.Base64
 import java.util.UUID
-import javax.crypto.SecretKeyFactory
-import javax.crypto.spec.PBEKeySpec
 import javax.inject.Inject
 
 
@@ -41,9 +35,9 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
     suspend fun subscribe(context: Context): String? {
         val stripeId = newSuspendedTransaction {
             val existingStripeId = Accounts
-                        .slice(Accounts.stripeId)
-                        .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
-                        .first()[Accounts.stripeId]
+                    .slice(Accounts.stripeId)
+                    .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
+                    .first()[Accounts.stripeId]
 
             if (existingStripeId == null) {
                 val customer = Customer.create(
@@ -53,7 +47,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
 
                 Accounts.update({
                     Accounts.id.eq(
-                        UUID.fromString(context.authentication!!.attributes["accountId"] as String))
+                            UUID.fromString(context.authentication!!.attributes["accountId"] as String))
                 }) {
                     it[Accounts.stripeId] = customer.id
                 }
@@ -94,7 +88,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
 
             val subscription = Subscription.retrieve(subscriptionId).cancel()
 
-            Accounts.update({  Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }) {
+            Accounts.update({ Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }) {
                 it[Accounts.subscription] = "cancelled"
             }
 
@@ -104,7 +98,7 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
 
     suspend fun createUser(context: Context, email: String, password: String, emailOk: Boolean) = newSuspendedTransaction {
         if (!EmailValidator.getInstance().isValid(email)) {
-           throw CustomException("Email address is invalid")
+            throw CustomException("Email address is invalid")
         }
 
         val existingAccount = Accounts.slice(Accounts.id)
@@ -149,24 +143,34 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         } else {
             val user = userApi.user(context)!!
 
+
             return newSuspendedTransaction {
-                if (id != null) {
-                    Domains.slice(Domains.id).select {
-                        Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
-                    }.firstOrNull() ?: throw Exception("Domain not found")
+                    if (id != null) {
+                        Domains.slice(Domains.id).select {
+                            Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
+                        }.firstOrNull() ?: throw Exception("Domain not found")
 
-                    Domains.update({ Domains.id.eq(id) }) {
-                        it[Domains.domain] = domain
-                        it[Domains.public] = public
-                    }
+                        Domains.update({ Domains.id.eq(id) }) {
+                            it[Domains.domain] = domain
+                            it[Domains.public] = public
+                        }
 
-                    id
-                } else {
-                    Domains.insertAndGetId {
-                        it[accountId] = user.id
-                        it[Domains.domain] = domain
-                        it[Domains.public] = public
-                    }.value
+                        id
+                    } else {
+                        try {
+                            Domains.insertAndGetId {
+                                it[accountId] = user.id
+                                it[Domains.domain] = domain
+                                it[Domains.public] = public
+                            }.value
+
+                    } catch (e: ExposedSQLException) {
+                            if (e.sqlState == "23505") {
+                                throw CustomException("This domain has already been configured (perhaps by another user)");
+                            } else {
+                                throw e
+                            }
+                        }
                 }
             }
         }

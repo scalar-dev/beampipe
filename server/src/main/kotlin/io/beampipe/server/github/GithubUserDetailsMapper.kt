@@ -1,4 +1,4 @@
-package io.beampipe.server
+package io.beampipe.server.github
 
 import io.beampipe.server.db.Accounts
 import io.micronaut.security.authentication.UserDetails

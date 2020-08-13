@@ -2,7 +2,7 @@ import React from "react";
 
 export const Tick = () => (
   <svg
-    className="h-6 w-6 text-pink-500"
+    className="h-6 w-6 text-purple-600"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"

@@ -22,7 +22,7 @@ const SignUp = () => {
 
           <div className="w-64 p-4 flex flex-col m-auto text-center">
             <a
-              className="text-green-600 hover:text-green-500"
+              className="text-green-600 hover:text-green-500 font-bold"
               href="/oauth/login/github"
               onClick={() => window.beampipe("signup")}
             >
