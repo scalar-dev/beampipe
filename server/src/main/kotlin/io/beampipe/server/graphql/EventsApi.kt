@@ -80,7 +80,7 @@ class EventsApi {
                     .having { column.count().greaterEq(1L) }
                     .orderBy(column.count(), SortOrder.DESC)
                     .limit(n ?: 10)
-                    .map { Count(it[column]?.toString() ?: null, it[column.count()]) }
+                    .map { Count(it[column]?.toString(), it[column.count()]) }
         }
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
