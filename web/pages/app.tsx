@@ -265,7 +265,13 @@ const DomainCard: React.FunctionComponent<{
       case "chart":
         return <DomainChart domain={domain} />;
       case "code":
-        return <ScriptSnippet domain={domain} />;
+        return (
+          <div className="flex h-full">
+            <div className="m-auto">
+              <ScriptSnippet domain={domain} />
+            </div>
+          </div>
+        );
       case "editing":
         return (
           <AddOrEditDomain
