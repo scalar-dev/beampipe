@@ -1,4 +1,4 @@
-package io.beampipe.server
+package io.beampipe.server.stripe
 
 import com.stripe.Stripe
 import com.stripe.model.Customer
