@@ -319,7 +319,7 @@ const Footer = () => (
 );
 
 const LaptopThing = () => (
-  <div>
+  <div className="container mx-auto">
     <div className="px-2 py-4 md:w-full flex flex-col">
       <div className="text-6xl py-8 text-purple-600 font-extrabold text-center">
         Simple. Powerful. Private.
