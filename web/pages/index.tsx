@@ -13,23 +13,25 @@ import {
   faClipboardList,
   faProjectDiagram,
   faCheckCircle,
+  faAt,
+  faClipboardCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { faSlack } from "@fortawesome/free-brands-svg-icons";
+import { faSlack, faTwitter, faProductHunt, faMedium } from "@fortawesome/free-brands-svg-icons";
 import { Laptop } from "../components/Laptop";
 
 export const Hero = () => {
   const user = useContext(UserContext);
 
   return (
-    <div className="py-8 bg-green-600 text-white text-center">
+    <div className="py-12 bg-green-600 text-white text-center">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
         <div className="flex flex-col w-full justify-center items-center text-center">
           <h1 className="my-4 text-6xl font-extrabold">
             dead simple web analytics
           </h1>
-          <p className="leading-normal text-2xl mb-4">
-            beampipe offers simple, privacy-focussed web analytics free for upto
-            10k monthly page views.
+          <p className="leading-normal text-2xl mb-8">
+            beampipe offers <b>simple</b>, <b>privacy-focussed</b> web
+            analytics. <b>free</b> for upto 10k monthly page views.
           </p>
 
           {user?.loggedIn ? (
@@ -242,7 +244,11 @@ const Footer = () => (
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <Link href="/privacy">
                 <a target="_new" className="no-underline hover:underline">
-                  Privacy
+                  <FontAwesomeIcon
+                    className="fill-current w-4 h-4 mr-2"
+                    icon={faClipboardCheck}
+                  />
+                  Privacy policy
                 </a>
               </Link>
             </li>
@@ -251,6 +257,10 @@ const Footer = () => (
                 href="mailto:hello@beampipe.io"
                 className="no-underline hover:underline"
               >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faAt}
+                />
                 Contact us
               </a>
             </li>
@@ -265,6 +275,10 @@ const Footer = () => (
                 href="https://twitter.com/beampipe_io"
                 className="no-underline hover:underline"
               >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faTwitter}
+                />
                 Twitter
               </a>
             </li>
@@ -273,6 +287,10 @@ const Footer = () => (
                 href="https://www.producthunt.com/posts/beampipe"
                 className="no-underline hover:underline"
               >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faProductHunt}
+                />
                 Product Hunt
               </a>
             </li>
@@ -282,6 +300,10 @@ const Footer = () => (
                 href="https://medium.com/beampipe"
                 className="no-underline hover:underline"
               >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faMedium}
+                />
                 Medium
               </a>
             </li>
