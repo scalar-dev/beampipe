@@ -19,6 +19,7 @@ import _ from "lodash";
 import { secured } from "../utils/auth";
 import { Title } from "../components/Title";
 import { Domain } from "../interfaces";
+import { Spinner } from "../components/Spinner";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -140,6 +141,7 @@ const AddOrEditDomain = ({
   const [domainName, setDomainName] = useState(domain?.domain);
   const [validDomain, setValidDomain] = useState(isValidDomain(domain?.domain));
   const [isPublic, setPublic] = useState(domain?.public || false);
+  const [error, setError] = useState<string | null>(null);
   const [, executeMutation] = useMutation(gql`
     mutation createOrUpdateDomain(
       $id: UUID
@@ -157,7 +159,7 @@ const AddOrEditDomain = ({
   `);
 
   return (
-    <form className="w-full max-w-xl">
+    <form className="w-full max-w-xl" onSubmit={(e) => e.preventDefault()}>
       <div className="md:flex md:items-center mb-6">
         <div className="md:w-1/3">
           <label
@@ -198,6 +200,16 @@ const AddOrEditDomain = ({
           <span className="text-sm">Make statistics publicly accessible</span>
         </label>
       </div>
+
+      {error && (
+        <div className="md:flex md:items-center mb-6">
+          <div className="md:w-1/3"></div>
+          <div className="md:w-2/3">
+            <p className="text-red-500 italic">{error}</p>
+          </div>
+        </div>
+      )}
+
       <div className="md:flex md:items-center">
         <div className="md:w-1/3"></div>
         <div className="md:w-2/3">
@@ -206,7 +218,6 @@ const AddOrEditDomain = ({
             className={`${
               !validDomain && "cursor-not-allowed opacity-75"
             } mr-2 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
-            type="button"
             onClick={async () => {
               const result = await executeMutation({
                 id: domain?.id,
@@ -216,13 +227,17 @@ const AddOrEditDomain = ({
 
               if (!result.error) {
                 onComplete();
+              } else {
+                setError(
+                  result.error.graphQLErrors[0]?.extensions?.userMessage
+                );
               }
             }}
           >
             Save
           </button>
           <button
-            className="shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
             type="button"
             onClick={onCancel}
           >
@@ -355,8 +370,8 @@ const DomainList = ({
 
   return (
     <>
-      <div className="flex flex-row">
-        <Title>Domains</Title>
+      <div className="flex flex-row text-gray-600">
+        <Title>Dashboard</Title>
         <div className="py-2">
           <BoldButton onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
@@ -367,6 +382,17 @@ const DomainList = ({
           </BoldButton>
         </div>
       </div>
+
+      {domains?.length === 0 && !showAddDomain && (
+        <div className="py-12 text-xl text-gray-600 text-center font-extrabold">
+          You haven't setup any domains yet.
+          <div className="text-green-600 hover:text-green-500 pt-4 underline">
+            <a href="#" onClick={() => setShowAddDomain(true)}>
+              Add a domain to get started
+            </a>
+          </div>
+        </div>
+      )}
 
       {showAddDomain && (
         <Card>
@@ -410,12 +436,16 @@ const Page = () => {
   return (
     <Layout title="beampipe | domains">
       <div className="container mx-auto">
-        <DomainList
-          domains={query.data?.domains}
-          refetchDomains={() =>
-            reexecuteQuery({ requestPolicy: "network-only" })
-          }
-        />
+        {!query.fetching ? (
+          <DomainList
+            domains={query.data?.domains}
+            refetchDomains={() =>
+              reexecuteQuery({ requestPolicy: "network-only" })
+            }
+          />
+        ) : (
+          <Spinner />
+        )}
       </div>
     </Layout>
   );
