@@ -110,7 +110,7 @@ export const SignupForm = () => {
             checked={emailOk}
             onChange={(e) => setEmailOk(e.target.checked)}
           />
-          <span className="text-sm">
+          <span className="text-md">
             It's ok to email me occasionally with updates on Beampipe
           </span>
         </label>
