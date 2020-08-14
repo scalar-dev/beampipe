@@ -1,0 +1,12 @@
+# Sidebar navigation
+
+- label: 'Introduction'
+  link: '/'
+- label: 'Getting started'
+  link: '/getting-started'
+- label: Advanced topics
+  items:
+    - label: 'Custom events'
+      link: '/custom-events'
+    - label: 'Slack integration'
+      link: '/slack-integration'
