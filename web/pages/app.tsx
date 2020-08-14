@@ -17,7 +17,7 @@ import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
-import { GreyTitle } from "../components/Title";
+import { Title } from "../components/Title";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
@@ -48,7 +48,7 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
           <pre>
             <code
               ref={ref}
-              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-4 w-full"
+              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-2 w-full"
             >
               {html}
             </code>
@@ -383,7 +383,7 @@ const DomainList = ({
   return (
     <>
       <div className="flex flex-row">
-        <GreyTitle>Dashboard</GreyTitle>
+        <Title>Dashboard</Title>
         <div className="py-2">
           <Button onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon

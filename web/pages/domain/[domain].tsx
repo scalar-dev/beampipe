@@ -204,7 +204,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       <div className="flex flex-row flex-wrap">
         <Card classNames="w-full">
           <div className="flex flex-row flex-wrap">
-            <div className="text-2xl font-extrabold flex-grow my-auto">
+            <div className="text-2xl text-gray-800 font-extrabold flex-grow my-auto">
               {domain}
             </div>
             <Stats stats={stats.data?.events} />
