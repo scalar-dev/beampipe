@@ -269,7 +269,7 @@ const Footer = () => (
           <ul className="list-reset mb-6">
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <Link href="/privacy">
-                <a target="_new" className="no-underline hover:underline">
+                <a target="_blank" className="no-underline hover:underline">
                   <FontAwesomeIcon
                     className="fill-current w-4 h-4 mr-2"
                     icon={faClipboardCheck}
@@ -299,6 +299,7 @@ const Footer = () => (
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
                 href="https://twitter.com/beampipe_io"
+                target="_blank"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -311,6 +312,7 @@ const Footer = () => (
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
                 href="https://www.producthunt.com/posts/beampipe"
+                target="_blank"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -324,6 +326,7 @@ const Footer = () => (
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
                 href="https://medium.com/beampipe"
+                target="_blank"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
