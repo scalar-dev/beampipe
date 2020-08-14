@@ -28,7 +28,7 @@ export const Stats = ({ stats }: { stats?: any }) => (
   <div>
     {stats ? (
       <div className="flex flex-row">
-        <div className="text-2xl mr-4">
+        <div className="text-2xl mr-4 font-bold">
           <span className="text-gray-500 mr-2 text-sm">total</span>
           {numeral(stats.count).format("0.[0]a")}
           <PercentageChange
@@ -36,7 +36,7 @@ export const Stats = ({ stats }: { stats?: any }) => (
             previous={stats.previousCount}
           />
         </div>
-        <div className="text-2xl">
+        <div className="text-2xl font-bold">
           <span className="text-gray-500 mr-2 text-sm">unique</span>
           {numeral(stats.countUnique).format("0.[0]a")}
           <PercentageChange
