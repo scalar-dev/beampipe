@@ -20,6 +20,7 @@ import { secured } from "../utils/auth";
 import { GreyTitle } from "../components/Title";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
+import { Stats } from "../components/viz/Stats";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -80,6 +81,11 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
             time
             count
           }
+
+          countUnique
+          previousCountUnique
+          count
+          previousCount
         }
       }
     `,
@@ -102,6 +108,13 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
     >
       <div className="h-48">
         <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      </div>
+      <div className="flex flex-row items-center">
+        <div className="flex-1"></div>
+        <div className="text-gray-600 text-lg font-bold px-4">Last 7 days</div>
+        <div>
+          <Stats stats={query.data?.events} />
+        </div>
       </div>
     </NonIdealState>
   );
