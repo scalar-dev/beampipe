@@ -239,8 +239,8 @@ const Pricing = () => {
             }
           >
             <ul>
-              <Bullet>unlimited domains</Bullet>
-              <Bullet>unlimited page views per month</Bullet>
+              <Bullet>Unlimited domains</Bullet>
+              <Bullet>Unlimited page views per month</Bullet>
               <Bullet>Powerful analytics tools</Bullet>
               <Bullet>Slack integration</Bullet>
             </ul>
