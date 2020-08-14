@@ -16,7 +16,12 @@ import {
   faAt,
   faClipboardCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { faSlack, faTwitter, faProductHunt, faMedium } from "@fortawesome/free-brands-svg-icons";
+import {
+  faSlack,
+  faTwitter,
+  faProductHunt,
+  faMedium,
+} from "@fortawesome/free-brands-svg-icons";
 import { Laptop } from "../components/Laptop";
 
 export const Hero = () => {
@@ -80,9 +85,9 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
       <div className="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
         <div className="flex-1">{children}</div>
 
-        <div className="pt-4">
+        <div className="pt-4 w-full flex justify-center">
           <Link href="/sign-up">
-            <a className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
+            <a className="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md">
               Sign up
             </a>
           </Link>
@@ -172,6 +177,9 @@ const Pricing = () => {
         <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
           Pricing
         </div>
+        <p className="text-center pb-4 text-gray-600 font-bold">
+          No credit card required. Cancel at any time.
+        </p>
         <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
           <PricingBox title="Free" price="$0 / month">
             <ul>
