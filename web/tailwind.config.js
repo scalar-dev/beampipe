@@ -7,6 +7,9 @@ module.exports = {
       },
     },
   },
-  variants: {},
+  variants: {
+    opacity: ["responsive", "hover", "focus", "disabled"],
+    cursor: ["responsive", "disabled"],
+  },
   plugins: [],
 };

@@ -12,8 +12,9 @@ const SignUp = () => {
         <Card>
           <Title>Sign up</Title>
 
-          <p className="text-xl">
-            Registration is free of charge and doesn't require a credit card.
+          <p className="text-md text-gray-600 font-bold">
+            Registration is free and doesn't require a credit card. Cancel at
+            any time.
           </p>
 
           <div className="border-b-2 pt-4 pb-4">

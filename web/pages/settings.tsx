@@ -1,12 +1,12 @@
 import { AuthProvider, secured } from "../utils/auth";
 import { Layout } from "../components/Layout";
-import { BoldButton } from "../components/BoldButton";
+import { Button } from "../components/Buttons";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Spinner } from "../components/Spinner";
 
 import { loadStripe } from "@stripe/stripe-js";
-import { Title } from "../components/Title";
+import { GreyTitle } from "../components/Title";
 import { withUrql } from "../utils/withUrql";
 import Link from "next/link";
 
@@ -60,18 +60,20 @@ const Settings = () => {
     <AuthProvider>
       <Layout title="beampipe - settings">
         <div className="container mx-auto">
-          <Title>Settings</Title>
+          <GreyTitle>Settings</GreyTitle>
 
           <div className="p-4 bg-white rounded overflow-hidden shadow-lg w-full">
             <div className="flex flex-col">
               <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">Current subscription</div>
+                <div className="text-right pr-4 w-1/2">
+                  Current subscription
+                </div>
                 <div>
                   {settings?.subscription === "pro" ? (
                     <>
                       <div className="font-extrabold">pro</div>
                       <div>
-                        <BoldButton onClick={onCancelClick}>Cancel</BoldButton>
+                        <Button onClick={onCancelClick}>Cancel</Button>
                       </div>
                     </>
                   ) : (
@@ -80,9 +82,7 @@ const Settings = () => {
                         {settings?.subscription}
                       </div>
                       <div>
-                        <BoldButton onClick={onSubscribeClick}>
-                          Upgrade
-                        </BoldButton>
+                        <Button onClick={onSubscribeClick}>Upgrade</Button>
                       </div>
                     </>
                   )}
