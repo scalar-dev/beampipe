@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/LineChart";
-import { BoldButton } from "../components/BoldButton";
+import { Button } from "../components/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
@@ -17,9 +17,10 @@ import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
-import { Title } from "../components/Title";
+import { GreyTitle } from "../components/Title";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
+import { Stats } from "../components/viz/Stats";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -40,7 +41,7 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   };
 
   return (
-    <div className="text-center text-sm">
+    <div className="text-center text-sm m-auto overflow-auto">
       Add the following snippet to your page to start collecting data.
       <div className="pt-4 flex flex-row max-w-full">
         <div className="flex-1 overflow-auto">
@@ -80,6 +81,11 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
             time
             count
           }
+
+          countUnique
+          previousCountUnique
+          count
+          previousCount
         }
       }
     `,
@@ -100,7 +106,16 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
       isLoading={query.fetching}
     >
-      <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      <div className="h-48">
+        <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      </div>
+      <div className="flex flex-row items-center">
+        <div className="flex-1"></div>
+        <div className="text-gray-600 text-lg font-bold px-4">Last 7 days</div>
+        <div>
+          <Stats stats={query.data?.events} />
+        </div>
+      </div>
     </NonIdealState>
   );
 };
@@ -213,11 +228,8 @@ const AddOrEditDomain = ({
       <div className="md:flex md:items-center">
         <div className="md:w-1/3"></div>
         <div className="md:w-2/3">
-          <button
+          <Button
             disabled={!validDomain}
-            className={`${
-              !validDomain && "cursor-not-allowed opacity-75"
-            } mr-2 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
             onClick={async () => {
               const result = await executeMutation({
                 id: domain?.id,
@@ -235,19 +247,21 @@ const AddOrEditDomain = ({
             }}
           >
             Save
-          </button>
-          <button
-            className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+          </Button>
+          <Button
+            className="mx-2"
             type="button"
+            intent="info"
             onClick={onCancel}
           >
             Cancel
-          </button>
+          </Button>
 
           {domain && (
-            <button
-              className="float-right shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            <Button
+              className="float-right"
               type="button"
+              intent="danger"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this domain?")) {
                   const result = await executeDelete({ id: domain.id });
@@ -259,7 +273,7 @@ const AddOrEditDomain = ({
               }}
             >
               Delete
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -281,10 +295,8 @@ const DomainCard: React.FunctionComponent<{
         return <DomainChart domain={domain} />;
       case "code":
         return (
-          <div className="flex h-full">
-            <div className="m-auto">
-              <ScriptSnippet domain={domain} />
-            </div>
+          <div className="flex-1 flex">
+            <ScriptSnippet domain={domain} />
           </div>
         );
       case "editing":
@@ -302,19 +314,19 @@ const DomainCard: React.FunctionComponent<{
   };
 
   return (
-    <Card key={domain.id} style={{ height: "15rem" }}>
+    <Card key={domain.id} style={{ minHeight: "15rem" }}>
       <CardTitle>
         <div className="flex">
-          <div className="flex-1">
+          <div className="flex-auto overflow-auto">
             <Link
               href="/domain/[domain]"
               as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a className="hover:text-gray-500">{domain.domain}</a>
+              <a className="hover:text-gray-500 break-words">{domain.domain}</a>
             </Link>
           </div>
 
-          <div>
+          <div className="flex-none">
             {state !== "editing" && (
               <>
                 <a
@@ -354,7 +366,7 @@ const DomainCard: React.FunctionComponent<{
           </div>
         </div>
       </CardTitle>
-      <div className="flex-1 h-full w-full">{renderInner(state)}</div>
+      {renderInner(state)}
     </Card>
   );
 };
@@ -370,16 +382,16 @@ const DomainList = ({
 
   return (
     <>
-      <div className="flex flex-row text-gray-600">
-        <Title>Dashboard</Title>
+      <div className="flex flex-row">
+        <GreyTitle>Dashboard</GreyTitle>
         <div className="py-2">
-          <BoldButton onClick={() => setShowAddDomain(true)}>
+          <Button onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
               className="fill-current w-4 h-4 mr-2"
               icon={faPlus}
             />
-            Add domain
-          </BoldButton>
+            Add
+          </Button>
         </div>
       </div>
 

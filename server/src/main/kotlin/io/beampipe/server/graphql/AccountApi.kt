@@ -145,32 +145,32 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
 
 
             return newSuspendedTransaction {
-                    if (id != null) {
-                        Domains.slice(Domains.id).select {
-                            Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
-                        }.firstOrNull() ?: throw Exception("Domain not found")
+                if (id != null) {
+                    Domains.slice(Domains.id).select {
+                        Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
+                    }.firstOrNull() ?: throw Exception("Domain not found")
 
-                        Domains.update({ Domains.id.eq(id) }) {
+                    Domains.update({ Domains.id.eq(id) }) {
+                        it[Domains.domain] = domain
+                        it[Domains.public] = public
+                    }
+
+                    id
+                } else {
+                    try {
+                        Domains.insertAndGetId {
+                            it[accountId] = user.id
                             it[Domains.domain] = domain
                             it[Domains.public] = public
-                        }
-
-                        id
-                    } else {
-                        try {
-                            Domains.insertAndGetId {
-                                it[accountId] = user.id
-                                it[Domains.domain] = domain
-                                it[Domains.public] = public
-                            }.value
+                        }.value
 
                     } catch (e: ExposedSQLException) {
-                            if (e.sqlState == "23505") {
-                                throw CustomException("This domain has already been configured (perhaps by another user)");
-                            } else {
-                                throw e
-                            }
+                        if (e.sqlState == "23505") {
+                            throw CustomException("This domain has already been configured (perhaps by another user)");
+                        } else {
+                            throw e
                         }
+                    }
                 }
             }
         }

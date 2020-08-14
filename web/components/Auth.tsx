@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useMutation } from "urql";
 import gql from "graphql-tag";
+import { Button } from "./Buttons";
+import Link from "next/link";
 
 const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -109,7 +111,7 @@ export const SignupForm = () => {
             checked={emailOk}
             onChange={(e) => setEmailOk(e.target.checked)}
           />
-          <span className="text-sm">
+          <span className="text-md">
             It's ok to email me occasionally with updates on Beampipe
           </span>
         </label>
@@ -117,12 +119,16 @@ export const SignupForm = () => {
 
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
-        <button
-          className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-          onClick={signUp}
-        >
-          Sign up
-        </button>
+        <Button onClick={signUp}>Sign up</Button>
+        <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
+          Already signed up? <Link href="/sign-in">
+            <a
+              className="font-bold text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              Login
+            </a>
+          </Link>
+        </div>
       </div>
     </form>
   );
@@ -171,8 +177,7 @@ export const LoginForm = () => {
       </div>
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
-        <button
-          className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        <Button
           onClick={async () => {
             if (await login(email, password)) {
               // For some reason this is needed to trigger a full page refresh
@@ -185,7 +190,7 @@ export const LoginForm = () => {
           }}
         >
           Sign In
-        </button>
+        </Button>
         <a
           className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
           href="mailto:hello@beampipe.io"

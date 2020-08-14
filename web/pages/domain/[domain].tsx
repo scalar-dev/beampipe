@@ -13,10 +13,7 @@ import { AuthProvider, UserContext } from "../../utils/auth";
 import { Menu, MenuSection, MenuItem } from "../../components/Menu";
 import { Tick } from "../../components/Tick";
 import { Domain } from "../../interfaces";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import numeral from "numeral";
-import { Spinner } from "../../components/Spinner";
+import { Stats } from "../../components/viz/Stats";
 
 const cardHeight = "27rem";
 
@@ -122,53 +119,6 @@ const TimePicker = ({
   );
 };
 
-const PercentageChange: React.FunctionComponent<{
-  current: number;
-  previous: number;
-}> = ({ current, previous }) => {
-  const change = previous > 0 ? (current - previous) / previous : 0;
-
-  return (
-    <div className="text-sm">
-      <FontAwesomeIcon
-        size="sm"
-        className={`fill-current w-4 h-4 mr-2 ${
-          change >= 0 ? "text-green-600" : "text-red-600"
-        }`}
-        icon={change >= 0 ? faArrowUp : faArrowDown}
-      />
-      {numeral(Math.abs(change)).format("0%")}
-    </div>
-  );
-};
-
-const Stats = ({ stats }: { stats?: any }) => (
-  <div>
-    {stats ? (
-      <div className="flex flex-row">
-        <div className="text-2xl mr-4">
-          <span className="text-gray-500 mr-2 text-sm">total</span>
-          {numeral(stats.count).format("0.[0]a")}
-          <PercentageChange
-            current={stats.count}
-            previous={stats.previousCount}
-          />
-        </div>
-        <div className="text-2xl">
-          <span className="text-gray-500 mr-2 text-sm">unique</span>
-          {numeral(stats.countUnique).format("0.[0]a")}
-          <PercentageChange
-            current={stats.countUnique}
-            previous={stats.previousCountUnique}
-          />
-        </div>
-      </div>
-    ) : (
-      <Spinner />
-    )}
-  </div>
-);
-
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState("day");
 
@@ -244,7 +194,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   return (
     <div className="container mx-auto flex flex-col">
       <div className="py-2">
-        <div className="flex flex-row">
+        <div className="flex flex-row max-w-full">
           <div className="flex-1">{user && <DomainPicker />}</div>
           <div>
             <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
@@ -257,23 +207,21 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             <div className="text-2xl font-extrabold flex-grow my-auto">
               {domain}
             </div>
-            <Stats stats={stats.data?.events} /> 
+            <Stats stats={stats.data?.events} />
           </div>
         </Card>
         <Card classNames="w-full" style={{ height: "22rem" }}>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={
-                !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
-              }
-            >
-              <LineChart
-                data={stats.data?.events?.bucketed}
-                timePeriod={timePeriod}
-              />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={
+              !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
+            }
+          >
+            <LineChart
+              data={stats.data?.events?.bucketed}
+              timePeriod={timePeriod}
+            />
+          </NonIdealState>
         </Card>
 
         <Card
@@ -281,19 +229,17 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           style={{ height: cardHeight }}
         >
           <CardTitle>Top Pages</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topPages.length > 0}
-            >
-              <Table data={stats.data?.events.topPages} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topPages.length > 0}
+          >
+            <Table data={stats.data?.events.topPages} />
+          </NonIdealState>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
           <CardTitle>Top Sources</CardTitle>
-          <div className="flex-1 max-w-full">
+          <div className="flex flex-1 max-w-full">
             <NonIdealState
               isLoading={stats.fetching}
               isIdeal={stats.data?.events.topSources.length > 0}
@@ -308,26 +254,22 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           style={{ height: cardHeight }}
         >
           <CardTitle>Top Countries</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topCountries.length > 0}
-            >
-              <Table data={stats.data?.events.topCountries} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topCountries.length > 0}
+          >
+            <Table data={stats.data?.events.topCountries} />
+          </NonIdealState>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
           <CardTitle>Top Screen Sizes</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topScreenSizes.length > 0}
-            >
-              <Table data={stats.data?.events.topScreenSizes} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topScreenSizes.length > 0}
+          >
+            <Table data={stats.data?.events.topScreenSizes} />
+          </NonIdealState>
         </Card>
 
         <Card
@@ -335,14 +277,12 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           style={{ height: cardHeight }}
         >
           <CardTitle>Top Devices</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topDevices.length > 0}
-            >
-              <Table data={stats.data?.events.topDevices} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topDevices.length > 0}
+          >
+            <Table data={stats.data?.events.topDevices} />
+          </NonIdealState>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
@@ -362,26 +302,22 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           style={{ height: cardHeight }}
         >
           <CardTitle>Top Operating Systems</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topOperatingSystems.length > 0}
-            >
-              <Table data={stats.data?.events.topOperatingSystems} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topOperatingSystems.length > 0}
+          >
+            <Table data={stats.data?.events.topOperatingSystems} />
+          </NonIdealState>
         </Card>
 
         <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
           <CardTitle>Top User Agents</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topAgents.length > 0}
-            >
-              <Table data={stats.data?.events.topAgents} />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topAgents.length > 0}
+          >
+            <Table data={stats.data?.events.topAgents} />
+          </NonIdealState>
         </Card>
       </div>
     </div>

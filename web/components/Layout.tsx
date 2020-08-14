@@ -4,6 +4,7 @@ import Link from "next/link";
 import { faAsterisk, faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../utils/auth";
+import { AnchorButton } from "./Buttons";
 
 interface LayoutProps {
   title: string;
@@ -77,7 +78,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 >
                   Contact us
                 </a>
+              </div>
 
+              <div>
                 {user ? (
                   <>
                     <Link href="/settings">
@@ -93,24 +96,34 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                       </a>
                     </Link>
 
-                    <Link href="/logout">
-                      <a
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                        className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                      >
-                        Logout
-                      </a>
-                    </Link>
+                    <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                      <Link href="/logout">
+                        <AnchorButton
+                          onClick={() => setMenuVisible((visible) => !visible)}
+                        >
+                          Logout
+                        </AnchorButton>
+                      </Link>
+                    </div>
                   </>
                 ) : (
-                  <Link href="/sign-in" passHref>
-                    <a
-                      onClick={() => setMenuVisible((visible) => !visible)}
-                      className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-                    >
-                      Login
-                    </a>
-                  </Link>
+                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                    <Link href="/sign-up" passHref>
+                      <AnchorButton
+                        className="mr-2"
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Sign up
+                      </AnchorButton>
+                    </Link>
+                    <Link href="/sign-in" passHref>
+                      <AnchorButton
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Login
+                      </AnchorButton>
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
