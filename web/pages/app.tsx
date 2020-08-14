@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/LineChart";
-import { BoldButton } from "../components/BoldButton";
+import { AnchorButton, Button } from "../components/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
@@ -17,7 +17,7 @@ import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
-import { Title } from "../components/Title";
+import { GreyTitle } from "../components/Title";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 
@@ -213,11 +213,8 @@ const AddOrEditDomain = ({
       <div className="md:flex md:items-center">
         <div className="md:w-1/3"></div>
         <div className="md:w-2/3">
-          <button
+          <Button
             disabled={!validDomain}
-            className={`${
-              !validDomain && "cursor-not-allowed opacity-75"
-            } mr-2 shadow bg-green-500 hover:bg-green-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
             onClick={async () => {
               const result = await executeMutation({
                 id: domain?.id,
@@ -235,19 +232,21 @@ const AddOrEditDomain = ({
             }}
           >
             Save
-          </button>
-          <button
-            className="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+          </Button>
+          <Button
+            className="mx-2"
             type="button"
+            intent="info"
             onClick={onCancel}
           >
             Cancel
-          </button>
+          </Button>
 
           {domain && (
-            <button
-              className="float-right shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            <Button
+              className="float-right"
               type="button"
+              intent="danger"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this domain?")) {
                   const result = await executeDelete({ id: domain.id });
@@ -259,7 +258,7 @@ const AddOrEditDomain = ({
               }}
             >
               Delete
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -370,16 +369,16 @@ const DomainList = ({
 
   return (
     <>
-      <div className="flex flex-row text-gray-600">
-        <Title>Dashboard</Title>
+      <div className="flex flex-row">
+        <GreyTitle>Dashboard</GreyTitle>
         <div className="py-2">
-          <BoldButton onClick={() => setShowAddDomain(true)}>
+          <AnchorButton onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
               className="fill-current w-4 h-4 mr-2"
               icon={faPlus}
             />
             Add domain
-          </BoldButton>
+          </AnchorButton>
         </div>
       </div>
 
