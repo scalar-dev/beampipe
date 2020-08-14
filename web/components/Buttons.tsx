@@ -50,9 +50,9 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorProps>(
       {...otherProps}
       ref={ref}
       href={href}
-      className={`rounded-lg px-4 md:px-5 xl:px-4 py-3 md:py-4 xl:py-3 ${colorForIntent(
+      className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md ${className || ""}`}
+      )} text-base text-white font-semibold leading-tight shadow-md ${className || ""}`}
     >
       {children}
     </a>
@@ -72,9 +72,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       {...otherProps}
       ref={ref}
-      className={`rounded-lg px-4 md:px-5 xl:px-4 py-3 md:py-4 xl:py-3 ${colorForIntent(
+      className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${className || ""}`}
+      )} text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${className || ""}`}
     >
       {children}
     </button>
