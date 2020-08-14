@@ -120,38 +120,56 @@ const Features = () => (
         Features
       </div>
 
-      <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
+      <div className="mx-auto md:grid md:grid-cols-2 md:gap-5 text-gray-800">
         <FeatureCard icon={faChartLine}>
           Full featured web analytics dashboard
+          <p className="text-gray-600 font-normal">
+            We show you only what you need to know. No more scrolling through
+            endless reports.
+          </p>
         </FeatureCard>
 
         <FeatureCard icon={faCookieBite}>
           Light-weight tracking script. No cookies.
+          <p className="text-gray-600 font-normal">
+            Our tracker script is tiny and doesn't use Cookies. This means a
+            faster loading page and happier users.
+          </p>
         </FeatureCard>
 
         <FeatureCard icon={faClipboardList}>
           Compliant with GDPR, PECR, CCPA.
+          <p className="text-gray-600 font-normal">
+            No more data compliance headaches. We don't track your users'
+            personal information.
+          </p>
         </FeatureCard>
 
         <FeatureCard icon={faProjectDiagram}>
-          <div className="pb-2">
-            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
-              Coming soon
-            </span>
-          </div>
           Full featured GraphQL API for data access.
+          <p className="text-gray-600 font-normal">
+            The analytics data is yours. Filter and fetch it easily with our
+            GraphQL API.
+          </p>
         </FeatureCard>
 
         <FeatureCard icon={faCheckCircle}>
-          <div className="pb-2">
-            <span className="text-sm font-medium bg-gray-100 py-1 px-2 rounded text-gray-500 align-middle">
-              Coming soon
-            </span>
-          </div>
           Goals and conversions.
+          <p className="text-gray-600 font-normal">
+            Use our simple javascript API to log events from your site. Track
+            logins, sign-ups and everything else. Better understand your users
+            and tighten sales funnels.
+          </p>
         </FeatureCard>
 
-        <FeatureCard icon={faSlack}>Slack integration (Pro)</FeatureCard>
+        <FeatureCard icon={faSlack}>
+          Slack integration (Pro)
+          <p className="text-gray-600 font-normal">
+            Our Slack integration can notify you whenever a user signs up to
+            your product. For more established teams, receive a daily or weekly
+            report for your site.
+          </p>
+        </FeatureCard>
       </div>
     </div>
   </div>
@@ -173,7 +191,7 @@ const GreenTag: React.FunctionComponent = ({ children }) => (
 const Pricing = () => {
   return (
     <div className="p-8">
-      <div className="container mx-auto">
+      <div className="container mx-auto text-gray-800">
         <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
           Pricing
         </div>

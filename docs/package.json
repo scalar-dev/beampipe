@@ -1,0 +1,36 @@
+{
+  "name": "gatsby-starter-rocket-docs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Out of the box Gatsby Starter for creating documentation websites easily and quickly. With support for MDX, code highlight, Analytics, SEO and more",
+  "author": "João Pedro Schmitz <oi@joaopedro.cc> (@joaopedro_cc)",
+  "license": "MIT",
+  "starter-name": "gatsby-starter-rocket-docs",
+  "dependencies": {
+    "@rocketseat/gatsby-theme-docs": "latest",
+    "gatsby": "latest",
+    "gatsby-plugin-canonical-urls": "^2.1.19",
+    "gatsby-plugin-google-analytics": "^2.1.34",
+    "gatsby-plugin-manifest": "^2.2.37",
+    "gatsby-plugin-offline": "^3.0.32",
+    "gatsby-plugin-sitemap": "^2.2.26",
+    "prop-types": "^15.7.2",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  },
+  "keywords": [
+    "gatsby",
+    "rocketseat",
+    "gatsby-starter"
+  ],
+  "scripts": {
+    "build": "gatsby build",
+    "start": "gatsby develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "deploy": "gatsby build && gh-pages -d public -r git@github.com:alexsparrow/beampipe-docs.git"
+  }
+}
