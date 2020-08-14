@@ -100,7 +100,9 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
       isLoading={query.fetching}
     >
-      <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      <div className="h-48">
+        <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+      </div>
     </NonIdealState>
   );
 };
