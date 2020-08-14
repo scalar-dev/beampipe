@@ -11,7 +11,9 @@ export const NonIdealState: React.FunctionComponent<NonIdealStateProps> = ({
   isIdeal,
   isLoading,
   children,
-  nonIdeal = <div className="text-xl text-gray-500">No data to display</div>,
+  nonIdeal = (
+    <div className="text-center text-xl text-gray-500">No data to display</div>
+  ),
 }) => {
   if (isLoading) {
     return <Spinner />;
@@ -22,8 +24,8 @@ export const NonIdealState: React.FunctionComponent<NonIdealStateProps> = ({
       {isIdeal ? (
         <>{children}</>
       ) : (
-        <div className="w-full max-w-full h-full flex">
-          <div className="m-auto max-w-full">{nonIdeal}</div>
+        <div className="flex flex-1">
+          <div className="m-auto overflow-auto">{nonIdeal}</div>
         </div>
       )}
     </>
