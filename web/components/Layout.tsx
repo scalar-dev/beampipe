@@ -4,6 +4,7 @@ import Link from "next/link";
 import { faAsterisk, faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../utils/auth";
+import { AnchorButton } from "./Buttons";
 
 interface LayoutProps {
   title: string;
@@ -94,22 +95,20 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                     </Link>
 
                     <Link href="/logout">
-                      <a
+                      <AnchorButton
                         onClick={() => setMenuVisible((visible) => !visible)}
-                        className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
                       >
                         Logout
-                      </a>
+                      </AnchorButton>
                     </Link>
                   </>
                 ) : (
                   <Link href="/sign-in" passHref>
-                    <a
+                    <AnchorButton
                       onClick={() => setMenuVisible((visible) => !visible)}
-                      className="m-4 lg:m-0 inline-flex items-center justify-center px-5 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
                     >
                       Login
-                    </a>
+                    </AnchorButton>
                   </Link>
                 )}
               </div>
