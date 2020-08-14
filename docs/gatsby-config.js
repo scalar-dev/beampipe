@@ -1,11 +1,11 @@
 module.exports = {
   siteMetadata: {
-    siteTitle: `@rocketseat/gatsby-theme-docs`,
-    defaultTitle: `@rocketseat/gatsby-theme-docs`,
-    siteTitleShort: `gatsby-theme-docs`,
-    siteDescription: `Out of the box Gatsby Theme for creating documentation websites easily and quickly`,
-    siteUrl: `https://rocketdocs.netlify.com`,
-    siteAuthor: `@rocketseat`,
+    siteTitle: `beampipe docs`,
+    defaultTitle: `beampipe docs`,
+    siteTitleShort: `beampipe docs`,
+    siteDescription: `Documentation for the beampipe analytics tool`,
+    siteUrl: `https://docs.beampipe.io`,
+    siteAuthor: `Alex`,
     siteImage: `/banner.png`,
     siteLanguage: `en`,
     themeColor: `#7159c1`,
@@ -18,7 +18,7 @@ module.exports = {
       options: {
         configPath: `src/config`,
         docsPath: `src/docs`,
-        githubUrl: `https://github.com/rocketseat/gatsby-themes`,
+        githubUrl: null,
         baseDir: `examples/gatsby-theme-docs`,
       },
     },
