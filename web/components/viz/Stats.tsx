@@ -27,7 +27,7 @@ const PercentageChange: React.FunctionComponent<{
 export const Stats = ({ stats }: { stats?: any }) => (
   <div>
     {stats ? (
-      <div className="flex flex-row">
+      <div className="flex flex-row text-gray-800">
         <div className="text-2xl mr-4 font-bold">
           <span className="text-gray-500 mr-2 text-sm">total</span>
           {numeral(stats.count).format("0.[0]a")}

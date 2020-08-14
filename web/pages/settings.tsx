@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 import { Spinner } from "../components/Spinner";
 
 import { loadStripe } from "@stripe/stripe-js";
-import { GreyTitle } from "../components/Title";
+import { Title } from "../components/Title";
 import { withUrql } from "../utils/withUrql";
 import Link from "next/link";
 
@@ -60,7 +60,7 @@ const Settings = () => {
     <AuthProvider>
       <Layout title="beampipe - settings">
         <div className="container mx-auto">
-          <GreyTitle>Settings</GreyTitle>
+          <Title>Settings</Title>
 
           <div className="p-4 bg-white rounded overflow-hidden shadow-lg w-full">
             <div className="flex flex-col">
