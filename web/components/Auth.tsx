@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation } from "urql";
 import gql from "graphql-tag";
 import { Button } from "./Buttons";
+import Link from "next/link";
 
 const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -118,11 +119,16 @@ export const SignupForm = () => {
 
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
-        <Button
-          onClick={signUp}
-        >
-          Sign up
-        </Button>
+        <Button onClick={signUp}>Sign up</Button>
+        <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
+          Already signed up? <Link href="/sign-in">
+            <a
+              className="font-bold text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              Login
+            </a>
+          </Link>
+        </div>
       </div>
     </form>
   );
