@@ -45,14 +45,14 @@ interface AnchorProps
 }
 
 export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorProps>(
-  ({ children, intent, href = "#", ...otherProps }, ref) => (
+  ({ className, children, intent, href = "#", ...otherProps }, ref) => (
     <a
       {...otherProps}
       ref={ref}
       href={href}
       className={`rounded-lg px-4 md:px-5 xl:px-4 py-3 md:py-4 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md`}
+      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md ${className || ""}`}
     >
       {children}
     </a>
@@ -74,7 +74,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       className={`rounded-lg px-4 md:px-5 xl:px-4 py-3 md:py-4 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${className}`}
+      )} md:text-lg xl:text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${className || ""}`}
     >
       {children}
     </button>

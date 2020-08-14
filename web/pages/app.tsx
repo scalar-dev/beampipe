@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/LineChart";
-import { AnchorButton, Button } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
@@ -40,7 +40,7 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   };
 
   return (
-    <div className="text-center text-sm">
+    <div className="text-center text-sm m-auto overflow-auto">
       Add the following snippet to your page to start collecting data.
       <div className="pt-4 flex flex-row max-w-full">
         <div className="flex-1 overflow-auto">
@@ -280,10 +280,8 @@ const DomainCard: React.FunctionComponent<{
         return <DomainChart domain={domain} />;
       case "code":
         return (
-          <div className="flex h-full">
-            <div className="m-auto">
-              <ScriptSnippet domain={domain} />
-            </div>
+          <div className="flex-1 flex">
+            <ScriptSnippet domain={domain} />
           </div>
         );
       case "editing":
@@ -301,19 +299,19 @@ const DomainCard: React.FunctionComponent<{
   };
 
   return (
-    <Card key={domain.id} style={{ height: "15rem" }}>
+    <Card key={domain.id} style={{ minHeight: "15rem" }}>
       <CardTitle>
         <div className="flex">
-          <div className="flex-1">
+          <div className="flex-auto overflow-auto">
             <Link
               href="/domain/[domain]"
               as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a className="hover:text-gray-500">{domain.domain}</a>
+              <a className="hover:text-gray-500 break-words">{domain.domain}</a>
             </Link>
           </div>
 
-          <div>
+          <div className="flex-none">
             {state !== "editing" && (
               <>
                 <a
@@ -353,7 +351,7 @@ const DomainCard: React.FunctionComponent<{
           </div>
         </div>
       </CardTitle>
-      <div className="flex-1 h-full w-full">{renderInner(state)}</div>
+      {renderInner(state)}
     </Card>
   );
 };
@@ -372,13 +370,13 @@ const DomainList = ({
       <div className="flex flex-row">
         <GreyTitle>Dashboard</GreyTitle>
         <div className="py-2">
-          <AnchorButton onClick={() => setShowAddDomain(true)}>
+          <Button onClick={() => setShowAddDomain(true)}>
             <FontAwesomeIcon
               className="fill-current w-4 h-4 mr-2"
               icon={faPlus}
             />
-            Add domain
-          </AnchorButton>
+            Add
+          </Button>
         </div>
       </div>
 

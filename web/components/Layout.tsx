@@ -78,7 +78,9 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 >
                   Contact us
                 </a>
+              </div>
 
+              <div>
                 {user ? (
                   <>
                     <Link href="/settings">
@@ -94,22 +96,34 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                       </a>
                     </Link>
 
-                    <Link href="/logout">
+                    <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                      <Link href="/logout">
+                        <AnchorButton
+                          onClick={() => setMenuVisible((visible) => !visible)}
+                        >
+                          Logout
+                        </AnchorButton>
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                    <Link href="/sign-up" passHref>
+                      <AnchorButton
+                        className="mr-2"
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Sign up
+                      </AnchorButton>
+                    </Link>
+                    <Link href="/sign-in" passHref>
                       <AnchorButton
                         onClick={() => setMenuVisible((visible) => !visible)}
                       >
-                        Logout
+                        Login
                       </AnchorButton>
                     </Link>
-                  </>
-                ) : (
-                  <Link href="/sign-in" passHref>
-                    <AnchorButton
-                      onClick={() => setMenuVisible((visible) => !visible)}
-                    >
-                      Login
-                    </AnchorButton>
-                  </Link>
+                  </div>
                 )}
               </div>
             </div>

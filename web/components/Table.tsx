@@ -27,15 +27,15 @@ export const Table = ({ data }: TableProps) => {
   const maxCount = _.maxBy(data, "count")!.count;
 
   return (
-    <table className="max-w-full w-full">
+    <table className="w-full table-fixed">
       <tbody>
         {data?.map((item) => (
-          <tr key={item.key}>
-            <td className="max-w-xs px-4 text-xs font-mono truncate py-1 border-t-2">
+          <tr key={item.key} className="border-t-2">
+            <td className="px-4 text-xs font-mono py-1 truncate">
               {item.key || "none"}
               <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />
             </td>
-            <td className="border-t-2 px-4">{item.count}</td>
+            <td className="px-4 text-right w-1/5">{item.count}</td>
           </tr>
         ))}
       </tbody>
