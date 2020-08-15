@@ -2,21 +2,21 @@
 title: 'Slack integration'
 ---
 
-Beampipe features built-in Slack integration with our Pro subscription. Any
-events fired in your application (see [Custom events](/custom-events) can be
-used to trigger Slack notifications.
+Beampipe features built-in Slack integration with our Pro subscription. Any events fired in your application (see [Custom events](/custom-events) can be used to trigger Slack notifications.
 
-- First configure our Slack bot. You can do this by heading to the
-**Settings** page within the app. Here you should see an **Add to Slack**
-button. You'll need to give us some privileges to access your Slack
-workspace. Once this is done, you should see the **Beampipe** bot appear in
-your slack workspace.
 
-- To subscribe to particular events within a Slack channel. First head over to the Slack channel where you want the notifications to appear. You can then use the beampipe slash command as follows:
+# 1. Configure our Slack bot
+
+Go to Beampipe's **Settings** page. Here you should see an **Add to Slack** button. You'll need to give us some privileges to access your Slack workspace. Once this is done, you should see the **Beampipe** bot appear in your Slack workspace.
+
+
+
+# 2. Subscribe to events
+
+To subscribe to particular events within a Slack channel, first head over to the Slack channel where you want the notifications to appear. You can then use the Beampipe slash command as follows:
 
 ```text
-/beampipe subscribe mydomain.com signup
+/beampipe subscribe example.com signup
 ```
 
-Here `signup` can be any event type logged from your application. Once
-configured, you'll receive notifications for any matching events to the ch
+Here `signup` can be any event type logged from your application. Once configured, you'll receive notifications for any matching events in your Slack channel.
