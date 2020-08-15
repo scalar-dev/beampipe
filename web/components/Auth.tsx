@@ -3,7 +3,6 @@ import { useMutation } from "urql";
 import gql from "graphql-tag";
 import { Button } from "./Buttons";
 import Link from "next/link";
-import "../tracker/tracker";
 
 const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -26,10 +25,10 @@ const login = async (email: string, password: string): Promise<boolean> => {
   return result.url.endsWith("/app");
 };
 
-export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
+export const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailOk, setEmailOk] = useState(false);
+  const [emailOk, setEmailOk] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [, executeMutation] = useMutation(gql`
@@ -64,7 +63,7 @@ export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
       }
     }
 
-    onSignup();
+    window.beampipe("signup");
   };
 
   return (
@@ -122,9 +121,10 @@ export const SignupForm = ({ onSignup }: { onSignup: () => void }) => {
       <div className="flex items-center justify-between">
         <Button onClick={signUp}>Sign up</Button>
         <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
-          Already signed up?{" "}
-          <Link href="/sign-in">
-            <a className="font-bold text-sm text-blue-600 hover:text-blue-800 underline">
+          Already signed up? <Link href="/sign-in">
+            <a
+              className="font-bold text-sm text-blue-600 hover:text-blue-800 underline"
+            >
               Login
             </a>
           </Link>

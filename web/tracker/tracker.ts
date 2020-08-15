@@ -1,12 +1,3 @@
-export interface BeampipeTrackOptions {
-}
-
-declare global {
-  interface Window {
-    beampipe: (event: string, options?: BeampipeTrackOptions) => void;
-  }
-}
-
 (function (window: Window, apiHost: string) {
   if ((window as any).beampipe) {
     return;
@@ -21,16 +12,15 @@ declare global {
       location.hostname
     ) || location.protocol === "file:";
 
-  const ele =
-    document.querySelector("[data-beampipe-domain]") ||
-    document.querySelector("[data-alysis-domain]");
+  const ele = document.querySelector("[data-beampipe-domain]") 
+      || document.querySelector("[data-alysis-domain]");
 
   const domain =
-    ele?.getAttribute("data-beampipe-domain") ||
-    ele?.getAttribute("data-alysis-domain") ||
+    ele.getAttribute("data-beampipe-domain") ||
+    ele.getAttribute("data-alysis-domain") ||
     (isLocal ? "localhost" : location.host);
 
-  const track = (event: string, options: BeampipeTrackOptions = {}) => {
+  const track = (event: string) => {
     if (isLocal) {
       console.warn("Ignoring in local mode");
       return;
@@ -66,7 +56,7 @@ declare global {
   if (history.pushState) {
     const pushState_ = history["pushState"];
     history.pushState = function () {
-      pushState_.apply(this, arguments as any);
+      pushState_.apply(this, arguments);
       log();
     };
 
