@@ -18,7 +18,7 @@ const SignUp = () => {
           </p>
 
           <div className="border-b-2 pt-4 pb-4">
-            <SignupForm />
+            <SignupForm onSignup={() => window.beampipe("signup")} />
           </div>
 
           <div className="w-64 p-4 flex flex-col m-auto text-center">
