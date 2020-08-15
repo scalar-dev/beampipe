@@ -15,6 +15,7 @@ import {
   faCheckCircle,
   faAt,
   faClipboardCheck,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSlack,
@@ -267,6 +268,19 @@ const Footer = () => (
         <div className="flex-1">
           <p className="uppercase font-extrabold md:mb-6">Links</p>
           <ul className="list-reset mb-6">
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://docs.beampipe.io/"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faBook}
+                />
+                Docs
+              </a>
+            </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <Link href="/privacy">
                 <a target="_blank" className="no-underline hover:underline">
