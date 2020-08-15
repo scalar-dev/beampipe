@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 import { useState, useContext } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
-import { timePeriodToBucket, LineChart } from "../../components/LineChart";
+import { timePeriodToBucket, LineChart } from "../../components/viz/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
