@@ -11,7 +11,7 @@ import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../../utils/auth";
 import { Menu, MenuSection, MenuItem } from "../../components/Menu";
-import { Tick } from "../../components/Tick";
+import { Tick } from "../../components/marketing/Tick";
 import { Domain } from "../../interfaces";
 import { Stats } from "../../components/viz/Stats";
 
