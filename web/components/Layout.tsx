@@ -77,7 +77,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   onClick={() => setMenuVisible((visible) => !visible)}
                   className="block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-extrabold text-green-600 hover:text-green-500 mr-4"
                 >
-                  Help
+                  Docs
                 </a>
               </div>
 
