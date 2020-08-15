@@ -4,7 +4,7 @@ import { withUrql } from "../utils/withUrql";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Card, CardTitle } from "../components/Card";
-import { LineChart } from "../components/LineChart";
+import { LineChart } from "../components/viz/LineChart";
 import { Button } from "../components/Buttons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

@@ -4,7 +4,7 @@ import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../utils/auth";
 import { useContext } from "react";
-import { Tick } from "../components/Tick";
+import { Tick } from "../components/marketing/Tick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartLine,
@@ -22,7 +22,7 @@ import {
   faProductHunt,
   faMedium,
 } from "@fortawesome/free-brands-svg-icons";
-import { Laptop } from "../components/Laptop";
+import { Laptop } from "../components/marketing/Laptop";
 
 export const Hero = () => {
   const user = useContext(UserContext);
