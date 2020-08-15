@@ -2,17 +2,17 @@
 title: 'Getting started'
 ---
 
-Getting started with beampipe is a piece of cake. 
+Getting started with beampipe is a piece of cake.
 
 - First things first, you'll need to setup your domain on our site. To do
 this, head to the dashboard and hit the **Add** button to create a new domain.
 The should be "bare" without `http://` or `www.` So for instance if you normally
-visit your site at www.mysite.com, enter `mysite.com` into the domain box.
+visit your site at www.example.com, enter `example.com` into the domain box.
 
 You can also choose for your site's statistics to be public or private. Once
 you're done, click **Save** to configure your domain.
 
-- Secondly, you'll need to embed our tracker script in your site. You should see the code 
+- Secondly, you'll need to embed our tracker script in your site. You should see the code
 to do this on the dashboard (if not, click the help symbol on the domain you
 wish to track). The code should look something like this:
 
@@ -21,12 +21,12 @@ wish to track). The code should look something like this:
   async
   defer
   src="https://beampipe.io/tracker.js"
-  data-beampipe-domain="mysite.com"
+  data-beampipe-domain="example.com"
 >
 </script>
 ```
 
-`mysite.com` should match exactly what you entered when you created the domain.
+`example.com` should match exactly what you entered when you created the domain.
 
 You'll need to copy this in to your website's `<head>` section for any page
 that you wish to track.
