@@ -9,6 +9,12 @@ export const timePeriodToBucket = (timePeriod: string) => {
   else return "day";
 };
 
+export const timePeriodToFineBucket = (timePeriod: string) => {
+  if (timePeriod === "day") return "hour";
+  else if (timePeriod === "hour") return "minute";
+  else return "day";
+};
+
 export const LineChart = ({
   data,
   timePeriod,
