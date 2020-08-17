@@ -24,30 +24,75 @@ const PercentageChange: React.FunctionComponent<{
   );
 };
 
-export const Stats = ({ stats }: { stats?: any }) => (
-  <div>
-    {stats ? (
-      <div className="flex flex-row text-gray-800">
-        <div className="text-2xl mr-4 font-bold">
-          <span className="text-gray-500 mr-2 text-sm">total</span>
-          {numeral(stats.count).format("0.[0]a")}
-          <PercentageChange
-            current={stats.count}
-            previous={stats.previousCount}
-          />
-        </div>
-        <div className="text-2xl font-bold">
-          <span className="text-gray-500 mr-2 text-sm">unique</span>
-          {numeral(stats.countUnique).format("0.[0]a")}
-          <PercentageChange
-            current={stats.countUnique}
-            previous={stats.previousCountUnique}
-          />
-        </div>
-      </div>
-    ) : (
-      <Spinner />
-    )}
+const StatsCounter = ({
+  value,
+  title,
+  delta,
+}: {
+  value: string;
+  title: string;
+  delta: JSX.Element;
+}) => (
+  <div className="flex flex-col px-8 text-center">
+    <div className="text-gray-500 text-xs uppercase">{title}</div>
+    <div className="text-3xl font-bold">{value}</div>
+    <div>{delta}</div>
   </div>
 );
 
+export const Stats = ({ stats }: { stats?: any }) => {
+  if (!stats) {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+  const bounceRate =
+    stats.countUnique > 0 ? stats.bounceCount / stats.countUnique : undefined;
+  const prevBounceRate =
+    stats.previousCountUnique > 0
+      ? stats.previousBounceCount / stats.previousCountUnique
+      : undefined;
+
+  return (
+    <div className="text-gray-800 font-bold">
+      <div className="flex flex-row">
+        <StatsCounter
+          value={numeral(stats.count).format("0.[0]a")}
+          title="Views"
+          delta={
+            <PercentageChange
+              current={stats.count}
+              previous={stats.previousCount}
+            />
+          }
+        />
+        <StatsCounter
+          value={numeral(stats.countUnique).format("0.[0]a")}
+          title="Unique"
+          delta={
+            <PercentageChange
+              current={stats.countUnique}
+              previous={stats.previousCountUnique}
+            />
+          }
+        />
+        <StatsCounter
+          value={numeral(bounceRate).format("0%")}
+          title="Bounce Rate"
+          delta={
+            bounceRate && prevBounceRate ? (
+              <PercentageChange
+                current={bounceRate}
+                previous={prevBounceRate}
+              />
+            ) : (
+              <div className="text-sm">-</div>
+            )
+          }
+        />
+      </div>
+    </div>
+  );
+};
