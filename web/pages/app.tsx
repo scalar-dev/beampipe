@@ -119,12 +119,8 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
           timePeriod="week"
         />
       </div>
-      <div className="flex flex-row items-center pt-4">
-        <div className="flex-1"></div>
-        <div className="text-gray-600 text-lg font-bold px-4">Last 7 days</div>
-        <div>
-          <Stats stats={query.data?.events} />
-        </div>
+      <div className="flex flex-row flex-wrap pt-4">
+        <Stats stats={query.data?.events} />
       </div>
     </NonIdealState>
   );
