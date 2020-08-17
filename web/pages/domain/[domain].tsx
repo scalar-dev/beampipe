@@ -5,7 +5,7 @@ import gql from "graphql-tag";
 import { useState, useContext } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
-import { timePeriodToBucket, LineChart } from "../../components/viz/LineChart";
+import { timePeriodToBucket, LineChart, timePeriodToFineBucket } from "../../components/viz/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
@@ -127,10 +127,16 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       query stats(
         $domain: String!
         $bucketDuration: String!
+        $uniqueBucketDuration: String!
         $timePeriodStart: String!
       ) {
         events(domain: $domain, timePeriodStart: $timePeriodStart) {
           bucketed(bucketDuration: $bucketDuration) {
+            time
+            count
+          }
+
+          bucketedUnique(bucketDuration: $uniqueBucketDuration) {
             time
             count
           }
@@ -187,6 +193,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     variables: {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
+      uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
       timePeriodStart: timePeriod,
     },
   });
@@ -220,7 +227,19 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             }
           >
             <LineChart
-              data={stats.data?.events?.bucketed}
+              data={[
+                {
+                  data: stats.data?.events?.bucketed,
+                  type: "line",
+                  label: "Page views"
+                },
+                {
+                  data: stats.data?.events?.bucketedUnique,
+                  type: "bar",
+                  backgroundColor: "rgba(203, 213, 224, 0.5)",
+                  label: "Unique visitors"
+                },
+              ]}
               timePeriod={timePeriod}
             />
           </NonIdealState>
