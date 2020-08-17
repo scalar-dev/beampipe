@@ -6,7 +6,6 @@ import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
 class V12__Extract_user_agent_again : BaseJavaMigration() {
-
     override fun migrate(context: Context?) {
         val uaa =  UserAgentAnalyzer
                 .newBuilder()
