@@ -62,7 +62,9 @@ export const Stats = ({ stats }: { stats?: any }) => {
         <div className="text-2xl mr-4 font-bold">
           <span className="text-gray-500 mr-2 text-sm">bounce</span>
           {numeral(bounceRate).format("0%")}
-          <PercentageChange current={bounceRate} previous={prevBounceRate} />
+          {bounceRate && prevBounceRate && (
+            <PercentageChange current={bounceRate} previous={prevBounceRate} />
+          )}
         </div>
       </div>
     </div>
