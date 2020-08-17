@@ -38,7 +38,7 @@ const StatsCounter = ({
       {title}
     </div>
     <div className="text-3xl font-bold text-gray-800">{value}</div>
-    {delta && <div className="text-gray-800 font-bold">{delta}</div>}
+    {delta && <div className="text-gray-800 font-bold whitespace-no-wrap">{delta}</div>}
   </div>
 );
 
