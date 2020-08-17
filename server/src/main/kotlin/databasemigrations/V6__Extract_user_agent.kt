@@ -4,19 +4,14 @@ import nl.basjes.parse.useragent.UserAgent
 import nl.basjes.parse.useragent.UserAgentAnalyzer
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
-import java.sql.ResultSet
-
-
-
 
 class V6__Extract_user_agent : BaseJavaMigration() {
-    val uaa =  UserAgentAnalyzer
-            .newBuilder()
-            .hideMatcherLoadStats()
-            .withCache(10000)
-            .build();
-
     override fun migrate(context: Context?) {
+        val uaa =  UserAgentAnalyzer
+                .newBuilder()
+                .hideMatcherLoadStats()
+                .withCache(10000)
+                .build();
         context!!.connection.createStatement().use { select ->
             select.executeQuery("SELECT id, user_agent FROM event").use { rows ->
                 while (rows.next()) {

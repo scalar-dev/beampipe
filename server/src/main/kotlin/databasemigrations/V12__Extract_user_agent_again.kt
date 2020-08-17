@@ -6,13 +6,13 @@ import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
 class V12__Extract_user_agent_again : BaseJavaMigration() {
-    val uaa =  UserAgentAnalyzer
-            .newBuilder()
-            .hideMatcherLoadStats()
-            .withCache(10000)
-            .build();
 
     override fun migrate(context: Context?) {
+        val uaa =  UserAgentAnalyzer
+                .newBuilder()
+                .hideMatcherLoadStats()
+                .withCache(10000)
+                .build();
         context!!.connection.createStatement().use { select ->
             select.executeQuery("SELECT id, user_agent FROM event").use { rows ->
                 while (rows.next()) {
