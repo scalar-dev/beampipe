@@ -111,7 +111,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       <div className="h-48">
         <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center pt-4">
         <div className="flex-1"></div>
         <div className="text-gray-600 text-lg font-bold px-4">Last 7 days</div>
         <div>
