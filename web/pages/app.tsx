@@ -112,7 +112,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
         <LineChart
           data={[
             {
-              label: "Total page views",
+              label: "Page views",
               data: query.data?.events?.bucketed,
             },
           ]}
