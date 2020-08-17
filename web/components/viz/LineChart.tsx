@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import Chart from "chart.js";
+import Chart, { ChartYAxe } from "chart.js";
 
 export const timePeriodToBucket = (timePeriod: string) => {
   if (timePeriod === "day") return "hour";
@@ -13,7 +13,7 @@ export const LineChart = ({
   data,
   timePeriod,
 }: {
-  data: any;
+  data: any[];
   timePeriod: string;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -51,22 +51,47 @@ export const LineChart = ({
             },
           },
         ],
+        yAxes: [
+          {
+            type: "linear",
+            id: "0",
+            position: "left",
+          },
+          
+        ],
       };
 
-      chart.current.data.datasets = [
-        {
-          lineTension: 0,
-          backgroundColor: gradient,
-          borderColor: "#0ba360",
-          pointRadius: 0,
-          data: data.map(
-            ({ time, count }: { time: string; count: number }) => ({
-              x: new Date(parseInt(time) * 1000.0),
-              y: count,
-            })
-          ),
-        },
-      ];
+      if (data.length > 1) {
+        chart.current.options.scales?.yAxes?.push({
+          type: "linear",
+          id: "1",
+          position: "right",
+          ticks: {
+            precision: 0,
+          },
+          gridLines: {
+            display: false,
+          },
+        } as ChartYAxe);
+      }
+
+      chart.current.data.datasets = data.map((dataset, index) => ({
+        label: dataset.label,
+        lineTension: 0,
+        backgroundColor: dataset.backgroundColor || gradient,
+        borderColor: "#0ba360",
+        pointRadius: 5,
+        pointBorderColor: "rgba(0, 0, 0, 0)",
+        pointBackgroundColor: "rgba(0, 0, 0, 0)",
+        type: dataset.type,
+        yAxisID: `${index}`,
+        data: dataset.data.map(
+          ({ time, count }: { time: string; count: number }) => ({
+            x: new Date(parseInt(time) * 1000.0),
+            y: count,
+          })
+        ),
+      }));
       chart.current.update();
     }
   }, [data, chart]);

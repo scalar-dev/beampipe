@@ -135,6 +135,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             count
           }
 
+          bucketedUnique(bucketDuration: $bucketDuration) {
+            time
+            count
+          }
+
           topPages {
             key
             count
@@ -220,7 +225,19 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             }
           >
             <LineChart
-              data={stats.data?.events?.bucketed}
+              data={[
+                {
+                  data: stats.data?.events?.bucketed,
+                  type: "line",
+                  label: "Page views"
+                },
+                {
+                  data: stats.data?.events?.bucketedUnique,
+                  type: "bar",
+                  backgroundColor: "rgba(203, 213, 224, 0.5)",
+                  label: "Unique visitors"
+                },
+              ]}
               timePeriod={timePeriod}
             />
           </NonIdealState>

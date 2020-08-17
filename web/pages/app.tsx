@@ -109,7 +109,15 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       isLoading={query.fetching}
     >
       <div className="h-48">
-        <LineChart data={query.data?.events?.bucketed} timePeriod="week" />
+        <LineChart
+          data={[
+            {
+              label: "Total page views",
+              data: query.data?.events?.bucketed,
+            },
+          ]}
+          timePeriod="week"
+        />
       </div>
       <div className="flex flex-row items-center pt-4">
         <div className="flex-1"></div>
