@@ -86,6 +86,8 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
           previousCountUnique
           count
           previousCount
+          bounceCount
+          previousBounceCount
         }
       }
     `,

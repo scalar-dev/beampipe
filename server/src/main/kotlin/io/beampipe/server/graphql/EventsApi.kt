@@ -115,6 +115,24 @@ class EventsApi {
                     .count()
         }
 
+        suspend fun bounceCount() = newSuspendedTransaction {
+            Events
+                    .slice(Events.userId, Events.userId.count())
+                    .select { preselect() }
+                    .groupBy(Events.userId)
+                    .having { Events.userId.count().eq(1) }
+                    .count()
+        }
+
+        suspend fun previousBounceCount() = newSuspendedTransaction {
+            Events
+                    .slice(Events.userId, Events.userId.count())
+                    .select { preselectPreviousPeriod() }
+                    .groupBy(Events.userId)
+                    .having { Events.userId.count().eq(1) }
+                    .count()
+        }
+
 
 //        suspend fun events() = newSuspendedTransaction {
 //            Events
