@@ -5,7 +5,11 @@ import gql from "graphql-tag";
 import { useState, useContext } from "react";
 import { Layout } from "../../components/Layout";
 import { Card, CardTitle } from "../../components/Card";
-import { timePeriodToBucket, LineChart, timePeriodToFineBucket } from "../../components/viz/LineChart";
+import {
+  timePeriodToBucket,
+  LineChart,
+  timePeriodToFineBucket,
+} from "../../components/viz/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
@@ -181,6 +185,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             count
           }
 
+          liveUnique
           countUnique
           previousCountUnique
           count
@@ -212,11 +217,13 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       </div>
       <div className="flex flex-row flex-wrap">
         <Card classNames="w-full">
-          <div className="flex flex-row flex-wrap">
-            <div className="text-2xl text-gray-800 font-extrabold flex-grow my-auto">
+          <div className="flex flex-row flex-wrap flex-1">
+            <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
               {domain}
             </div>
-            <Stats stats={stats.data?.events} />
+            <div className="flex flex-row flex-1 md:flex-none">
+              <Stats stats={stats.data?.events} />
+            </div>
           </div>
         </Card>
         <Card classNames="w-full" style={{ height: "22rem" }}>
@@ -231,13 +238,13 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                 {
                   data: stats.data?.events?.bucketed,
                   type: "line",
-                  label: "Page views"
+                  label: "Page views",
                 },
                 {
                   data: stats.data?.events?.bucketedUnique,
                   type: "bar",
                   backgroundColor: "rgba(203, 213, 224, 0.5)",
-                  label: "Unique visitors"
+                  label: "Unique visitors",
                 },
               ]}
               timePeriod={timePeriod}

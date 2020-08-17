@@ -129,6 +129,17 @@ class EventsApi {
                     .count()
         }
 
+        suspend fun liveUnique() = newSuspendedTransaction {
+            Events
+                    .slice(Events.userId)
+                    .select {
+                        Events.domain.eq(domain) and
+                                Events.time.greaterEq(Instant.now().minus(5, ChronoUnit.MINUTES))
+                    }
+                    .withDistinct()
+                    .count()
+        }
+
         suspend fun previousCountUnique() = newSuspendedTransaction {
             Events
                     .slice(Events.userId)
