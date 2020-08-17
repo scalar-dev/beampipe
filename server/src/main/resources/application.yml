@@ -13,6 +13,8 @@ micronaut:
         cookie:
           enabled: true
         generator:
+          access-token:
+            expiration: 604800 # A week
           access-token-expiration: 604800 # A week
         signatures:
           secret:
