@@ -4,9 +4,11 @@ import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.beampipe.server.db.util.TimeBucketGapFill
+import io.beampipe.server.db.util.distinctOn
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
+import org.jetbrains.exposed.sql.QueryAlias
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
@@ -15,8 +17,10 @@ import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
 import org.jetbrains.exposed.sql.count
+import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
@@ -46,7 +50,10 @@ class EventsApi {
             private val comparisonStartTime: Instant,
             private val endTime: Instant
     ) {
-        private fun preselect() = Events.domain.eq(domain).and(Events.time.greaterEq(startTime)) and Events.time.less(endTime)
+        private fun preselect() = Events.domain.eq(domain) and
+                Events.time.greaterEq(startTime) and
+                Events.time.less(endTime)
+
         private fun preselectPreviousPeriod() = Events.domain.eq(domain).and(Events.time.greaterEq(comparisonStartTime)) and Events.time.less(startTime)
 
         suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
@@ -61,6 +68,21 @@ class EventsApi {
                        Bucket(it[timeBucket], it[count] ?: 0)
                    }
        }
+
+        suspend fun bucketedUnique(bucketDuration: String?) = newSuspendedTransaction {
+            val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
+            val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
+
+            Events
+                    .slice(timeBucket, count)
+                    .select { preselect() }
+                    .groupBy(timeBucket)
+                    .orderBy(timeBucket)
+                    .map {
+                        Bucket(it[timeBucket], it[count] ?: 0)
+                    }
+        }
+
 
         suspend fun count() = newSuspendedTransaction {
             Events
