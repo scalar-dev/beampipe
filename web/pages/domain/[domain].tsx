@@ -179,6 +179,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           previousCountUnique
           count
           previousCount
+          bounceCount
+          previousBounceCount
         }
       }
     `,

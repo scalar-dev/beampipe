@@ -24,9 +24,23 @@ const PercentageChange: React.FunctionComponent<{
   );
 };
 
-export const Stats = ({ stats }: { stats?: any }) => (
-  <div>
-    {stats ? (
+export const Stats = ({ stats }: { stats?: any }) => {
+  if (!stats) {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+  const bounceRate =
+    stats.countUnique > 0 ? stats.bounceCount / stats.countUnique : undefined;
+  const prevBounceRate =
+    stats.previousCountUnique > 0
+      ? stats.previousBounceCount / stats.previousCountUnique
+      : undefined;
+
+  return (
+    <div>
       <div className="flex flex-row text-gray-800">
         <div className="text-2xl mr-4 font-bold">
           <span className="text-gray-500 mr-2 text-sm">total</span>
@@ -36,7 +50,7 @@ export const Stats = ({ stats }: { stats?: any }) => (
             previous={stats.previousCount}
           />
         </div>
-        <div className="text-2xl font-bold">
+        <div className="text-2xl mr-4 font-bold">
           <span className="text-gray-500 mr-2 text-sm">unique</span>
           {numeral(stats.countUnique).format("0.[0]a")}
           <PercentageChange
@@ -44,10 +58,13 @@ export const Stats = ({ stats }: { stats?: any }) => (
             previous={stats.previousCountUnique}
           />
         </div>
-      </div>
-    ) : (
-      <Spinner />
-    )}
-  </div>
-);
 
+        <div className="text-2xl mr-4 font-bold">
+          <span className="text-gray-500 mr-2 text-sm">bounce</span>
+          {numeral(bounceRate).format("0%")}
+          <PercentageChange current={bounceRate} previous={prevBounceRate} />
+        </div>
+      </div>
+    </div>
+  );
+};
