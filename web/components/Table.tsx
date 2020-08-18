@@ -34,7 +34,7 @@ export const Table = ({ showImages = false, data }: TableProps) => {
       <tbody>
         {data?.map((item) => (
           <tr key={item.key} className="border-t-2">
-            {showImages && <td className="w-8 h-8 p-1">{item.image}</td>}
+            {showImages && <td className="w-6 p-1">{item.image}</td>}
             <td className="px-4 text-xs font-mono py-1 truncate">
               {item.key || "none"}
               <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />
