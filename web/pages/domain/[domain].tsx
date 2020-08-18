@@ -18,7 +18,8 @@ import { Stats, StatsCounter } from "../../components/viz/Stats";
 import { Spinner } from "../../components/Spinner";
 import numeral from "numeral";
 import { DomainPicker } from "../../components/viz/DomainPicker";
-import { TimePicker } from "../../components/viz/TimePicker";
+import { TimePicker, TimePeriod } from "../../components/viz/TimePicker";
+import moment from "moment";
 
 const cardHeight = "27rem";
 
@@ -66,7 +67,13 @@ const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   </Card>
 );
 
-const Chart = ({ stats, timePeriod }: { stats: any; timePeriod: string }) => (
+const Chart = ({
+  stats,
+  timePeriod,
+}: {
+  stats: any;
+  timePeriod: TimePeriod;
+}) => (
   <Card classNames="w-full" style={{ height: "22rem" }}>
     <NonIdealState
       isLoading={stats.fetching}
@@ -97,9 +104,9 @@ const query = gql`
     $domain: String!
     $bucketDuration: String!
     $uniqueBucketDuration: String!
-    $timePeriodStart: String!
+    $timePeriod: TimePeriodInput!
   ) {
-    events(domain: $domain, timePeriodStart: $timePeriodStart) {
+    events(domain: $domain, timePeriod: $timePeriod) {
       bucketed(bucketDuration: $bucketDuration) {
         time
         count
@@ -162,7 +169,7 @@ const query = gql`
 `;
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
-  const [timePeriod, setTimePeriod] = useState("day");
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "day" });
 
   const [stats] = useQuery({
     query,
@@ -170,7 +177,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
       uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
-      timePeriodStart: timePeriod,
+      timePeriod: {
+        type: timePeriod.type,
+        startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
+        endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
+      },
     },
   });
 

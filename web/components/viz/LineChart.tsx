@@ -1,17 +1,19 @@
 import { useRef, useEffect } from "react";
 import Chart, { ChartYAxe } from "chart.js";
+import { TimePeriod } from "./TimePicker";
+import moment from "moment";
 
-export const timePeriodToBucket = (timePeriod: string) => {
-  if (timePeriod === "day") return "hour";
-  else if (timePeriod === "hour") return "minute";
-  else if (timePeriod === "week") return "day";
-  else if (timePeriod === "month") return "week";
+export const timePeriodToBucket = (timePeriod: TimePeriod) => {
+  if (timePeriod.type === "day") return "hour";
+  else if (timePeriod.type === "hour") return "minute";
+  else if (timePeriod.type === "week") return "day";
+  else if (timePeriod.type === "month") return "week";
   else return "day";
 };
 
-export const timePeriodToFineBucket = (timePeriod: string) => {
-  if (timePeriod === "day") return "hour";
-  else if (timePeriod === "hour") return "minute";
+export const timePeriodToFineBucket = (timePeriod: TimePeriod) => {
+  if (timePeriod.type === "day") return "hour";
+  else if (timePeriod.type === "hour") return "minute";
   else return "day";
 };
 
@@ -20,7 +22,7 @@ export const LineChart = ({
   timePeriod,
 }: {
   data: any[];
-  timePeriod: string;
+  timePeriod: TimePeriod;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
@@ -92,7 +94,7 @@ export const LineChart = ({
         yAxisID: `${index}`,
         data: dataset.data.map(
           ({ time, count }: { time: string; count: number }) => ({
-            x: new Date(parseInt(time) * 1000.0),
+            x: moment(time).toDate(),
             y: count,
           })
         ),
