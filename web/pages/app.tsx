@@ -76,7 +76,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
     query: gql`
       query stats($domain: String!) {
-        events(domain: $domain, timePeriodStart: "week") {
+        events(domain: $domain, timePeriod: { type: "week" }) {
           bucketed(bucketDuration: "day") {
             time
             count
@@ -116,7 +116,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
               data: query.data?.events?.bucketed,
             },
           ]}
-          timePeriod="week"
+          timePeriod={{ type: "week" }}
         />
       </div>
       <div className="flex flex-row flex-wrap pt-4">
