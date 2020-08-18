@@ -63,7 +63,6 @@ export const LineChart = ({
             id: "0",
             position: "left",
           },
-          
         ],
       };
 

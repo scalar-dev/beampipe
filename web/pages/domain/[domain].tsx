@@ -22,34 +22,44 @@ import { TimePicker } from "../../components/viz/TimePicker";
 
 const cardHeight = "27rem";
 
-const TopBar = ({
-  domain,
-  stats,
-  liveStats,
-}: {
-  domain: string;
-  stats: any;
-  liveStats: any;
-}) => (
+const LiveCounter = ({ domain }: { domain: string }) => {
+  const [liveStats] = useQuery({
+    query: gql`
+      query stats($domain: String!) {
+        liveUnique(domain: $domain)
+      }
+    `,
+    pollInterval: 5000,
+    requestPolicy: "network-only",
+    variables: {
+      domain,
+    },
+  });
+  return (
+    <StatsCounter
+      value={
+        liveStats.data ? (
+          <div className="animate-pulse">
+            {numeral(liveStats.data.liveUnique).format("0.[0]a")}
+          </div>
+        ) : (
+          <Spinner />
+        )
+      }
+      title="Online now"
+      delta={null}
+    />
+  );
+};
+
+const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
     <div className="flex flex-row flex-wrap flex-1">
       <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
         {domain}
       </div>
       <div className="flex flex-row flex-1 md:flex-none">
-        <StatsCounter
-          value={
-            liveStats.data ? (
-              <div className="animate-pulse">
-                {numeral(liveStats.data.liveUnique).format("0.[0]a")}
-              </div>
-            ) : (
-              <Spinner />
-            )
-          }
-          title="Online now"
-          delta={null}
-        />
+        <LiveCounter domain={domain} />
         <Stats stats={stats.data?.events} />
       </div>
     </div>
@@ -83,73 +93,73 @@ const Chart = ({ stats, timePeriod }: { stats: any; timePeriod: string }) => (
 );
 
 const query = gql`
-      query stats(
-        $domain: String!
-        $bucketDuration: String!
-        $uniqueBucketDuration: String!
-        $timePeriodStart: String!
-      ) {
-        events(domain: $domain, timePeriodStart: $timePeriodStart) {
-          bucketed(bucketDuration: $bucketDuration) {
-            time
-            count
-          }
-
-          bucketedUnique(bucketDuration: $uniqueBucketDuration) {
-            time
-            count
-          }
-
-          topPages {
-            key
-            count
-          }
-
-          topSources {
-            referrer
-            source
-            count
-          }
-
-          topScreenSizes {
-            key
-            count
-          }
-
-          topCountries {
-            key
-            count
-          }
-
-          topDevices {
-            key
-            count
-          }
-
-          topDeviceClasses {
-            key
-            count
-          }
-
-          topOperatingSystems {
-            key
-            count
-          }
-
-          topAgents {
-            key
-            count
-          }
-
-          countUnique
-          previousCountUnique
-          count
-          previousCount
-          bounceCount
-          previousBounceCount
-        }
+  query stats(
+    $domain: String!
+    $bucketDuration: String!
+    $uniqueBucketDuration: String!
+    $timePeriodStart: String!
+  ) {
+    events(domain: $domain, timePeriodStart: $timePeriodStart) {
+      bucketed(bucketDuration: $bucketDuration) {
+        time
+        count
       }
-    `;
+
+      bucketedUnique(bucketDuration: $uniqueBucketDuration) {
+        time
+        count
+      }
+
+      topPages {
+        key
+        count
+      }
+
+      topSources {
+        referrer
+        source
+        count
+      }
+
+      topScreenSizes {
+        key
+        count
+      }
+
+      topCountries {
+        key
+        count
+      }
+
+      topDevices {
+        key
+        count
+      }
+
+      topDeviceClasses {
+        key
+        count
+      }
+
+      topOperatingSystems {
+        key
+        count
+      }
+
+      topAgents {
+        key
+        count
+      }
+
+      countUnique
+      previousCountUnique
+      count
+      previousCount
+      bounceCount
+      previousBounceCount
+    }
+  }
+`;
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState("day");
@@ -161,18 +171,6 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       bucketDuration: timePeriodToBucket(timePeriod),
       uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
       timePeriodStart: timePeriod,
-    },
-  });
-
-  const [liveStats] = useQuery({
-    query: gql`
-      query stats($domain: String!) {
-        liveUnique(domain: $domain)
-      }
-    `,
-    pollInterval: 5000,
-    variables: {
-      domain,
     },
   });
 
@@ -189,7 +187,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </div>
       </div>
       <div className="flex flex-row flex-wrap">
-        <TopBar stats={stats} liveStats={liveStats} domain={domain} />
+        <TopBar stats={stats} domain={domain} />
         <Chart stats={stats} timePeriod={timePeriod} />
 
         <Card
