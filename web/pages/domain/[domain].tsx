@@ -19,7 +19,6 @@ import { Spinner } from "../../components/Spinner";
 import numeral from "numeral";
 import { DomainPicker } from "../../components/viz/DomainPicker";
 import { TimePicker, TimePeriod } from "../../components/viz/TimePicker";
-import moment from "moment";
 
 const cardHeight = "27rem";
 
