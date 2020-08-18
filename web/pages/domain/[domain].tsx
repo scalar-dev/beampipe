@@ -151,7 +151,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           }
 
           topSources {
-            key
+            referrer
+            source
             count
           }
 
@@ -272,7 +273,19 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               isLoading={stats.fetching}
               isIdeal={stats.data?.events.topSources.length > 0}
             >
-              <Table data={stats.data?.events.topSources} />
+              <Table
+                showImages
+                data={stats.data?.events.topSources.map((source: any) => ({
+                  key: source.source || source.referrer,
+                  count: source.count,
+                  image: source.referrer && (
+                    <img
+                      className="inline h-full w-full"
+                      src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
+                    />
+                  ),
+                }))}
+              />
             </NonIdealState>
           </div>
         </Card>

@@ -29,7 +29,7 @@ const StatsCounter = ({
   title,
   delta,
 }: {
-  value: string;
+  value: React.ReactNode;
   title: string;
   delta: JSX.Element | null;
 }) => (
@@ -61,7 +61,11 @@ export const Stats = ({ stats }: { stats?: any }) => {
     <>
       {stats.liveUnique !== undefined && (
         <StatsCounter
-          value={numeral(stats.liveUnique).format("0.[0]a")}
+          value={
+            <div className="animate-pulse">
+              {numeral(stats.liveUnique).format("0.[0]a")}
+            </div>
+          }
           title="Online now"
           delta={null}
         />

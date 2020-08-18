@@ -1,9 +1,12 @@
 import _ from "lodash";
+import { ReactNode } from "react";
 
 interface TableProps {
+  showImages?: boolean;
   data: {
     key: string;
     count: number;
+    image?: ReactNode;
   }[];
 }
 
@@ -19,7 +22,7 @@ const Bar = ({ percentage }: { percentage: number }) => (
   </div>
 );
 
-export const Table = ({ data }: TableProps) => {
+export const Table = ({ showImages = false, data }: TableProps) => {
   if (data.length === 0) {
     return null;
   }
@@ -31,6 +34,7 @@ export const Table = ({ data }: TableProps) => {
       <tbody>
         {data?.map((item) => (
           <tr key={item.key} className="border-t-2">
+            {showImages && <td className="w-8 h-8 p-1">{item.image}</td>}
             <td className="px-4 text-xs font-mono py-1 truncate">
               {item.key || "none"}
               <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />

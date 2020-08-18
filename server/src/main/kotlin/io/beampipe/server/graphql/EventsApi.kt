@@ -35,6 +35,7 @@ class EventsApi {
 
     data class Bucket(val time: Instant, val count: Long)
     data class Count(val key: String?, val count: Long)
+    data class Source(val referrer: String?, val source: String?, val count: Long)
 
     data class Event(
             val type: String,
@@ -107,7 +108,15 @@ class EventsApi {
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
-        suspend fun topSources(n: Int?) = topBy(Events.sourceClean, n)
+        suspend fun topSources(n: Int?) = newSuspendedTransaction {
+            Events.slice(Events.referrerClean, Events.sourceClean, Events.id.count())
+                    .select { preselect() }
+                    .groupBy(Events.referrerClean, Events.sourceClean)
+                    .having { Events.id.count().greaterEq(1L) }
+                    .orderBy(Events.id.count(), SortOrder.DESC)
+                    .limit(n ?: 10)
+                    .map { Source(it[Events.referrerClean], it[Events.sourceClean], it[Events.id.count()]) }
+        }
 
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
