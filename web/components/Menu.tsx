@@ -69,7 +69,7 @@ export const Menu: React.FunctionComponent<{
         <div
           className={`origin-top-right absolute ${
             align == "left" ? "left-0" : "right-0"
-          } mt-2 rounded-md shadow-lg`}
+          } mt-2 rounded-md shadow-lg z-40`}
           style={{ minWidth: "14rem" }}
         >
           <div

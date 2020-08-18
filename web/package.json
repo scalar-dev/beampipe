@@ -19,6 +19,7 @@
     "graphql": "^15.3.0",
     "graphql-tag": "^2.10.4",
     "isomorphic-unfetch": "^3.0.0",
+    "litepicker": "^1.5.7",
     "lodash": "^4.17.19",
     "next": "9.5.2",
     "next-urql": "1.1.0",
