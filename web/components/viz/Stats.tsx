@@ -8,6 +8,10 @@ const PercentageChange: React.FunctionComponent<{
   current: number;
   previous: number;
 }> = ({ current, previous }) => {
+  if (previous == null) {
+    return null;
+  }
+
   const change = previous > 0 ? (current - previous) / previous : 0;
 
   return (
@@ -38,7 +42,9 @@ export const StatsCounter = ({
       {title}
     </div>
     <div className="text-3xl font-bold text-gray-800">{value}</div>
-    {delta && <div className="text-gray-800 font-bold whitespace-no-wrap">{delta}</div>}
+    {delta && (
+      <div className="text-gray-800 font-bold whitespace-no-wrap">{delta}</div>
+    )}
   </div>
 );
 
