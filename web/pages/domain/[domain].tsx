@@ -280,7 +280,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                   count: source.count,
                   image: source.referrer && (
                     <img
-                      className="inline h-full w-full"
+                      className="inline h-4 w-4"
                       src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
                     />
                   ),
