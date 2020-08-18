@@ -14,120 +14,75 @@ import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../../utils/auth";
-import { Menu, MenuSection, MenuItem } from "../../components/Menu";
-import { Tick } from "../../components/marketing/Tick";
-import { Domain } from "../../interfaces";
-import { Stats } from "../../components/viz/Stats";
+import { Stats, StatsCounter } from "../../components/viz/Stats";
+import { Spinner } from "../../components/Spinner";
+import numeral from "numeral";
+import { DomainPicker } from "../../components/viz/DomainPicker";
+import { TimePicker } from "../../components/viz/TimePicker";
 
 const cardHeight = "27rem";
 
-const timePeriods = ["hour", "day", "week", "month"];
-
-const displayTimePeriod = (timePeriod: string) => {
-  if (timePeriod == "hour") return "Last hour";
-  else if (timePeriod == "day") return "Last 24 hours";
-  else if (timePeriod == "week") return "Last 7 days";
-  else if (timePeriod == "month") return "Last 28 days";
-};
-
-const DomainPicker = ({}) => {
-  const router = useRouter();
-
-  const [query] = useQuery<{ domains: Domain[] }>({
-    query: gql`
-      query domains {
-        domains {
-          id
-          domain
-          hasData
-        }
-      }
-    `,
-  });
-
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <Menu
-      value={router.query.domain}
-      visible={visible}
-      setVisible={setVisible}
-      align="left"
-      classNames="w-40 md:w-auto"
-    >
-      <MenuSection>
-        {query.data?.domains.map((item) => (
-          <MenuItem
-            key={item.domain}
-            onClick={() => {
-              router.push(
-                "/domain/[domain]",
-                `/domain/${encodeURIComponent(item.domain)}`,
-                {
-                  shallow: true,
-                }
-              );
-              setVisible(false);
-            }}
-          >
-            <div className="w-8">
-              {router.query.domain === item.domain && <Tick />}
-            </div>
-            {item.domain}
-          </MenuItem>
-        ))}
-      </MenuSection>
-    </Menu>
-  );
-};
-
-const TimePicker = ({
-  timePeriod,
-  setTimePeriod,
+const TopBar = ({
+  domain,
+  stats,
+  liveStats,
 }: {
-  timePeriod: string;
-  setTimePeriod: (timePeriod: string) => void;
-}) => {
-  const [visible, setVisible] = useState(false);
+  domain: string;
+  stats: any;
+  liveStats: any;
+}) => (
+  <Card classNames="w-full">
+    <div className="flex flex-row flex-wrap flex-1">
+      <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
+        {domain}
+      </div>
+      <div className="flex flex-row flex-1 md:flex-none">
+        <StatsCounter
+          value={
+            liveStats.data ? (
+              <div className="animate-pulse">
+                {numeral(liveStats.data.liveUnique).format("0.[0]a")}
+              </div>
+            ) : (
+              <Spinner />
+            )
+          }
+          title="Online now"
+          delta={null}
+        />
+        <Stats stats={stats.data?.events} />
+      </div>
+    </div>
+  </Card>
+);
 
-  return (
-    <Menu
-      value={displayTimePeriod(timePeriod)}
-      visible={visible}
-      setVisible={setVisible}
-      align="right"
-      classNames="w-40 md:w-auto"
+const Chart = ({ stats, timePeriod }: { stats: any; timePeriod: string }) => (
+  <Card classNames="w-full" style={{ height: "22rem" }}>
+    <NonIdealState
+      isLoading={stats.fetching}
+      isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}
     >
-      {/* <MenuSection>
-        <MenuItem>
-          <div className="w-8"></div>
-          Real time
-        </MenuItem>
-        <MenuDivider />
-      </MenuSection> */}
-      <MenuSection>
-        {timePeriods.map((tp) => (
-          <MenuItem
-            key={tp}
-            onClick={() => {
-              setTimePeriod(tp);
-              setVisible(false);
-            }}
-          >
-            <div className="w-8">{timePeriod === tp && <Tick />}</div>
-            {displayTimePeriod(tp)}
-          </MenuItem>
-        ))}
-      </MenuSection>
-    </Menu>
-  );
-};
+      <LineChart
+        data={[
+          {
+            data: stats.data?.events?.bucketed,
+            type: "line",
+            label: "Page views",
+          },
+          {
+            data: stats.data?.events?.bucketedUnique,
+            type: "bar",
+            backgroundColor: "rgba(203, 213, 224, 0.5)",
+            label: "Unique visitors",
+          },
+        ]}
+        timePeriod={timePeriod}
+      />
+    </NonIdealState>
+  </Card>
+);
 
-const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
-  const [timePeriod, setTimePeriod] = useState("day");
-
-  const [stats] = useQuery({
-    query: gql`
+const query = gql`
       query stats(
         $domain: String!
         $bucketDuration: String!
@@ -186,7 +141,6 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             count
           }
 
-          liveUnique
           countUnique
           previousCountUnique
           count
@@ -195,12 +149,30 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           previousBounceCount
         }
       }
-    `,
+    `;
+
+const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
+  const [timePeriod, setTimePeriod] = useState("day");
+
+  const [stats] = useQuery({
+    query,
     variables: {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
       uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
       timePeriodStart: timePeriod,
+    },
+  });
+
+  const [liveStats] = useQuery({
+    query: gql`
+      query stats($domain: String!) {
+        liveUnique(domain: $domain)
+      }
+    `,
+    pollInterval: 5000,
+    variables: {
+      domain,
     },
   });
 
@@ -217,41 +189,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </div>
       </div>
       <div className="flex flex-row flex-wrap">
-        <Card classNames="w-full">
-          <div className="flex flex-row flex-wrap flex-1">
-            <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
-              {domain}
-            </div>
-            <div className="flex flex-row flex-1 md:flex-none">
-              <Stats stats={stats.data?.events} />
-            </div>
-          </div>
-        </Card>
-        <Card classNames="w-full" style={{ height: "22rem" }}>
-          <NonIdealState
-            isLoading={stats.fetching}
-            isIdeal={
-              !_.every(stats.data?.events?.bucketed, (x) => x.count === 0)
-            }
-          >
-            <LineChart
-              data={[
-                {
-                  data: stats.data?.events?.bucketed,
-                  type: "line",
-                  label: "Page views",
-                },
-                {
-                  data: stats.data?.events?.bucketedUnique,
-                  type: "bar",
-                  backgroundColor: "rgba(203, 213, 224, 0.5)",
-                  label: "Unique visitors",
-                },
-              ]}
-              timePeriod={timePeriod}
-            />
-          </NonIdealState>
-        </Card>
+        <TopBar stats={stats} liveStats={liveStats} domain={domain} />
+        <Chart stats={stats} timePeriod={timePeriod} />
 
         <Card
           classNames="w-full md:w-1/2 md:pr-4"
