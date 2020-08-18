@@ -1,0 +1,1 @@
+import "fontsource-inter/800.css";
