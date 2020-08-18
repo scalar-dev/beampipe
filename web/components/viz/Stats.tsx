@@ -24,7 +24,7 @@ const PercentageChange: React.FunctionComponent<{
   );
 };
 
-const StatsCounter = ({
+export const StatsCounter = ({
   value,
   title,
   delta,
@@ -59,17 +59,6 @@ export const Stats = ({ stats }: { stats?: any }) => {
 
   return (
     <>
-      {stats.liveUnique !== undefined && (
-        <StatsCounter
-          value={
-            <div className="animate-pulse">
-              {numeral(stats.liveUnique).format("0.[0]a")}
-            </div>
-          }
-          title="Online now"
-          delta={null}
-        />
-      )}
       <StatsCounter
         value={numeral(stats.count).format("0.[0]a")}
         title="Views"
