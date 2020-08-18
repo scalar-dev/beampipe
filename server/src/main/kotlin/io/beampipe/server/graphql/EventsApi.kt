@@ -94,8 +94,8 @@ class EventsApi {
             private val comparisonStartTime: Instant?
     ) {
         private fun preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
-                Events.time.greaterEq(startTime) and
-                Events.time.less(endTime)
+                Events.time.greaterEq(periodStartTime) and
+                Events.time.less(periodEndTime)
 
         suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
            val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
