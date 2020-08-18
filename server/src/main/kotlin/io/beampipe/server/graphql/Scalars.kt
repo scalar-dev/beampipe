@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.UUID
 import java.util.stream.Collectors
+import kotlin.reflect.jvm.internal.impl.resolve.constants.LongValue
 
 object Scalars {
     val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss Z yyyy")
@@ -79,16 +80,16 @@ object Scalars {
             .description("DataTime scalar")
             .coercing(object : Coercing<Instant, String> {
                 override fun serialize(input: Any): String {
-                    return objectMapper.writeValueAsString(input)
+                    return DateTimeFormatter.ISO_INSTANT.format(input as Instant)
                 }
 
                 override fun parseValue(input: Any): Instant {
-                    return objectMapper.readValue<Instant>(input as String)
+                    return Instant.parse(input.toString())
                 }
 
                 override fun parseLiteral(input: Any): Instant? {
                     return if (input is StringValue) {
-                        objectMapper.readValue<Instant>(input as String)
+                        return Instant.parse(input.value)
                     } else {
                         null
                     }
