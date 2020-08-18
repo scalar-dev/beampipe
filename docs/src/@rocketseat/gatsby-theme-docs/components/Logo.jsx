@@ -12,6 +12,12 @@ const Container = styled.div`
   flex-direction: row;
 `;
 
+const Subtitle = styled.div`
+  font-size: 0.8rem;
+  color: #a0aec0;
+  text-transform: uppercase;
+`;
+
 export default () => (
   <Container>
     <div>
@@ -23,6 +29,8 @@ export default () => (
         icon={faAsterisk}
       />
     </div>
-    <div>beampipe</div>
+    <div>
+      beampipe <Subtitle>docs</Subtitle>
+    </div>
   </Container>
 );
