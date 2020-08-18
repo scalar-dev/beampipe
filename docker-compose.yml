@@ -4,7 +4,6 @@ services:
     container_name: postgres
     restart: always
     image: timescale/timescaledb:latest-pg12
-    env_file: .env
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
