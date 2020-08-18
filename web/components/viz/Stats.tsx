@@ -24,12 +24,12 @@ const PercentageChange: React.FunctionComponent<{
   );
 };
 
-const StatsCounter = ({
+export const StatsCounter = ({
   value,
   title,
   delta,
 }: {
-  value: string;
+  value: React.ReactNode;
   title: string;
   delta: JSX.Element | null;
 }) => (
@@ -59,13 +59,6 @@ export const Stats = ({ stats }: { stats?: any }) => {
 
   return (
     <>
-      {stats.liveUnique !== undefined && (
-        <StatsCounter
-          value={numeral(stats.liveUnique).format("0.[0]a")}
-          title="Online now"
-          delta={null}
-        />
-      )}
       <StatsCounter
         value={numeral(stats.count).format("0.[0]a")}
         title="Views"

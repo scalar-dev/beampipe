@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.QueryAlias
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
@@ -25,6 +26,7 @@ import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,6 +37,7 @@ class EventsApi {
 
     data class Bucket(val time: Instant, val count: Long)
     data class Count(val key: String?, val count: Long)
+    data class Source(val referrer: String?, val source: String?, val count: Long)
 
     data class Event(
             val type: String,
@@ -43,6 +46,20 @@ class EventsApi {
             val city: String?,
             val country: String?
     )
+
+    private fun matchingDomain(userId: UUID?, domain: String) =
+        Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                .select {
+                    Domains.domain.eq(domain) and (
+                            if (userId != null) {
+                                Domains.public or Accounts.id.eq(userId)
+                            } else {
+                                Domains.public
+                            }
+                            )
+                }
+                .firstOrNull()
+                ?: throw CustomException("Domain not found")
 
     data class EventsQuery(
             private val domain: String,
@@ -107,7 +124,15 @@ class EventsApi {
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
-        suspend fun topSources(n: Int?) = topBy(Events.sourceClean, n)
+        suspend fun topSources(n: Int?) = newSuspendedTransaction {
+            Events.slice(Events.referrerClean, Events.sourceClean, Events.id.count())
+                    .select { preselect() }
+                    .groupBy(Events.referrerClean, Events.sourceClean)
+                    .having { Events.id.count().greaterEq(1L) }
+                    .orderBy(Events.id.count(), SortOrder.DESC)
+                    .limit(n ?: 10)
+                    .map { Source(it[Events.referrerClean], it[Events.sourceClean], it[Events.id.count()]) }
+        }
 
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
@@ -129,16 +154,7 @@ class EventsApi {
                     .count()
         }
 
-        suspend fun liveUnique() = newSuspendedTransaction {
-            Events
-                    .slice(Events.userId)
-                    .select {
-                        Events.domain.eq(domain) and
-                                Events.time.greaterEq(Instant.now().minus(5, ChronoUnit.MINUTES))
-                    }
-                    .withDistinct()
-                    .count()
-        }
+
 
         suspend fun previousCountUnique() = newSuspendedTransaction {
             Events
@@ -182,26 +198,26 @@ class EventsApi {
         else -> throw Exception("Invalid time period")
     }
 
+
+    suspend fun liveUnique(context: Context, domain: String) = newSuspendedTransaction {
+        val userId = userApi.user(context)?.id
+        matchingDomain(userId, domain)
+
+        Events
+                .slice(Events.userId)
+                .select {
+                    Events.domain.eq(domain) and
+                            Events.time.greaterEq(Instant.now().minus(5, ChronoUnit.MINUTES))
+                }
+                .withDistinct()
+                .count()
+    }
+
     suspend fun events(context: Context, domain: String, timePeriodStart: String?): EventsQuery = newSuspendedTransaction {
         val userId = userApi.user(context)?.id
+        matchingDomain(userId, domain)
 
-        val matchingDomain = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                .select {
-                    Domains.domain.eq(domain) and (
-                            if (userId != null) {
-                                Domains.public or Accounts.id.eq(userId)
-                            } else {
-                                Domains.public
-                            }
-                            )
-                }
-                .firstOrNull()
-
-        if (matchingDomain != null) {
-            val startTime = timePeriodToStartTime(Instant.now(), timePeriodStart)
-            EventsQuery(domain, startTime, timePeriodToStartTime(startTime, timePeriodStart), Instant.now())
-        } else {
-            throw Exception("Not found")
-        }
+        val startTime = timePeriodToStartTime(Instant.now(), timePeriodStart)
+        EventsQuery(domain, startTime, timePeriodToStartTime(startTime, timePeriodStart), Instant.now())
     }
 }
