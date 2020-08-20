@@ -2,8 +2,8 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
-import { useState, useContext } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { useState } from "react";
+import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
@@ -13,7 +13,7 @@ import {
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
-import { AuthProvider, UserContext } from "../../utils/auth";
+import { AuthProvider } from "../../utils/auth";
 import { Stats, StatsCounter } from "../../components/viz/Stats";
 import { Spinner } from "../../components/Spinner";
 import numeral from "numeral";
@@ -184,13 +184,15 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     },
   });
 
-  const user = useContext(UserContext);
-
   return (
     <div className="container mx-auto flex flex-col">
       <div className="py-2">
         <div className="flex flex-row max-w-full">
-          <div className="flex-1">{user && <DomainPicker />}</div>
+          <div className="flex-1">
+            <IfUserLoggedIn>
+              <DomainPicker />
+            </IfUserLoggedIn>
+          </div>
           <div>
             <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
           </div>
