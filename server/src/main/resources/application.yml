@@ -23,12 +23,10 @@ micronaut:
     oauth2:
       clients:
         github:
-          client-id:  '${GITHUB_CLIENT_ID:Iv1.c513f06b5e8a3c39}'
-          client-secret: '${GITHUB_CLIENT_SECRET:0e7051d02a98faf13911ffe532fdf67befe0f410}'
+          client-id:  '${GITHUB_CLIENT_ID:0eec0eaa4d9e88d6a91c}'
+          client-secret: '${GITHUB_CLIENT_SECRET:ae4f7127e074e953a50b0aedb578ad908e5dfe15}'
           scopes:
             - user:email
-            - read:user
-            - public_repo
           authorization:
             url: 'https://github.com/login/oauth/authorize'
           token:
