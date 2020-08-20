@@ -65,14 +65,14 @@ const SocialButtons = () => (
   </div>
 );
 
-const IfUserLoaded: React.FunctionComponent = ({ children }) => {
+export const IfUserLoggedIn: React.FunctionComponent = ({ children }) => {
   const user = useContext(UserContext);
+  return user.user ? <>{children}</> : null;
+};
 
-  if (user.loading) {
-    return null;
-  }
-
-  return <>{children}</>;
+export const IfAnonymous: React.FunctionComponent = ({ children }) => {
+  const user = useContext(UserContext);
+  return user.user ? null : <>{children}</>;
 };
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
@@ -127,7 +127,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             >
               <div className="lg:flex-grow flex">
                 <div>
-                  <IfUserLoaded>
+                  <IfUserLoggedIn>
                     <Link href="/app" passHref>
                       <NavLink
                         onClick={() => setMenuVisible((visible) => !visible)}
@@ -135,7 +135,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                         Dashboard
                       </NavLink>
                     </Link>
-                  </IfUserLoaded>
+                  </IfUserLoggedIn>
                 </div>
 
                 <div>
@@ -159,35 +159,30 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                <IfUserLoaded>
-                  {user.user ? (
-                    <div className="p-4 lg:p-0">
-                      <Avatar user={user.user} />
-                    </div>
-                  ) : (
-                    <>
-                      <Link href="/sign-in" passHref>
-                        <NavLink
-                          onClick={() => setMenuVisible((visible) => !visible)}
-                        >
-                          Login
-                        </NavLink>
-                      </Link>
-                      <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                        <Link href="/sign-up" passHref>
-                          <AnchorButton
-                            className="mr-2"
-                            onClick={() =>
-                              setMenuVisible((visible) => !visible)
-                            }
-                          >
-                            Sign up
-                          </AnchorButton>
-                        </Link>
-                      </div>
-                    </>
-                  )}
-                </IfUserLoaded>
+                <IfUserLoggedIn>
+                  <div className="p-4 lg:p-0">
+                    <Avatar user={user.user!!} />
+                  </div>
+                </IfUserLoggedIn>
+                <IfAnonymous>
+                  <Link href="/sign-in" passHref>
+                    <NavLink
+                      onClick={() => setMenuVisible((visible) => !visible)}
+                    >
+                      Login
+                    </NavLink>
+                  </Link>
+                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                    <Link href="/sign-up" passHref>
+                      <AnchorButton
+                        className="mr-2"
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Sign up
+                      </AnchorButton>
+                    </Link>
+                  </div>
+                </IfAnonymous>
               </div>
               <SocialButtons />
             </div>

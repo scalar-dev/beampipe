@@ -4,6 +4,13 @@ describe("The Home Page", () => {
     cy.screenshot();
   });
 
+  it("shows the right things", () => {
+    cy.visit("http://localhost:3000");
+    cy.contains("button", "Sign up free").should("exist");
+    cy.contains("a", "Dashboard").should("not.exist");
+    cy.contains("button", "Go to app").should("not.exist");
+  });
+
   it("can click signup", () => {
     cy.visit("http://localhost:3000");
     const signUpButton = cy.contains("button", "Sign up free");
