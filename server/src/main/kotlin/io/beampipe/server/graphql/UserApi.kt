@@ -9,18 +9,22 @@ import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.security.MessageDigest
 import java.util.UUID
 import javax.inject.Singleton
 
 @Singleton
 class UserApi {
-    data class User(val email: String?, val id: UUID)
+    data class User(val id: UUID, val email: String?, val name: String?)
     data class UserSettings(val email: String?, val subscription: String)
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
     fun user(context: Context) = if (context.authentication != null) {
-        User(context.authentication.attributes["email"] as String?,
-                UUID.fromString(context.authentication.attributes["accountId"] as String))
+        User(
+                UUID.fromString(context.authentication.attributes["accountId"] as String),
+                context.authentication.attributes["email"] as String?,
+                context.authentication.attributes["name"] as String?
+        )
     } else {
         null
     }

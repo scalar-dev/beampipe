@@ -18,27 +18,32 @@ class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUse
     override fun createUserDetails(tokenResponse: TokenResponse): Publisher<UserDetails> {
         return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)!!
                 .map { login ->
-                    val accountId = transaction {
+                    val account = transaction {
                         val existingUser = Accounts
                                 .slice(Accounts.id)
                                 .select { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
                                 .firstOrNull()
 
-                        if (existingUser == null) {
+                        val accountId = if (existingUser == null) {
                             Accounts.insertAndGetId {
                                 it[githubUserId] = login.id.toString()
+                                it[email] = login.email
                             }
                         } else {
                             existingUser[Accounts.id]
                         }
+
+                        Accounts.select { Accounts.id.eq(accountId) }
+                                .firstOrNull()!!
                     }
                     UserDetails(
-                            login.name,
+                            account[Accounts.id].toString(),
                             listOf(ROLE_GITHUB),
                             mapOf(
                                     OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
-                                    "accountId" to accountId.toString(),
-                                    "email" to login.email
+                                    "accountId" to account[Accounts.id].toString(),
+                                    "email" to account[Accounts.email],
+                                    "name" to account[Accounts.name]
                             )
                     )
                 }

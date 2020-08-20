@@ -22,7 +22,7 @@ class UsernamePasswordAuthenticationProvider: AuthenticationProvider {
         return Flowable.fromFuture(
                 GlobalScope.future {
                     val account = newSuspendedTransaction {
-                        Accounts.slice(Accounts.email, Accounts.id, Accounts.salt, Accounts.password)
+                        Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
                                 .select { Accounts.email.eq(authenticationRequest!!.identity as String) }
                                 .firstOrNull()
                     }
@@ -35,7 +35,15 @@ class UsernamePasswordAuthenticationProvider: AuthenticationProvider {
                         val hash = hashPassword(authenticationRequest!!.secret as String, salt)
 
                         if (hash == account[Accounts.password]) {
-                            UserDetails(account[Accounts.email], emptyList(), mapOf("accountId" to account[Accounts.id].value.toString()))
+                            UserDetails(
+                                    account[Accounts.id].value.toString(),
+                                    emptyList(),
+                                    mapOf(
+                                            "accountId" to account[Accounts.id].value.toString(),
+                                            "name" to account[Accounts.name],
+                                            "email" to account[Accounts.email]
+                                    )
+                            )
                         } else {
                             AuthenticationFailed()
                         }

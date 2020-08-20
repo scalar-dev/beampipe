@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
 import { useState, useContext } from "react";
-import { Layout } from "../../components/Layout";
+import { Layout } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
