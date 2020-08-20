@@ -24,10 +24,14 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         working-directory: ./integration
-    - name: Archive production artifacts
+    - name: Archive videos
       uses: actions/upload-artifact@v2
       with:
-        name: dist-without-markdown
-        path: |
-            integration/cypress/videos
-            integration/cypress/screenshots
+        name: videos
+        path: integration/cypress/videos
+    - name: Archive screenshots
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: integration/cypress/screenshots
+    
