@@ -57,7 +57,7 @@ export const secured = async (ctx: NextUrqlPageContext) => {
   const userData = await client.query(userQuery).toPromise();
   const user = getUser(userData.data);
 
-  if (!user) {
+  if (!user.user) {
     if (ctx && ctx.req) {
       ctx?.res?.writeHead(302, { Location: `/sign-in` });
       ctx?.res?.end();
