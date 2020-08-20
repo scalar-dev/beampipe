@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@cypress/browserify-preprocessor": "^3.0.1",
+    "cypress": "^5.0.0",
+    "tsify": "^5.0.1",
+    "typescript": "^3.9.7"
+  }
+}
