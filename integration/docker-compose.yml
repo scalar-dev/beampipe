@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  postgres:
+    container_name: beampipe-postgres-integration
+    restart: always
+    image: timescale/timescaledb:latest-pg12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+  server:
+    container_name: beampipe-server-integration
+    restart: always
+    image: beampipe-server:integration
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on: 
+      - postgres
+  web:
+    container_name: beampipe-web-integration
+    restart: always
+    image: beampipe-web:integration
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND_HOST: server
+    depends_on: 
+      - server
+    
+
+
+
+
