@@ -67,21 +67,11 @@ const SocialButtons = () => (
 
 export const IfUserLoggedIn: React.FunctionComponent = ({ children }) => {
   const user = useContext(UserContext);
-
-  if (user.loading) {
-    return null;
-  }
-
   return user.user ? <>{children}</> : null;
 };
 
 export const IfAnonymous: React.FunctionComponent = ({ children }) => {
   const user = useContext(UserContext);
-
-  if (user.loading) {
-    return null;
-  }
-
   return user.user ? null : <>{children}</>;
 };
 
