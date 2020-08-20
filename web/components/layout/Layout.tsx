@@ -65,7 +65,7 @@ const SocialButtons = () => (
   </div>
 );
 
-const TopRightContainer: React.FunctionComponent = ({ children }) => {
+const IfUserLoaded: React.FunctionComponent = ({ children }) => {
   const user = useContext(UserContext);
 
   if (user.loading) {
@@ -127,7 +127,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             >
               <div className="lg:flex-grow flex">
                 <div>
-                  {user && (
+                  <IfUserLoaded>
                     <Link href="/app" passHref>
                       <NavLink
                         onClick={() => setMenuVisible((visible) => !visible)}
@@ -135,7 +135,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                         Dashboard
                       </NavLink>
                     </Link>
-                  )}
+                  </IfUserLoaded>
                 </div>
 
                 <div>
@@ -159,7 +159,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                <TopRightContainer>
+                <IfUserLoaded>
                   {user.user ? (
                     <div className="p-4 lg:p-0">
                       <Avatar user={user.user} />
@@ -187,7 +187,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                       </div>
                     </>
                   )}
-                </TopRightContainer>
+                </IfUserLoaded>
               </div>
               <SocialButtons />
             </div>
