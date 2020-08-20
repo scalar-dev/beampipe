@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../utils/auth";
@@ -40,7 +40,7 @@ export const Hero = () => {
             analytics. <b>free</b> for upto 10k monthly page views.
           </p>
 
-          {user?.loggedIn ? (
+          {user.user ? (
             <Link href="/app">
               <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
                 Go to app

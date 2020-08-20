@@ -4,39 +4,60 @@ import { NextUrqlPageContext } from "next-urql";
 import { useQuery } from "urql";
 import Router from "next/router";
 
-interface User {
+interface UserContext {
+  loading: boolean;
+  user: User | null;
+}
+
+export interface User {
+  id: string;
   name?: string;
-  loggedIn: boolean;
+  email?: string;
 }
 
 const userQuery = gql`
   query user {
     user {
+      id
+      name
       email
     }
   }
 `;
 
-export const UserContext = createContext<User | null>(null);
+const getUser = (data: any, loading: boolean = false) =>
+  data?.user
+    ? {
+        user: {
+          name: data.user.name,
+          email: data.user.email,
+          id: data.user.id,
+        },
+        loading: false,
+      }
+    : { user: null, loading };
+
+export const UserContext = createContext<UserContext>({
+  user: null,
+  loading: true,
+});
 
 export const AuthProvider: React.FunctionComponent<{}> = ({ children }) => {
   const [query] = useQuery({ query: userQuery });
 
-  const user = query.data?.user
-    ? {
-        name: query.data?.user?.email,
-        loggedIn: query.data && query.data.user !== null,
-      }
-    : null;
-
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={getUser(query.data, query.fetching)}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const secured = async (ctx: NextUrqlPageContext) => {
   const client = ctx.urqlClient;
-  const user = await client.query(userQuery).toPromise();
+  const userData = await client.query(userQuery).toPromise();
+  const user = getUser(userData.data);
 
-  if (!user.data.user) {
+  if (!user.user) {
     if (ctx && ctx.req) {
       ctx?.res?.writeHead(302, { Location: `/sign-in` });
       ctx?.res?.end();
@@ -45,10 +66,5 @@ export const secured = async (ctx: NextUrqlPageContext) => {
     }
   }
 
-  return {
-    user: {
-      name: user.data?.user?.email,
-      loggedIn: true,
-    },
-  };
+  return { user };
 };

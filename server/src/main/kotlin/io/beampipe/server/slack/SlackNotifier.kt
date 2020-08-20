@@ -56,7 +56,7 @@ class SlackNotifier {
                                 "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
                                         it[SlackSubscriptions.channelId],
                                         it[SlackSubscriptions.teamId],
-                                        it[Accounts.slackToken]
+                                        it[Accounts.slackToken]!!
                                 )
                             }
                             .toMap()
