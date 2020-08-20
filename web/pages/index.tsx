@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { Layout, IfUserLoggedIn, IfAnonymous } from "../components/layout/Layout";
+import {
+  Layout,
+  IfUserLoggedIn,
+  IfAnonymous,
+} from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
-import { AuthProvider, UserContext } from "../utils/auth";
-import { useContext } from "react";
+import { AuthProvider } from "../utils/auth";
 import { Tick } from "../components/marketing/Tick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,8 +29,6 @@ import {
 import { Laptop } from "../components/marketing/Laptop";
 
 export const Hero = () => {
-  const user = useContext(UserContext);
-
   return (
     <div className="py-12 bg-green-600 text-white text-center">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
@@ -60,7 +61,6 @@ export const Hero = () => {
               </Link>
             </div>
           </IfAnonymous>
-          )}
         </div>
       </div>
     </div>
