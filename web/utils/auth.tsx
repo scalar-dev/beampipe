@@ -4,8 +4,13 @@ import { NextUrqlPageContext } from "next-urql";
 import { useQuery } from "urql";
 import Router from "next/router";
 
+interface UserContext {
+  loading: boolean;
+  user: User | null;
+}
+
 export interface User {
-  id?: string;
+  id: string;
   name?: string;
   email?: string;
 }
@@ -20,22 +25,28 @@ const userQuery = gql`
   }
 `;
 
-const getUser = (data?: any) =>
+const getUser = (data: any, loading: boolean = false) =>
   data?.user
     ? {
-        name: data.user.name,
-        email: data.user.email,
-        id: data.user.id,
+        user: {
+          name: data.user.name,
+          email: data.user.email,
+          id: data.user.id,
+        },
+        loading: false,
       }
-    : null;
+    : { user: null, loading };
 
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<UserContext>({
+  user: null,
+  loading: true,
+});
 
 export const AuthProvider: React.FunctionComponent<{}> = ({ children }) => {
   const [query] = useQuery({ query: userQuery });
 
   return (
-    <UserContext.Provider value={getUser(query.data)}>
+    <UserContext.Provider value={getUser(query.data, query.fetching)}>
       {children}
     </UserContext.Provider>
   );

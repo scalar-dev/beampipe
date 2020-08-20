@@ -6,24 +6,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserContext } from "../../utils/auth";
 import { AnchorButton } from "../Buttons";
 import { Avatar } from "./Avatar";
-import { faGithub, faTwitter, faProductHunt } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faTwitter,
+  faProductHunt,
+} from "@fortawesome/free-brands-svg-icons";
 
 interface LayoutProps {
   title: string;
 }
 
-interface NavLinkProps extends React.DetailedHTMLProps<
+interface NavLinkProps
+  extends React.DetailedHTMLProps<
     React.AnchorHTMLAttributes<HTMLAnchorElement>,
     HTMLAnchorElement
-  > {
-  }
-
+  > {}
 
 const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
   ({ children, className, ...otherProps }, ref) => (
     <a
       ref={ref}
-      className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${className || ""}`}
+      className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${
+        className || ""
+      }`}
       {...otherProps}
     >
       {children}
@@ -55,14 +60,20 @@ const SocialButtons = () => (
       className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://github.com/beampipe"
     >
-      <FontAwesomeIcon
-        size="lg"
-        className="fill-current"
-        icon={faGithub}
-      />
+      <FontAwesomeIcon size="lg" className="fill-current" icon={faGithub} />
     </a>
   </div>
 );
+
+const TopRightContainer: React.FunctionComponent = ({ children }) => {
+  const user = useContext(UserContext);
+
+  if (user.loading) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   const user = useContext(UserContext);
@@ -148,31 +159,35 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                {user ? (
-                  <div className="p-4 lg:p-0">
-                    <Avatar user={user} />
-                  </div>
-                ) : (
-                  <>
-                    <Link href="/sign-in" passHref>
-                      <NavLink
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Login
-                      </NavLink>
-                    </Link>
-                    <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                      <Link href="/sign-up" passHref>
-                        <AnchorButton
-                          className="mr-2"
+                <TopRightContainer>
+                  {user.user ? (
+                    <div className="p-4 lg:p-0">
+                      <Avatar user={user.user} />
+                    </div>
+                  ) : (
+                    <>
+                      <Link href="/sign-in" passHref>
+                        <NavLink
                           onClick={() => setMenuVisible((visible) => !visible)}
                         >
-                          Sign up
-                        </AnchorButton>
+                          Login
+                        </NavLink>
                       </Link>
-                    </div>
-                  </>
-                )}
+                      <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                        <Link href="/sign-up" passHref>
+                          <AnchorButton
+                            className="mr-2"
+                            onClick={() =>
+                              setMenuVisible((visible) => !visible)
+                            }
+                          >
+                            Sign up
+                          </AnchorButton>
+                        </Link>
+                      </div>
+                    </>
+                  )}
+                </TopRightContainer>
               </div>
               <SocialButtons />
             </div>
