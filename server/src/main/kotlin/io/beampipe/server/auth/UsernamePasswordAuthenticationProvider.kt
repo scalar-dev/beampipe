@@ -22,7 +22,7 @@ class UsernamePasswordAuthenticationProvider: AuthenticationProvider {
         return Flowable.fromFuture(
                 GlobalScope.future {
                     val account = newSuspendedTransaction {
-                        Accounts.slice(Accounts.email, Accounts.id, Accounts.salt, Accounts.password)
+                        Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
                                 .select { Accounts.email.eq(authenticationRequest!!.identity as String) }
                                 .firstOrNull()
                     }
