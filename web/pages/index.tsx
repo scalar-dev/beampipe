@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Layout } from "../components/layout/Layout";
+import { Layout, IfUserLoggedIn, IfAnonymous } from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
 import { AuthProvider, UserContext } from "../utils/auth";
@@ -39,14 +39,14 @@ export const Hero = () => {
             beampipe offers <b>simple</b>, <b>privacy-focussed</b> web
             analytics. <b>free</b> for upto 10k monthly page views.
           </p>
-
-          {user.user ? (
+          <IfUserLoggedIn>
             <Link href="/app">
               <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
                 Go to app
               </button>
             </Link>
-          ) : (
+          </IfUserLoggedIn>
+          <IfAnonymous>
             <div className="flex flex-gap">
               <Link href="/sign-up">
                 <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
@@ -59,6 +59,7 @@ export const Hero = () => {
                 </button>
               </Link>
             </div>
+          </IfAnonymous>
           )}
         </div>
       </div>
