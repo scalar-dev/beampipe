@@ -8,13 +8,31 @@ export const timePeriodToBucket = (timePeriod: TimePeriod) => {
   else if (timePeriod.type === "hour") return "minute";
   else if (timePeriod.type === "week") return "day";
   else if (timePeriod.type === "month") return "week";
-  else return "day";
+  else if (timePeriod.type === "custom") {
+    const durationDays = timePeriod.endTime?.diff(timePeriod.startTime, "days");
+
+    if (durationDays!! <= 2) {
+      return "hour";
+    } else if (durationDays!! <= 7) {
+      return "day";
+    } else {
+      return "week";
+    }
+  }
 };
 
 export const timePeriodToFineBucket = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
   else if (timePeriod.type === "hour") return "minute";
-  else return "day";
+  else if (timePeriod.type === "custom") {
+    const durationDays = timePeriod.endTime?.diff(timePeriod.startTime, "days");
+
+    if (durationDays!! <= 2) {
+      return "hour";
+    } else {
+      return "day";
+    }
+  } else return "day";
 };
 
 export const LineChart = ({
