@@ -49,7 +49,7 @@ export const TimePicker = ({ timePeriod, setTimePeriod }: TimePickerProps) => {
       value={displayTimePeriod(timePeriod)}
       visible={visible}
       setVisible={setVisible}
-      align="right"
+      menuClassNames="right-0"
       classNames="w-40 md:w-auto"
     >
       <MenuSection>
