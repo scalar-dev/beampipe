@@ -1,5 +1,5 @@
 import { AuthProvider, secured } from "../utils/auth";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/layout/Layout";
 import { Button } from "../components/Buttons";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";

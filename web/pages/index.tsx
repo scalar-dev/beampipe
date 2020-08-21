@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { Layout } from "../components/Layout";
+import {
+  Layout,
+  IfUserLoggedIn,
+  IfAnonymous,
+} from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
-import { AuthProvider, UserContext } from "../utils/auth";
-import { useContext } from "react";
+import { AuthProvider } from "../utils/auth";
 import { Tick } from "../components/marketing/Tick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,8 +29,6 @@ import {
 import { Laptop } from "../components/marketing/Laptop";
 
 export const Hero = () => {
-  const user = useContext(UserContext);
-
   return (
     <div className="py-12 bg-green-600 text-white text-center">
       <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
@@ -39,27 +40,27 @@ export const Hero = () => {
             beampipe offers <b>simple</b>, <b>privacy-focussed</b> web
             analytics. <b>free</b> for upto 10k monthly page views.
           </p>
-
-          {user?.loggedIn ? (
+          <IfUserLoggedIn>
             <Link href="/app">
-              <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
+              <a className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
                 Go to app
-              </button>
+              </a>
             </Link>
-          ) : (
+          </IfUserLoggedIn>
+          <IfAnonymous>
             <div className="flex flex-gap">
               <Link href="/sign-up">
-                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
                   Sign up free
-                </button>
+                </a>
               </Link>
               <Link href="/domain/beampipe.io">
-                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
                   Live demo
-                </button>
+                </a>
               </Link>
             </div>
-          )}
+          </IfAnonymous>
         </div>
       </div>
     </div>

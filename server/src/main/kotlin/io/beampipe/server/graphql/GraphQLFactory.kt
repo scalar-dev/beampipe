@@ -2,8 +2,10 @@ package io.beampipe.server.graphql
 
 import com.expediagroup.graphql.SchemaGeneratorConfig
 import com.expediagroup.graphql.TopLevelObject
+import com.expediagroup.graphql.execution.SimpleKotlinDataFetcherFactoryProvider
 import com.expediagroup.graphql.hooks.SchemaGeneratorHooks
 import com.expediagroup.graphql.toSchema
+import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.GraphQLType
@@ -28,6 +30,9 @@ class GraphQLFactory {
     @Inject
     lateinit var accountApi: AccountApi
 
+    @Inject
+    lateinit var objectMapper: ObjectMapper
+
     @Bean
     @Singleton
     fun graphQL(): GraphQL {
@@ -42,7 +47,8 @@ class GraphQLFactory {
                         Map::class -> Scalars.json
                         else -> super.willGenerateGraphQLType(type)
                     }
-                }
+                },
+                dataFetcherFactoryProvider = SimpleKotlinDataFetcherFactoryProvider(objectMapper)
         )
 
         val queries = listOf(

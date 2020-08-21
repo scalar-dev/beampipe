@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
@@ -24,7 +24,7 @@ import { Stats } from "../components/viz/Stats";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
-  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
+  const html = `<script async defer src="https://beampipe.io/js/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
   const [hasCopied, setHasCopied] = useState(false);
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
@@ -76,7 +76,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
   const [query] = useQuery({
     query: gql`
       query stats($domain: String!) {
-        events(domain: $domain, timePeriodStart: "week") {
+        events(domain: $domain, timePeriod: { type: "week" }) {
           bucketed(bucketDuration: "day") {
             time
             count
@@ -116,7 +116,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
               data: query.data?.events?.bucketed,
             },
           ]}
-          timePeriod="week"
+          timePeriod={{ type: "week" }}
         />
       </div>
       <div className="flex flex-row flex-wrap pt-4">
