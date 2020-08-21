@@ -10,3 +10,8 @@
       link: '/custom-events'
     - label: 'Slack integration'
       link: '/slack-integration'
+
+- label: Links
+  items:
+  - label: 'Beampipe'
+    link: 'https://beampipe.io'
