@@ -8,7 +8,7 @@ class MyDocument extends Document {
             <script
               async
               defer
-              src="/tracker.js"
+              src="/js/tracker.js"
               data-beampipe-domain="beampipe.io"
             />
 
