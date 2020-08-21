@@ -14,7 +14,7 @@ export default function HTML(props) {
         <script
           async
           defer
-          src="https://beampipe.io/tracker.js"
+          src="https://beampipe.io/js/tracker.js"
           data-beampipe-domain="docs.beampipe.io"
         />
         {props.headComponents}
