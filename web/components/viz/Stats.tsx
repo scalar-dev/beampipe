@@ -7,21 +7,21 @@ import numeral from "numeral";
 const PercentageChange: React.FunctionComponent<{
   current: number;
   previous: number;
-  downIsBad?: boolean;
-}> = ({ current, previous, downIsBad = true }) => {
+  downIsGood?: boolean;
+}> = ({ current, previous, downIsGood = false }) => {
   if (previous == null) {
     return null;
   }
 
   const change = previous > 0 ? (current - previous) / previous : 0;
 
-  const color = downIsBad
+  const color = downIsGood
     ? change >= 0
-      ? "text-green-600"
-      : "text-red-600"
+      ? "text-red-600"
+      : "text-green-600"
     : change >= 0
-    ? "text-red-600"
-    : "text-green-600";
+    ? "text-green-600"
+    : "text-red-600";
 
   return (
     <div className="text-sm">
@@ -100,7 +100,7 @@ export const Stats = ({ stats }: { stats?: any }) => {
             <PercentageChange
               current={bounceRate}
               previous={prevBounceRate}
-              downIsBad={false}
+              downIsGood
             />
           ) : (
             <div className="text-sm">-</div>
