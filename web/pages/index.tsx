@@ -42,22 +42,22 @@ export const Hero = () => {
           </p>
           <IfUserLoggedIn>
             <Link href="/app">
-              <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
+              <a className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
                 Go to app
-              </button>
+              </a>
             </Link>
           </IfUserLoggedIn>
           <IfAnonymous>
             <div className="flex flex-gap">
               <Link href="/sign-up">
-                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
                   Sign up free
-                </button>
+                </a>
               </Link>
               <Link href="/domain/beampipe.io">
-                <button className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
+                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
                   Live demo
-                </button>
+                </a>
               </Link>
             </div>
           </IfAnonymous>

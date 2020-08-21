@@ -7,20 +7,27 @@ import numeral from "numeral";
 const PercentageChange: React.FunctionComponent<{
   current: number;
   previous: number;
-}> = ({ current, previous }) => {
+  downIsGood?: boolean;
+}> = ({ current, previous, downIsGood = false }) => {
   if (previous == null) {
     return null;
   }
 
   const change = previous > 0 ? (current - previous) / previous : 0;
 
+  const color = downIsGood
+    ? change >= 0
+      ? "text-red-600"
+      : "text-green-600"
+    : change >= 0
+    ? "text-green-600"
+    : "text-red-600";
+
   return (
     <div className="text-sm">
       <FontAwesomeIcon
         size="sm"
-        className={`fill-current w-4 h-4 mr-2 ${
-          change >= 0 ? "text-green-600" : "text-red-600"
-        }`}
+        className={`fill-current w-4 h-4 mr-2 ${color}`}
         icon={change >= 0 ? faArrowUp : faArrowDown}
       />
       {numeral(Math.abs(change)).format("0%")}
@@ -90,7 +97,11 @@ export const Stats = ({ stats }: { stats?: any }) => {
         title="Bounce Rate"
         delta={
           bounceRate && prevBounceRate ? (
-            <PercentageChange current={bounceRate} previous={prevBounceRate} />
+            <PercentageChange
+              current={bounceRate}
+              previous={prevBounceRate}
+              downIsGood
+            />
           ) : (
             <div className="text-sm">-</div>
           )
