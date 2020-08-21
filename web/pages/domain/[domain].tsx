@@ -2,8 +2,8 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import gql from "graphql-tag";
-import { useState, useContext } from "react";
-import { Layout } from "../../components/Layout";
+import { useState } from "react";
+import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
@@ -13,12 +13,12 @@ import {
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
-import { AuthProvider, UserContext } from "../../utils/auth";
+import { AuthProvider } from "../../utils/auth";
 import { Stats, StatsCounter } from "../../components/viz/Stats";
 import { Spinner } from "../../components/Spinner";
 import numeral from "numeral";
 import { DomainPicker } from "../../components/viz/DomainPicker";
-import { TimePicker } from "../../components/viz/TimePicker";
+import { TimePicker, TimePeriod } from "../../components/viz/TimePicker";
 
 const cardHeight = "27rem";
 
@@ -66,7 +66,13 @@ const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   </Card>
 );
 
-const Chart = ({ stats, timePeriod }: { stats: any; timePeriod: string }) => (
+const Chart = ({
+  stats,
+  timePeriod,
+}: {
+  stats: any;
+  timePeriod: TimePeriod;
+}) => (
   <Card classNames="w-full" style={{ height: "22rem" }}>
     <NonIdealState
       isLoading={stats.fetching}
@@ -97,9 +103,9 @@ const query = gql`
     $domain: String!
     $bucketDuration: String!
     $uniqueBucketDuration: String!
-    $timePeriodStart: String!
+    $timePeriod: TimePeriodInput!
   ) {
-    events(domain: $domain, timePeriodStart: $timePeriodStart) {
+    events(domain: $domain, timePeriod: $timePeriod) {
       bucketed(bucketDuration: $bucketDuration) {
         time
         count
@@ -162,7 +168,7 @@ const query = gql`
 `;
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
-  const [timePeriod, setTimePeriod] = useState("day");
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "day" });
 
   const [stats] = useQuery({
     query,
@@ -170,17 +176,23 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
       uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
-      timePeriodStart: timePeriod,
+      timePeriod: {
+        type: timePeriod.type,
+        startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
+        endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
+      },
     },
   });
-
-  const user = useContext(UserContext);
 
   return (
     <div className="container mx-auto flex flex-col">
       <div className="py-2">
         <div className="flex flex-row max-w-full">
-          <div className="flex-1">{user && <DomainPicker />}</div>
+          <div className="flex-1">
+            <IfUserLoggedIn>
+              <DomainPicker />
+            </IfUserLoggedIn>
+          </div>
           <div>
             <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
           </div>

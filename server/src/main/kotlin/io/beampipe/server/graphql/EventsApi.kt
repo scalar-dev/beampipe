@@ -4,12 +4,9 @@ import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.beampipe.server.db.util.TimeBucketGapFill
-import io.beampipe.server.db.util.distinctOn
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
-import org.jetbrains.exposed.sql.QueryAlias
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
@@ -21,7 +18,6 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
@@ -29,6 +25,15 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+
+
+fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?) = when (timePeriodStart ?: "day") {
+    "day" -> origin.minus(1, ChronoUnit.DAYS)
+    "hour" -> origin.minus(1, ChronoUnit.HOURS)
+    "week" -> origin.minus(7, ChronoUnit.DAYS)
+    "month" -> origin.minus(28, ChronoUnit.DAYS)
+    else -> throw Exception("Invalid time period")
+}
 
 @Singleton
 class EventsApi {
@@ -47,6 +52,27 @@ class EventsApi {
             val country: String?
     )
 
+    data class TimePeriod(
+            val type: String,
+            val startTime: Instant?,
+            val endTime: Instant?
+    ) {
+        fun toStartTime() = when (type) {
+            "custom" -> startTime!!
+            else -> timePeriodToStartTime(Instant.now(), type)
+        }
+
+        fun toEndTime() = when (type) {
+            "custom" -> endTime!!
+            else -> Instant.now()
+        }
+
+        fun toPreviousStartTime() = when (type) {
+            "custom" -> null
+            else -> timePeriodToStartTime(toStartTime(), type)
+        }
+    }
+
     private fun matchingDomain(userId: UUID?, domain: String) =
         Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
                 .select {
@@ -64,21 +90,19 @@ class EventsApi {
     data class EventsQuery(
             private val domain: String,
             private val startTime: Instant,
-            private val comparisonStartTime: Instant,
-            private val endTime: Instant
+            private val endTime: Instant,
+            private val comparisonStartTime: Instant?
     ) {
-        private fun preselect() = Events.domain.eq(domain) and
-                Events.time.greaterEq(startTime) and
-                Events.time.less(endTime)
-
-        private fun preselectPreviousPeriod() = Events.domain.eq(domain).and(Events.time.greaterEq(comparisonStartTime)) and Events.time.less(startTime)
+        private fun preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
+                Events.time.greaterEq(periodStartTime) and
+                Events.time.less(periodEndTime)
 
         suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
            val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
            val count = Events.time.count().castTo<Long?>(LongColumnType())
 
            Events.slice(timeBucket, count)
-                   .select { preselect() }
+                   .select { preselect(startTime, endTime) }
                    .groupBy(timeBucket)
                    .orderBy(timeBucket)
                    .map {
@@ -92,7 +116,7 @@ class EventsApi {
 
             Events
                     .slice(timeBucket, count)
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .groupBy(timeBucket)
                     .orderBy(timeBucket)
                     .map {
@@ -103,18 +127,22 @@ class EventsApi {
 
         suspend fun count() = newSuspendedTransaction {
             Events
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .count()
         }
 
-        suspend fun previousCount() = newSuspendedTransaction {
-            Events.select { preselectPreviousPeriod() }
-                    .count()
+        suspend fun previousCount() = if (comparisonStartTime != null) {
+            newSuspendedTransaction {
+                Events.select { preselect(comparisonStartTime, startTime) }
+                        .count()
+            }
+        } else {
+            null
         }
 
         private suspend fun topBy(column: Column<*>, n: Int?) = newSuspendedTransaction {
             Events.slice(column, column.count())
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .groupBy(column)
                     .having { column.count().greaterEq(1L) }
                     .orderBy(column.count(), SortOrder.DESC)
@@ -126,7 +154,7 @@ class EventsApi {
 
         suspend fun topSources(n: Int?) = newSuspendedTransaction {
             Events.slice(Events.referrerClean, Events.sourceClean, Events.id.count())
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .groupBy(Events.referrerClean, Events.sourceClean)
                     .having { Events.id.count().greaterEq(1L) }
                     .orderBy(Events.id.count(), SortOrder.DESC)
@@ -149,55 +177,45 @@ class EventsApi {
         suspend fun countUnique() = newSuspendedTransaction {
             Events
                     .slice(Events.userId)
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .withDistinct()
                     .count()
         }
 
-
-
-        suspend fun previousCountUnique() = newSuspendedTransaction {
-            Events
-                    .slice(Events.userId)
-                    .select { preselectPreviousPeriod() }
-                    .withDistinct()
-                    .count()
+        suspend fun previousCountUnique() = if (comparisonStartTime != null ) {
+            newSuspendedTransaction {
+                Events
+                        .slice(Events.userId)
+                        .select { preselect(comparisonStartTime, startTime) }
+                        .withDistinct()
+                        .count()
+            }
+        } else {
+            null
         }
 
         suspend fun bounceCount() = newSuspendedTransaction {
             Events
                     .slice(Events.userId, Events.userId.count())
-                    .select { preselect() }
+                    .select { preselect(startTime, endTime) }
                     .groupBy(Events.userId)
                     .having { Events.userId.count().eq(1) }
                     .count()
         }
 
-        suspend fun previousBounceCount() = newSuspendedTransaction {
-            Events
-                    .slice(Events.userId, Events.userId.count())
-                    .select { preselectPreviousPeriod() }
-                    .groupBy(Events.userId)
-                    .having { Events.userId.count().eq(1) }
-                    .count()
+        suspend fun previousBounceCount() = if (comparisonStartTime != null) {
+            newSuspendedTransaction {
+                Events
+                        .slice(Events.userId, Events.userId.count())
+                        .select { preselect(comparisonStartTime, startTime) }
+                        .groupBy(Events.userId)
+                        .having { Events.userId.count().eq(1) }
+                        .count()
+            }
+        } else {
+            null
         }
-
-
-//        suspend fun events() = newSuspendedTransaction {
-//            Events
-//                    .select { preselect() }
-//                    .map { Event(it[Events.type], it[Events.time], it[Events.source_], it[Events.city], it[Events.country]) }
-//        }
     }
-
-    private fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?) = when (timePeriodStart ?: "day") {
-        "day" -> origin.minus(1, ChronoUnit.DAYS)
-        "hour" -> origin.minus(1, ChronoUnit.HOURS)
-        "week" -> origin.minus(7, ChronoUnit.DAYS)
-        "month" -> origin.minus(28, ChronoUnit.DAYS)
-        else -> throw Exception("Invalid time period")
-    }
-
 
     suspend fun liveUnique(context: Context, domain: String) = newSuspendedTransaction {
         val userId = userApi.user(context)?.id
@@ -213,11 +231,10 @@ class EventsApi {
                 .count()
     }
 
-    suspend fun events(context: Context, domain: String, timePeriodStart: String?): EventsQuery = newSuspendedTransaction {
+    suspend fun events(context: Context, domain: String, timePeriod: TimePeriod): EventsQuery = newSuspendedTransaction {
         val userId = userApi.user(context)?.id
         matchingDomain(userId, domain)
 
-        val startTime = timePeriodToStartTime(Instant.now(), timePeriodStart)
-        EventsQuery(domain, startTime, timePeriodToStartTime(startTime, timePeriodStart), Instant.now())
+        EventsQuery(domain, timePeriod.toStartTime(), timePeriod.toEndTime(), timePeriod.toPreviousStartTime())
     }
 }

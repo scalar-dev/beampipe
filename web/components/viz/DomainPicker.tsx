@@ -28,7 +28,7 @@ export const DomainPicker = ({}) => {
       value={router.query.domain}
       visible={visible}
       setVisible={setVisible}
-      align="left"
+      menuClassNames="left-0"
       classNames="w-40 md:w-auto"
     >
       <MenuSection>
