@@ -24,7 +24,7 @@ import { Stats } from "../components/viz/Stats";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
-  const html = `<script async defer src="https://beampipe.io/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
+  const html = `<script async defer src="https://beampipe.io/js/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
   const [hasCopied, setHasCopied] = useState(false);
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
