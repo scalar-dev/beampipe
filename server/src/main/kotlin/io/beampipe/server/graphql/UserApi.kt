@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class UserApi {
     data class User(val id: UUID, val email: String?, val name: String?)
-    data class UserSettings(val email: String?, val subscription: String)
+    data class UserSettings(val email: String?, val name: String?, val subscription: String)
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
     fun user(context: Context) = if (context.authentication != null) {
@@ -32,7 +32,7 @@ class UserApi {
     fun settings(context: Context) = if (context.authentication != null) {
         transaction {
             Accounts.select { Accounts.id.eq(UUID.fromString(context.authentication.attributes["accountId"] as String)) }
-                    .map { UserSettings(it[Accounts.email], it[Accounts.subscription]) }
+                    .map { UserSettings(it[Accounts.email], it[Accounts.name], it[Accounts.subscription]) }
                     .firstOrNull()
         }
     } else {
