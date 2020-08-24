@@ -388,16 +388,29 @@ const DomainList = ({
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-col md:flex-row">
         <Title>Dashboard</Title>
-        <div className="py-2">
-          <Button onClick={() => setShowAddDomain(true)}>
-            <FontAwesomeIcon
-              className="fill-current w-4 h-4 mr-2"
-              icon={faPlus}
-            />
-            Add
-          </Button>
+        <div className="py-2 flex flex-row items-center">
+          <div className="flex-1">
+            <Link href="/settings">
+              <a className="text-sm text-gray-600 hover:text-gray-900 font-semibold mr-4">
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faCog}
+                />
+                Settings
+              </a>
+            </Link>
+          </div>
+          <div>
+            <Button onClick={() => setShowAddDomain(true)}>
+              <FontAwesomeIcon
+                className="fill-current w-4 h-4 mr-2"
+                icon={faPlus}
+              />
+              Add
+            </Button>
+          </div>
         </div>
       </div>
 
