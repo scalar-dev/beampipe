@@ -1,6 +1,8 @@
 package io.beampipe.server.db
 
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.`java-time`.datetime
+import org.jetbrains.exposed.sql.`java-time`.timestamp
 
 object Accounts : UUIDTable("account") {
     val name = text("name").nullable()
@@ -16,4 +18,6 @@ object Accounts : UUIDTable("account") {
     val salt = text("salt").nullable()
 
     val emailOk = bool("email_ok")
+    val createdAt = timestamp("created_at")
+    val lastLoginAt = timestamp("last_login_at")
 }
