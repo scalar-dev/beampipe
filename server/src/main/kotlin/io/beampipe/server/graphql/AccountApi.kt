@@ -32,6 +32,34 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
     @Inject
     lateinit var stripeClient: StripeClient
 
+    suspend fun updateName(context: Context, name: String): String = context.withAccountId { accountId ->
+        newSuspendedTransaction {
+            Accounts.update({
+                Accounts.id.eq(accountId)
+            }) {
+                it[Accounts.name] = name
+            }
+
+            name
+        }
+    }
+
+    suspend fun updateEmail(context: Context, email: String): String = context.withAccountId { accountId ->
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw CustomException("Invalid email address")
+        }
+
+        newSuspendedTransaction {
+            Accounts.update({
+                Accounts.id.eq(accountId)
+            }) {
+                it[Accounts.email] = email
+            }
+
+            email
+        }
+    }
+
     suspend fun subscribe(context: Context): String? {
         val stripeId = newSuspendedTransaction {
             val existingStripeId = Accounts
