@@ -61,7 +61,9 @@ export const Table = ({ showImages = false, data, showPercentages = true, column
             <td className="px-2 text-right text-xs w-1/5">{item.count}</td>
             {showPercentages ? (
               <td className="text-right w-12 text-xs text-gray-600">
-                {numeral(item.count / sumCount).format("0%")}
+                {sumCount > 0
+                  ? numeral(item.count / sumCount).format("0%")
+                  : null}
               </td>
             ) : null}
           </tr>
