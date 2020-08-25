@@ -4,6 +4,8 @@ import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { Spinner } from "../Spinner";
 import numeral from "numeral";
 
+export const NICE_NUMBER_FORMAT = "0.[0]a";
+
 const PercentageChange: React.FunctionComponent<{
   current: number;
   previous: number;
@@ -73,7 +75,7 @@ export const Stats = ({ stats }: { stats?: any }) => {
   return (
     <>
       <StatsCounter
-        value={numeral(stats.count).format("0.[0]a")}
+        value={numeral(stats.count).format(NICE_NUMBER_FORMAT)}
         title="Views"
         delta={
           <PercentageChange
@@ -83,7 +85,7 @@ export const Stats = ({ stats }: { stats?: any }) => {
         }
       />
       <StatsCounter
-        value={numeral(stats.countUnique).format("0.[0]a")}
+        value={numeral(stats.countUnique).format(NICE_NUMBER_FORMAT)}
         title="Unique"
         delta={
           <PercentageChange

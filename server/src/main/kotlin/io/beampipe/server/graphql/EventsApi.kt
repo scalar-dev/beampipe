@@ -154,25 +154,27 @@ class EventsApi {
         }
 
         private suspend fun topBy(column: Column<*>, n: Int?) = newSuspendedTransaction {
-            Events.slice(column, column.count())
+            val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
+            Events.slice(column, count)
                 .select { preselect(startTime, endTime) }
                 .groupBy(column)
-                .having { column.count().greaterEq(1L) }
-                .orderBy(column.count(), SortOrder.DESC)
+                .having { count.greaterEq(1L) }
+                .orderBy(count, SortOrder.DESC)
                 .limit(n ?: 10)
-                .map { Count(it[column]?.toString(), it[column.count()]) }
+                .map { Count(it[column]?.toString(), it[count] ?: 0) }
         }
 
         suspend fun topPages(n: Int?) = topBy(Events.path, n)
 
         suspend fun topSources(n: Int?) = newSuspendedTransaction {
-            Events.slice(Events.referrerClean, Events.sourceClean, Events.id.count())
+            val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
+            Events.slice(Events.referrerClean, Events.sourceClean, count)
                 .select { preselect(startTime, endTime) }
                 .groupBy(Events.referrerClean, Events.sourceClean)
-                .having { Events.id.count().greaterEq(1L) }
-                .orderBy(Events.id.count(), SortOrder.DESC)
+                .having { count.greaterEq(1L) }
+                .orderBy(count, SortOrder.DESC)
                 .limit(n ?: 10)
-                .map { Source(it[Events.referrerClean], it[Events.sourceClean], it[Events.id.count()]) }
+                .map { Source(it[Events.referrerClean], it[Events.sourceClean], it[count] ?: 0) }
         }
 
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)

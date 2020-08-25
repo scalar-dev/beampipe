@@ -2,6 +2,8 @@ import { useRef, useEffect } from "react";
 import Chart, { ChartYAxe, ChartPoint } from "chart.js";
 import { TimePeriod } from "./TimePicker";
 import moment from "moment";
+import numeral from "numeral";
+import { NICE_NUMBER_FORMAT } from "./Stats";
 
 export const timePeriodToBucket = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
@@ -94,6 +96,9 @@ export const LineChart = ({
             position: "left",
             ticks: {
               precision: 0,
+              callback: (value) => {
+                return numeral(value).format(NICE_NUMBER_FORMAT);
+              },
             },
           } as ChartYAxe,
         ],
