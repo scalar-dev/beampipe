@@ -16,21 +16,26 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, ReactNode } from "react";
-import moment from "moment-timezone";
+import {
+  getTimezones,
+  renderTimeZone,
+} from "../utils/timezones";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
 interface EditableFieldProps {
   initialValue: string;
   onSave: (val: string) => Promise<string | null>;
+  renderValue?: (val: string) => ReactNode;
 }
 
 const EditableField = ({
   initialValue,
   onSave,
-  renderChild,
+  renderChildren,
+  renderValue = (val) => <>{val}</>,
 }: EditableFieldProps & {
-  renderChild: ({
+  renderChildren: ({
     value,
     setValue,
   }: {
@@ -64,12 +69,12 @@ const EditableField = ({
     <div className="flex flex-row">
       {editing ? (
         <form onSubmit={save}>
-          {renderChild({ value, setValue })}
+          {renderChildren({ value, setValue })}
 
           {error && <p className="text-red-500 pb-4 italic">{error}</p>}
         </form>
       ) : (
-        <>{value}</>
+        renderValue(value)
       )}
       <div className="flex ml-4 text-gray-600">
         {!editing ? (
@@ -112,7 +117,7 @@ const EditableField = ({
 const EditableText = (props: EditableFieldProps) => (
   <EditableField
     {...props}
-    renderChild={({ value, setValue }) => (
+    renderChildren={({ value, setValue }) => (
       <input
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         id="username"
@@ -132,12 +137,12 @@ const EditableSelect: React.FunctionComponent<EditableFieldProps> = ({
 }) => (
   <EditableField
     {...props}
-    renderChild={({ value, setValue }) => (
+    renderChildren={({ value, setValue }) => (
       <div className="inline-block relative w-64">
         <select
           className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-          value={value}
           onChange={(e) => setValue(e.target.value)}
+          value={value}
         >
           {children}
         </select>
@@ -295,6 +300,7 @@ const Settings = () => {
                 <div>
                   <EditableSelect
                     initialValue={settings?.timeZone}
+                    renderValue={renderTimeZone}
                     onSave={async (v) => {
                       const result = await updateTimeZone({ timeZone: v });
                       if (result.error) {
@@ -306,8 +312,10 @@ const Settings = () => {
                       }
                     }}
                   >
-                    {moment.tz.names().map((timezone) => (
-                      <option>{timezone}</option>
+                    {getTimezones().map((name) => (
+                      <option key={name} value={name}>
+                        {renderTimeZone(name)}
+                      </option>
                     ))}
                   </EditableSelect>
                 </div>
