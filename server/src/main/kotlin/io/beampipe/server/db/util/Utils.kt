@@ -13,17 +13,15 @@ import org.jetbrains.exposed.sql.QueryBuilder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.`java-time`.JavaInstantColumnType
-import org.jetbrains.exposed.sql.`java-time`.JavaLocalDateColumnType
 import org.jetbrains.exposed.sql.`java-time`.JavaLocalDateTimeColumnType
 import org.jetbrains.exposed.sql.append
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 class TimeBucket(val expr1: Expression<*>, val expr2: Expression<*>) : ExpressionWithColumnType<Instant>() {
     override fun toQueryBuilder(queryBuilder: QueryBuilder) {
         queryBuilder {
-            append("time_bucket(",expr1, ",", expr2, ")")
+            append("time_bucket(", expr1, ",", expr2, ")")
         }
     }
 
@@ -34,7 +32,7 @@ class TimeBucket(val expr1: Expression<*>, val expr2: Expression<*>) : Expressio
 class TimeBucketGapFill(val expr1: Expression<*>, val expr2: Expression<*>) : ExpressionWithColumnType<Instant>() {
     override fun toQueryBuilder(queryBuilder: QueryBuilder) {
         queryBuilder {
-            append("time_bucket_gapfill(",expr1, ",", expr2, ")")
+            append("time_bucket_gapfill(", expr1, ",", expr2, ")")
         }
     }
 
@@ -42,10 +40,15 @@ class TimeBucketGapFill(val expr1: Expression<*>, val expr2: Expression<*>) : Ex
 }
 
 
-class TimeBucketGapFillStartEnd(val expr1: Expression<*>, val expr2: Expression<*>, val expr3: Expression<*>, val expr4: Expression<*>) : ExpressionWithColumnType<LocalDateTime>() {
+class TimeBucketGapFillStartEnd(
+    val expr1: Expression<*>,
+    val expr2: Expression<*>,
+    val expr3: Expression<*>,
+    val expr4: Expression<*>
+) : ExpressionWithColumnType<LocalDateTime>() {
     override fun toQueryBuilder(queryBuilder: QueryBuilder) {
         queryBuilder {
-            append("time_bucket_gapfill(",expr1, ",", expr2, ",", expr3, ",", expr4, ")")
+            append("time_bucket_gapfill(", expr1, ",", expr2, ",", expr3, ",", expr4, ")")
         }
     }
 
