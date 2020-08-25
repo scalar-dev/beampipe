@@ -114,6 +114,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
             {
               label: "Page views",
               data: query.data?.events?.bucketed,
+              borderColor: "#0ba360",
             },
           ]}
           timePeriod={{ type: "week" }}
