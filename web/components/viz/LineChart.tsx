@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import Chart, { ChartYAxe } from "chart.js";
+import Chart, { ChartYAxe, ChartPoint } from "chart.js";
 import { TimePeriod } from "./TimePicker";
 import moment from "moment";
 
@@ -52,6 +52,16 @@ export const LineChart = ({
         legend: undefined,
         maintainAspectRatio: false,
         scales: {},
+        tooltips: {
+          callbacks: {
+            title: (tooltipItems, data) =>
+              tooltipItems.map((tooltipItem) => {
+                const date = (data?.datasets?.[tooltipItem.datasetIndex!!]
+                  .data?.[tooltipItem.index!!] as ChartPoint).x as Date;
+                return moment(date).format("ddd Do MMM");
+              }),
+          },
+        },
       },
     });
   }, []);
@@ -62,8 +72,8 @@ export const LineChart = ({
         ?.getContext("2d")
         ?.createLinearGradient(0, 0, 0, 400);
 
-      gradient!.addColorStop(0, "rgba(11, 163, 96, 255)");
-      gradient!.addColorStop(1, "rgba(255,255,255,0)");
+      gradient!.addColorStop(0, "rgba(56,161,105, 0.2)");
+      gradient!.addColorStop(1, "rgba(255,255,255, 0.0)");
 
       chart.current.options.scales = {
         xAxes: [
@@ -82,7 +92,10 @@ export const LineChart = ({
             type: "linear",
             id: "0",
             position: "left",
-          },
+            ticks: {
+              precision: 0,
+            },
+          } as ChartYAxe,
         ],
       };
 
@@ -104,7 +117,7 @@ export const LineChart = ({
         label: dataset.label,
         lineTension: 0,
         backgroundColor: dataset.backgroundColor || gradient,
-        borderColor: "#0ba360",
+        borderColor: dataset.borderColor,
         pointRadius: 5,
         pointBorderColor: "rgba(0, 0, 0, 0)",
         pointBackgroundColor: "rgba(0, 0, 0, 0)",

@@ -84,11 +84,17 @@ const Chart = ({
             data: stats.data?.events?.bucketed,
             type: "line",
             label: "Page views",
+            borderColor: "#0ba360",
           },
           {
             data: stats.data?.events?.bucketedUnique,
             type: "bar",
-            backgroundColor: "rgba(203, 213, 224, 0.5)",
+            backgroundColor: (context: any) => {
+              return context.dataset.data[context.dataIndex].x.getDay() % 6 ===
+                0
+                ? "rgba(203, 213, 224, 0.6)"
+                : "rgba(203, 213, 224, 0.4)";
+            },
             label: "Unique visitors",
           },
         ]}
