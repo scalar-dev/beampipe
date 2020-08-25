@@ -19,39 +19,39 @@ import javax.inject.Singleton
 class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUserDetailsMapper {
     override fun createUserDetails(tokenResponse: TokenResponse): Publisher<UserDetails> {
         return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)!!
-                .map { login ->
-                    val account = transaction {
-                        val existingUser = Accounts
-                                .slice(Accounts.id)
-                                .select { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
-                                .firstOrNull()
+            .map { login ->
+                val account = transaction {
+                    val existingUser = Accounts
+                        .slice(Accounts.id)
+                        .select { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
+                        .firstOrNull()
 
-                        val accountId = if (existingUser == null) {
-                            Accounts.insertAndGetId {
-                                it[githubUserId] = login.id.toString()
-                                it[email] = login.email
-                            }
-                        } else {
-                            Accounts.update({ Accounts.id.eq(existingUser[Accounts.id]) }) {
-                                it[lastLoginAt] = Instant.now()
-                            }
-                            existingUser[Accounts.id]
+                    val accountId = if (existingUser == null) {
+                        Accounts.insertAndGetId {
+                            it[githubUserId] = login.id.toString()
+                            it[email] = login.email
                         }
-
-                        Accounts.select { Accounts.id.eq(accountId) }
-                                .firstOrNull()!!
+                    } else {
+                        Accounts.update({ Accounts.id.eq(existingUser[Accounts.id]) }) {
+                            it[lastLoginAt] = Instant.now()
+                        }
+                        existingUser[Accounts.id]
                     }
-                    UserDetails(
-                            account[Accounts.id].toString(),
-                            listOf(ROLE_GITHUB),
-                            mapOf(
-                                    OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
-                                    "accountId" to account[Accounts.id].toString(),
-                                    "email" to account[Accounts.email],
-                                    "name" to account[Accounts.name]
-                            )
-                    )
+
+                    Accounts.select { Accounts.id.eq(accountId) }
+                        .firstOrNull()!!
                 }
+                UserDetails(
+                    account[Accounts.id].toString(),
+                    listOf(ROLE_GITHUB),
+                    mapOf(
+                        OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
+                        "accountId" to account[Accounts.id].toString(),
+                        "email" to account[Accounts.email],
+                        "name" to account[Accounts.name]
+                    )
+                )
+            }
     }
 
     companion object {

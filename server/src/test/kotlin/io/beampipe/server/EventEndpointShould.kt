@@ -37,13 +37,13 @@ class EventEndpointShould : TestPropertyProvider {
     lateinit var client: RxHttpClient
 
     private fun event() = EventEndpoint.Event(
-            "event",
-            "http://www.hello.com",
-            "foo.com",
-            "foo",
-            "foo",
-            "Firefox",
-            1024
+        "event",
+        "http://www.hello.com",
+        "foo.com",
+        "foo",
+        "foo",
+        "Firefox",
+        1024
     )
 
     data class Response<T>(val data: T)
@@ -54,11 +54,11 @@ class EventEndpointShould : TestPropertyProvider {
         (0..2).forEach {
             val request = HttpRequest.POST("/event", event()).header("X-Forwarded-For", "4.4.4.4")
             client.toBlocking()
-                    .exchange<EventEndpoint.Event, Void>(request)
+                .exchange<EventEndpoint.Event, Void>(request)
         }
 
         val body = GraphQLRequestBody()
-        body.query= """
+        body.query = """
             {
               events(domain: "hello.com") {
                 type
@@ -71,8 +71,8 @@ class EventEndpointShould : TestPropertyProvider {
         """.trimIndent()
 
         val response = client.toBlocking().retrieve(
-                HttpRequest.POST("/graphql", body)
-                        .contentType(MediaType.APPLICATION_JSON)
+            HttpRequest.POST("/graphql", body)
+                .contentType(MediaType.APPLICATION_JSON)
         )
         val objectMapper = jacksonObjectMapper()
         objectMapper.registerModule(JavaTimeModule())

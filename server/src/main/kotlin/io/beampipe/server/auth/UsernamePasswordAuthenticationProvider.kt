@@ -19,44 +19,47 @@ import java.util.Base64
 import javax.inject.Singleton
 
 @Singleton
-class UsernamePasswordAuthenticationProvider: AuthenticationProvider {
-    override fun authenticate(httpRequest: HttpRequest<*>?, authenticationRequest: AuthenticationRequest<*, *>?): Publisher<AuthenticationResponse> {
+class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
+    override fun authenticate(
+        httpRequest: HttpRequest<*>?,
+        authenticationRequest: AuthenticationRequest<*, *>?
+    ): Publisher<AuthenticationResponse> {
         return Flowable.fromFuture(
-                GlobalScope.future {
-                    val account = newSuspendedTransaction {
-                        Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
-                                .select { Accounts.email.eq(authenticationRequest!!.identity as String) }
-                                .firstOrNull()
+            GlobalScope.future {
+                val account = newSuspendedTransaction {
+                    Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
+                        .select { Accounts.email.eq(authenticationRequest!!.identity as String) }
+                        .firstOrNull()
+                }
+
+                if (account == null) {
+                    AuthenticationFailed()
+                } else {
+                    newSuspendedTransaction {
+                        Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
+                            it[lastLoginAt] = Instant.now()
+                        }
                     }
 
-                    if (account == null) {
-                        AuthenticationFailed()
-                    } else {
-                        newSuspendedTransaction {
-                            Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
-                                it[lastLoginAt] = Instant.now()
-                            }
-                        }
+                    val dec: Base64.Decoder = Base64.getDecoder()
+                    val salt = dec.decode(account[Accounts.salt])
+                    val hash = hashPassword(authenticationRequest!!.secret as String, salt)
 
-                        val dec: Base64.Decoder = Base64.getDecoder()
-                        val salt = dec.decode(account[Accounts.salt])
-                        val hash = hashPassword(authenticationRequest!!.secret as String, salt)
-
-                        if (hash == account[Accounts.password]) {
-                            UserDetails(
-                                    account[Accounts.id].value.toString(),
-                                    emptyList(),
-                                    mapOf(
-                                            "accountId" to account[Accounts.id].value.toString(),
-                                            "name" to account[Accounts.name],
-                                            "email" to account[Accounts.email]
-                                    )
+                    if (hash == account[Accounts.password]) {
+                        UserDetails(
+                            account[Accounts.id].value.toString(),
+                            emptyList(),
+                            mapOf(
+                                "accountId" to account[Accounts.id].value.toString(),
+                                "name" to account[Accounts.name],
+                                "email" to account[Accounts.email]
                             )
-                        } else {
-                            AuthenticationFailed()
-                        }
+                        )
+                    } else {
+                        AuthenticationFailed()
                     }
                 }
+            }
         )
     }
 

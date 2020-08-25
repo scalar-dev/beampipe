@@ -5,10 +5,10 @@ import com.stripe.model.Subscription
 import com.stripe.model.checkout.Session
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.checkout.SessionCreateParams
-import io.beampipe.server.stripe.StripeClient
 import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
+import io.beampipe.server.stripe.StripeClient
 import io.micronaut.context.annotation.Property
 import org.apache.commons.validator.routines.EmailValidator
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -25,7 +25,12 @@ import java.util.UUID
 import javax.inject.Inject
 
 
-class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa") val stripeProduct: String) {
+class AccountApi(
+    @Property(
+        name = "stripe.product",
+        defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
+    ) val stripeProduct: String
+) {
     @Inject
     lateinit var userApi: UserApi
 
@@ -82,19 +87,20 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
     suspend fun subscribe(context: Context): String? {
         val stripeId = newSuspendedTransaction {
             val existingStripeId = Accounts
-                    .slice(Accounts.stripeId)
-                    .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
-                    .first()[Accounts.stripeId]
+                .slice(Accounts.stripeId)
+                .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
+                .first()[Accounts.stripeId]
 
             if (existingStripeId == null) {
                 val customer = Customer.create(
-                        CustomerCreateParams.builder()
-                                .build()
+                    CustomerCreateParams.builder()
+                        .build()
                 )
 
                 Accounts.update({
                     Accounts.id.eq(
-                            UUID.fromString(context.authentication!!.attributes["accountId"] as String))
+                        UUID.fromString(context.authentication!!.attributes["accountId"] as String)
+                    )
                 }) {
                     it[Accounts.stripeId] = customer.id
                 }
@@ -106,18 +112,18 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         }
 
         val sessionCreateParams = SessionCreateParams.builder()
-                .setSuccessUrl("${context.host}/stripe?sessionId={CHECKOUT_SESSION_ID}")
-                .setCancelUrl("${context.host}/settings?cancel=true")
-                .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-                .setCustomer(stripeId)
-                .addLineItem(
-                        SessionCreateParams.LineItem.builder()
-                                .setQuantity(1L)
-                                .setPrice(stripeProduct)
-                                .build()
-                )
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .build()
+            .setSuccessUrl("${context.host}/stripe?sessionId={CHECKOUT_SESSION_ID}")
+            .setCancelUrl("${context.host}/settings?cancel=true")
+            .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
+            .setCustomer(stripeId)
+            .addLineItem(
+                SessionCreateParams.LineItem.builder()
+                    .setQuantity(1L)
+                    .setPrice(stripeProduct)
+                    .build()
+            )
+            .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+            .build()
 
         val session = Session.create(sessionCreateParams)
         return session.id
@@ -126,12 +132,12 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
     suspend fun cancelSubscription(context: Context): String {
         return newSuspendedTransaction {
             val stripeId = Accounts
-                    .slice(Accounts.stripeId)
-                    .select { Accounts.id.eq(context.accountId) }
-                    .first()[Accounts.stripeId]
+                .slice(Accounts.stripeId)
+                .select { Accounts.id.eq(context.accountId) }
+                .first()[Accounts.stripeId]
 
             val subscriptionId = Customer.retrieve(stripeId)
-                    .subscriptions.data[0].id
+                .subscriptions.data[0].id
 
             val subscription = Subscription.retrieve(subscriptionId).cancel()
 
@@ -143,31 +149,32 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
         }
     }
 
-    suspend fun createUser(context: Context, email: String, password: String, emailOk: Boolean) = newSuspendedTransaction {
-        if (!EmailValidator.getInstance().isValid(email)) {
-            throw CustomException("Email address is invalid")
-        }
+    suspend fun createUser(context: Context, email: String, password: String, emailOk: Boolean) =
+        newSuspendedTransaction {
+            if (!EmailValidator.getInstance().isValid(email)) {
+                throw CustomException("Email address is invalid")
+            }
 
-        val existingAccount = Accounts.slice(Accounts.id)
+            val existingAccount = Accounts.slice(Accounts.id)
                 .select { Accounts.email.eq(email) }
                 .limit(1)
                 .firstOrNull()
 
-        if (existingAccount != null) {
-            throw CustomException("Account already registered with this email address")
-        } else {
-            val salt = ByteArray(16)
-            SecureRandom().nextBytes(salt)
-            val enc: Base64.Encoder = Base64.getEncoder()
+            if (existingAccount != null) {
+                throw CustomException("Account already registered with this email address")
+            } else {
+                val salt = ByteArray(16)
+                SecureRandom().nextBytes(salt)
+                val enc: Base64.Encoder = Base64.getEncoder()
 
-            Accounts.insertAndGetId {
-                it[Accounts.email] = email
-                it[Accounts.password] = hashPassword(password, salt)
-                it[Accounts.salt] = enc.encodeToString(salt)
-                it[Accounts.emailOk] = emailOk
-            }.value
+                Accounts.insertAndGetId {
+                    it[Accounts.email] = email
+                    it[Accounts.password] = hashPassword(password, salt)
+                    it[Accounts.salt] = enc.encodeToString(salt)
+                    it[Accounts.emailOk] = emailOk
+                }.value
+            }
         }
-    }
 
 
     suspend fun deleteDomain(context: Context, id: UUID): UUID {

@@ -21,13 +21,15 @@ class V11__Clean_referrer_source : BaseJavaMigration() {
                     val referrerClean = cleanReferrer(domain, referrer)
                     val sourceClean = cleanSource(source, referrerClean, parsedReferrer)
 
-                    context.connection.prepareStatement("""
+                    context.connection.prepareStatement(
+                        """
                         UPDATE event
                         SET 
                         referrer_clean = ?,
                         source_clean = ? 
                         WHERE id = ?
-                    """.trimIndent()).use { update ->
+                    """.trimIndent()
+                    ).use { update ->
                         update.setString(1, referrerClean)
                         update.setString(2, sourceClean)
                         update.setObject(3, id)
