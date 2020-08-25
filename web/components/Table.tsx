@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { ReactNode } from "react";
+import numeral from "numeral";
 
 interface TableProps {
   showImages?: boolean;
@@ -8,6 +9,9 @@ interface TableProps {
     count: number;
     image?: ReactNode;
   }[];
+
+  showPercentages?: boolean;
+  columnHeadings?: [string, string];
 }
 
 const Bar = ({ percentage }: { percentage: number }) => (
@@ -22,24 +26,46 @@ const Bar = ({ percentage }: { percentage: number }) => (
   </div>
 );
 
-export const Table = ({ showImages = false, data }: TableProps) => {
+export const Table = ({ showImages = false, data, showPercentages = true, columnHeadings = ["", ""] }: TableProps) => {
   if (data.length === 0) {
     return null;
   }
 
   const maxCount = _.maxBy(data, "count")!.count;
+  const sumCount = _.sumBy(data, "count")!
 
   return (
     <table className="w-full table-fixed">
+      <thead>
+        <tr>
+          {showImages && <th className="w-6 p-1"></th>}
+          <th className="text-left text-xs text-gray-600">
+            {columnHeadings[0]}
+          </th>
+          <th className="text-right text-xs text-gray-600 w-1/5">
+            {columnHeadings[1]}
+          </th>
+          {showPercentages && (
+            <th className="text-right text-xs text-gray-600 w-12">%</th>
+          )}
+        </tr>
+      </thead>
       <tbody>
         {data?.map((item) => (
           <tr key={item.key} className="border-t-2">
             {showImages && <td className="w-6 p-1">{item.image}</td>}
-            <td className="px-4 text-xs font-mono py-1 truncate">
+            <td className="px-2 text-xs font-mono py-1 truncate">
               {item.key || "none"}
               <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />
             </td>
-            <td className="px-4 text-right w-1/5">{item.count}</td>
+            <td className="px-2 text-right text-xs w-1/5">{item.count}</td>
+            {showPercentages ? (
+              <td className="text-right w-12 text-xs text-gray-600">
+                {sumCount > 0
+                  ? numeral(item.count / sumCount).format("0%")
+                  : null}
+              </td>
+            ) : null}
           </tr>
         ))}
       </tbody>
