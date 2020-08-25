@@ -12,7 +12,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 import org.reactivestreams.Publisher
+import java.time.Instant
 import java.util.Base64
 import javax.inject.Singleton
 
@@ -30,6 +32,12 @@ class UsernamePasswordAuthenticationProvider: AuthenticationProvider {
                     if (account == null) {
                         AuthenticationFailed()
                     } else {
+                        newSuspendedTransaction {
+                            Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
+                                it[lastLoginAt] = Instant.now()
+                            }
+                        }
+
                         val dec: Base64.Decoder = Base64.getDecoder()
                         val salt = dec.decode(account[Accounts.salt])
                         val hash = hashPassword(authenticationRequest!!.secret as String, salt)

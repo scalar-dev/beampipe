@@ -8,7 +8,9 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import org.reactivestreams.Publisher
+import java.time.Instant
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -30,6 +32,9 @@ class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUse
                                 it[email] = login.email
                             }
                         } else {
+                            Accounts.update({ Accounts.id.eq(existingUser[Accounts.id]) }) {
+                                it[lastLoginAt] = Instant.now()
+                            }
                             existingUser[Accounts.id]
                         }
 

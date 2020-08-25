@@ -18,8 +18,8 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
-import org.postgresql.util.PSQLException
 import java.security.SecureRandom
+import java.time.ZoneId
 import java.util.Base64
 import java.util.UUID
 import javax.inject.Inject
@@ -57,6 +57,25 @@ class AccountApi(@Property(name = "stripe.product", defaultValue = "price_1H9wLy
             }
 
             email
+        }
+    }
+
+
+    suspend fun updateTimeZone(context: Context, timeZone: String): String = context.withAccountId { accountId ->
+        try {
+            ZoneId.of(timeZone)
+        } catch (e: java.lang.Exception) {
+            throw CustomException("Invalid timezone")
+        }
+
+        newSuspendedTransaction {
+            Accounts.update({
+                Accounts.id.eq(accountId)
+            }) {
+                it[Accounts.timeZone] = timeZone
+            }
+
+            timeZone
         }
     }
 

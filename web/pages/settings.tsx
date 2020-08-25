@@ -15,16 +15,33 @@ import {
   faCheck,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, ReactNode } from "react";
+import {
+  getTimezones,
+  renderTimeZone,
+} from "../utils/timezones";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
+
+interface EditableFieldProps {
+  initialValue: string;
+  onSave: (val: string) => Promise<string | null>;
+  renderValue?: (val: string) => ReactNode;
+}
 
 const EditableField = ({
   initialValue,
   onSave,
-}: {
-  initialValue: string;
-  onSave: (val: string) => Promise<string | null>;
+  renderChildren,
+  renderValue = (val) => <>{val}</>,
+}: EditableFieldProps & {
+  renderChildren: ({
+    value,
+    setValue,
+  }: {
+    value: string;
+    setValue: (value: string) => void;
+  }) => ReactNode;
 }) => {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(initialValue);
@@ -52,20 +69,12 @@ const EditableField = ({
     <div className="flex flex-row">
       {editing ? (
         <form onSubmit={save}>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
-            name="username"
-            type="text"
-            placeholder="Email address"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
+          {renderChildren({ value, setValue })}
 
           {error && <p className="text-red-500 pb-4 italic">{error}</p>}
         </form>
       ) : (
-        <>{value}</>
+        renderValue(value)
       )}
       <div className="flex ml-4 text-gray-600">
         {!editing ? (
@@ -105,6 +114,52 @@ const EditableField = ({
   );
 };
 
+const EditableText = (props: EditableFieldProps) => (
+  <EditableField
+    {...props}
+    renderChildren={({ value, setValue }) => (
+      <input
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        id="username"
+        name="username"
+        type="text"
+        placeholder="Email address"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+    )}
+  />
+);
+
+const EditableSelect: React.FunctionComponent<EditableFieldProps> = ({
+  children,
+  ...props
+}) => (
+  <EditableField
+    {...props}
+    renderChildren={({ value, setValue }) => (
+      <div className="inline-block relative w-64">
+        <select
+          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+          onChange={(e) => setValue(e.target.value)}
+          value={value}
+        >
+          {children}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <svg
+            className="fill-current h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+          </svg>
+        </div>
+      </div>
+    )}
+  />
+);
+
 const Settings = () => {
   const [query, rexecuteQuery] = useQuery({
     query: gql`
@@ -113,6 +168,7 @@ const Settings = () => {
           name
           email
           subscription
+          timeZone
         }
       }
     `,
@@ -139,6 +195,12 @@ const Settings = () => {
   const [, updateEmail] = useMutation(gql`
     mutation updateEmail($email: String!) {
       updateEmail(email: $email)
+    }
+  `);
+
+  const [, updateTimeZone] = useMutation(gql`
+    mutation updateTimeZone($timeZone: String!) {
+      updateTimeZone(timeZone: $timeZone)
     }
   `);
 
@@ -198,7 +260,7 @@ const Settings = () => {
               <div className="flex flex-row p-4">
                 <div className="text-right pr-4 w-1/2">Name</div>
                 <div>
-                  <EditableField
+                  <EditableText
                     initialValue={settings?.name}
                     onSave={async (v) => {
                       const result = await updateName({ name: v });
@@ -217,7 +279,7 @@ const Settings = () => {
               <div className="flex flex-row p-4">
                 <div className="text-right pr-4 w-1/2">Email address</div>
                 <div>
-                  <EditableField
+                  <EditableText
                     initialValue={settings?.email}
                     onSave={async (v) => {
                       const result = await updateEmail({ email: v });
@@ -230,6 +292,32 @@ const Settings = () => {
                       }
                     }}
                   />
+                </div>
+              </div>
+
+              <div className="flex flex-row p-4">
+                <div className="text-right pr-4 w-1/2">Display timezone</div>
+                <div>
+                  <EditableSelect
+                    initialValue={settings?.timeZone}
+                    renderValue={renderTimeZone}
+                    onSave={async (v) => {
+                      const result = await updateTimeZone({ timeZone: v });
+                      if (result.error) {
+                        return result.error.graphQLErrors[0].extensions
+                          ?.userMessage as string;
+                      } else {
+                        await rexecuteQuery({ requestPolicy: "network-only" });
+                        return null;
+                      }
+                    }}
+                  >
+                    {getTimezones().map((name) => (
+                      <option key={name} value={name}>
+                        {renderTimeZone(name)}
+                      </option>
+                    ))}
+                  </EditableSelect>
                 </div>
               </div>
 
