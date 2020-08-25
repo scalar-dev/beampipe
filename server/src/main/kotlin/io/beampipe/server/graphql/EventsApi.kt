@@ -18,6 +18,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.countDistinct
+import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
@@ -169,7 +170,12 @@ class EventsApi {
         suspend fun topSources(n: Int?) = newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
             Events.slice(Events.referrerClean, Events.sourceClean, count)
-                .select { preselect(startTime, endTime) }
+                .select { preselect(startTime, endTime) and
+                        // We have some cases of refferer being null and source being not null.
+                        // Looks like the Google bot
+                        // Should probably be fixed with a migration
+                        not(Events.referrerClean.isNull() and Events.sourceClean.isNotNull())
+                }
                 .groupBy(Events.referrerClean, Events.sourceClean)
                 .having { count.greaterEq(1L) }
                 .orderBy(count, SortOrder.DESC)
