@@ -23,33 +23,36 @@ import javax.inject.Singleton
 @Named("slack")
 @Singleton
 class SlackUserDetailsMapper(val securityService: SecurityService) : OauthUserDetailsMapper {
-    override fun createAuthenticationResponse(tokenResponse: TokenResponse?, state: State?): Publisher<AuthenticationResponse> {
+    override fun createAuthenticationResponse(
+        tokenResponse: TokenResponse?,
+        state: State?
+    ): Publisher<AuthenticationResponse> {
         val accountId = securityService.authentication
-                .map { UUID.fromString(it.attributes["accountId"] as String?) }
-                .orElse(null)
+            .map { UUID.fromString(it.attributes["accountId"] as String?) }
+            .orElse(null)
 
         val future: CompletableFuture<AuthenticationResponse> =
-                Slack.getInstance().methodsAsync(tokenResponse!!.accessToken)
-                        .teamInfo(TeamInfoRequest.builder().build())
-                        .thenApply {teamInfo ->
-                            if (accountId != null) {
-                                transaction {
-                                    val existing = Accounts.select {
-                                        Accounts.id.eq(accountId)
-                                    }.firstOrNull()
+            Slack.getInstance().methodsAsync(tokenResponse!!.accessToken)
+                .teamInfo(TeamInfoRequest.builder().build())
+                .thenApply { teamInfo ->
+                    if (accountId != null) {
+                        transaction {
+                            val existing = Accounts.select {
+                                Accounts.id.eq(accountId)
+                            }.firstOrNull()
 
-                                    if (existing != null) {
-                                        Accounts.update({ Accounts.id.eq(accountId) }) {
-                                            it[slackTeamId] = teamInfo.team.id
-                                            it[slackToken] = tokenResponse.accessToken
-                                        }
-                                    }
+                            if (existing != null) {
+                                Accounts.update({ Accounts.id.eq(accountId) }) {
+                                    it[slackTeamId] = teamInfo.team.id
+                                    it[slackToken] = tokenResponse.accessToken
                                 }
                             }
-
-                            // MASSIVE HACK
-                            AuthenicationIsActuallyOkButWeDontWantToSetCookies()
                         }
+                    }
+
+                    // MASSIVE HACK
+                    AuthenicationIsActuallyOkButWeDontWantToSetCookies()
+                }
 
         return Publishers.fromCompletableFuture(future)
     }

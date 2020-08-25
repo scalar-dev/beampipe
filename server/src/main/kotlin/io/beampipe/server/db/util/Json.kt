@@ -12,7 +12,7 @@ import org.postgresql.util.PGobject
  */
 
 fun <T : Any> Table.jsonb(name: String, klass: Class<T>, jsonMapper: ObjectMapper): Column<T> =
-        registerColumn(name, Json(klass, jsonMapper))
+    registerColumn(name, Json(klass, jsonMapper))
 
 private class Json<out T : Any>(private val klass: Class<T>, private val jsonMapper: ObjectMapper) : ColumnType() {
     override fun sqlType() = "jsonb"

@@ -49,17 +49,17 @@ class SlackNotifier {
                 LOG.info("Reloading subscription cache")
                 subscriptionCache = newSuspendedTransaction {
                     SlackSubscriptions
-                            .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
-                            .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
-                            .select { Accounts.slackToken.isNotNull() }
-                            .map {
-                                "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
-                                        it[SlackSubscriptions.channelId],
-                                        it[SlackSubscriptions.teamId],
-                                        it[Accounts.slackToken]!!
-                                )
-                            }
-                            .toMap()
+                        .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
+                        .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
+                        .select { Accounts.slackToken.isNotNull() }
+                        .map {
+                            "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
+                                it[SlackSubscriptions.channelId],
+                                it[SlackSubscriptions.teamId],
+                                it[Accounts.slackToken]!!
+                            )
+                        }
+                        .toMap()
                 }
                 isDirty.compareAndSet(true, false)
             }
@@ -68,28 +68,28 @@ class SlackNotifier {
 
             if (subscription != null) {
                 val response = Slack.getInstance()
-                        .methodsAsync(subscription.token)
-                        .chatPostMessage(
-                                ChatPostMessageRequest.builder()
-                                        .channel(subscription.channelId)
-                                        .blocks(
-                                                listOf(
-                                                SectionBlock.builder()
-                                                        .text(
-                                                                MarkdownTextObject(
-                                                                        "Hi there. Your domain *${event.domain}* recorded a *${event.event}* event",
-                                                                        false
-                                                                )
-                                                        )
-                                                        .build()
-                                                )
+                    .methodsAsync(subscription.token)
+                    .chatPostMessage(
+                        ChatPostMessageRequest.builder()
+                            .channel(subscription.channelId)
+                            .blocks(
+                                listOf(
+                                    SectionBlock.builder()
+                                        .text(
+                                            MarkdownTextObject(
+                                                "Hi there. Your domain *${event.domain}* recorded a *${event.event}* event",
+                                                false
+                                            )
                                         )
                                         .build()
-                        )
-                        .await()
+                                )
+                            )
+                            .build()
+                    )
+                    .await()
 
                 if (response.error != null) {
-                   LOG.error("Exception sending message: {}", response.error)
+                    LOG.error("Exception sending message: {}", response.error)
                 }
             } else {
                 LOG.debug("No subscription found: ${key}")

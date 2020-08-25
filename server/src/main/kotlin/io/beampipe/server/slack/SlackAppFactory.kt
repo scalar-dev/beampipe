@@ -34,11 +34,11 @@ class AppFactory {
 
                 transaction {
                     val domainId = Domains
-                            .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
-                            .slice(Domains.id)
-                            .select { Domains.domain.eq(domain) and Accounts.slackTeamId.eq(req.payload.teamId)}
-                            .map { it[Domains.id] }
-                            .firstOrNull()
+                        .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
+                        .slice(Domains.id)
+                        .select { Domains.domain.eq(domain) and Accounts.slackTeamId.eq(req.payload.teamId) }
+                        .map { it[Domains.id] }
+                        .firstOrNull()
 
                     if (domainId != null) {
                         val subscriptionId = SlackSubscriptions.insertAndGetId {

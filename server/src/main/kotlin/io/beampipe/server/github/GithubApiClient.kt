@@ -8,8 +8,8 @@ import io.micronaut.http.client.annotation.Client
 import io.reactivex.Flowable
 
 @Headers(
-        Header(name = "User-Agent", value = "https://micronautguides.com"),
-        Header(name = "Accept", value = "application/vnd.github.v3+json, application/json")
+    Header(name = "User-Agent", value = "https://micronautguides.com"),
+    Header(name = "Accept", value = "application/vnd.github.v3+json, application/json")
 )
 @Client(id = "githubv3")
 interface GithubApiClient {
@@ -18,9 +18,11 @@ interface GithubApiClient {
 
     @Get("/user")
     fun getUser(
-            @Header(HttpHeaders.AUTHORIZATION) authorization: String?): Flowable<GithubUser?>?
+        @Header(HttpHeaders.AUTHORIZATION) authorization: String?
+    ): Flowable<GithubUser?>?
 
     @Get("/user/emails")
     fun getUserEmails(
-            @Header(HttpHeaders.AUTHORIZATION) authorization: String?): Flowable<List<GithubUserEmail>>?
+        @Header(HttpHeaders.AUTHORIZATION) authorization: String?
+    ): Flowable<List<GithubUserEmail>>?
 }

@@ -2,7 +2,6 @@ package io.beampipe.server.api
 
 import com.maxmind.geoip2.DatabaseReader
 import com.snowplowanalytics.refererparser.Parser
-import com.snowplowanalytics.refererparser.Referer
 import io.beampipe.server.db.Events
 import io.beampipe.server.slack.SlackNotifier
 import io.beampipe.server.slack.logger
@@ -27,7 +26,6 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import java.io.File
 import java.net.InetAddress
 import java.net.URI
-import java.net.URISyntaxException
 import java.time.Instant
 import javax.inject.Inject
 
@@ -43,11 +41,11 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     @Inject
     lateinit var slackNotifier: SlackNotifier
 
-    val uaa =  UserAgentAnalyzer
-            .newBuilder()
-            .hideMatcherLoadStats()
-            .withCache(10000)
-            .build()
+    val uaa = UserAgentAnalyzer
+        .newBuilder()
+        .hideMatcherLoadStats()
+        .withCache(10000)
+        .build()
 
     val referrerParser = Parser()
 
@@ -58,13 +56,13 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     var reader = DatabaseReader.Builder(database).build()
 
     data class Event(
-            val type: String,
-            val url: String,
-            val domain: String?,
-            val referrer: String,
-            val source: String?,
-            val userAgent: String,
-            val screenWidth: Int
+        val type: String,
+        val url: String,
+        val domain: String?,
+        val referrer: String,
+        val source: String?,
+        val userAgent: String,
+        val screenWidth: Int
     )
 
     fun screenWidthToDevice(width: Int): String = when {
@@ -95,7 +93,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
         val referrer = cleanReferrer(domain, event.referrer)
         val source = cleanSource(event.source, referrer, parsedReferrer)
 
-        newSuspendedTransaction{
+        newSuspendedTransaction {
             Events.insert {
                 it[type] = event.type
                 it[Events.domain] = domain
