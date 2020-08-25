@@ -240,6 +240,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                 columnHeadings={["Source", "Visits"]}
                 data={stats.data?.events.topSources.map((source: any) => ({
                   key: source.source || source.referrer,
+                  reactKey: `${source.source}_${source.referrer}`,
                   count: source.count,
                   image: source.referrer && (
                     <img
