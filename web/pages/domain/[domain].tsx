@@ -20,7 +20,7 @@ import numeral from "numeral";
 import { DomainPicker } from "../../components/viz/DomainPicker";
 import { TimePicker, TimePeriod } from "../../components/viz/TimePicker";
 
-const cardHeight = "27rem";
+const cardHeight = "28rem";
 
 const LiveCounter = ({ domain }: { domain: string }) => {
   const [liveStats] = useQuery({
