@@ -72,37 +72,41 @@ const Chart = ({
 }: {
   stats: any;
   timePeriod: TimePeriod;
-}) => (
-  <Card classNames="w-full" style={{ height: "22rem" }}>
-    <NonIdealState
-      isLoading={stats.fetching}
-      isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}
-    >
-      <LineChart
-        data={[
-          {
-            data: stats.data?.events?.bucketed,
-            type: "line",
-            label: "Page views",
-            borderColor: "#0ba360",
-          },
-          {
-            data: stats.data?.events?.bucketedUnique,
-            type: "bar",
-            backgroundColor: (context: any) => {
-              return context.dataset.data[context.dataIndex].x.getDay() % 6 ===
-                0
-                ? "rgba(203, 213, 224, 0.6)"
-                : "rgba(203, 213, 224, 0.4)";
+}) => {
+  const isDayMode = timePeriodToFineBucket(timePeriod) === "day";
+
+  return (
+    <Card classNames="w-full" style={{ height: "22rem" }}>
+      <NonIdealState
+        isLoading={stats.fetching}
+        isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}
+      >
+        <LineChart
+          data={[
+            {
+              data: stats.data?.events?.bucketed,
+              type: "line",
+              label: "Page views",
+              borderColor: "#0ba360",
             },
-            label: "Unique visitors",
-          },
-        ]}
-        timePeriod={timePeriod}
-      />
-    </NonIdealState>
-  </Card>
-);
+            {
+              data: stats.data?.events?.bucketedUnique,
+              type: "bar",
+              backgroundColor: (context: any) => {
+                return isDayMode &&
+                  context.dataset.data[context.dataIndex].x.getDay() % 6 === 0
+                  ? "rgba(113, 128, 150, 0.5)"
+                  : "rgba(203, 213, 224, 0.5)";
+              },
+              label: "Unique visitors",
+            },
+          ]}
+          timePeriod={timePeriod}
+        />
+      </NonIdealState>
+    </Card>
+  );
+};
 
 const query = gql`
   query stats(
