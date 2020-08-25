@@ -37,32 +37,34 @@ class GraphQLFactory {
     @Bean
     @Singleton
     fun graphQL(): GraphQL {
-        val config = SchemaGeneratorConfig(supportedPackages = listOf("io.beampipe"),
-                hooks = object : SchemaGeneratorHooks {
-                    override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
-                        UUID::class -> Scalars.uuid
-                        Instant::class -> Scalars.dateTime
-                        ZonedDateTime::class -> Scalars.zonedDateTime
-                        LocalDateTime::class -> Scalars.localDateTime
-                        ByteArray::class -> Scalars.byteArray
-                        Any::class -> Scalars.json
-                        Map::class -> Scalars.json
-                        else -> super.willGenerateGraphQLType(type)
-                    }
-                },
-                dataFetcherFactoryProvider = SimpleKotlinDataFetcherFactoryProvider(objectMapper)
+        val config = SchemaGeneratorConfig(
+            supportedPackages = listOf("io.beampipe"),
+            hooks = object : SchemaGeneratorHooks {
+                override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
+                    UUID::class -> Scalars.uuid
+                    Instant::class -> Scalars.dateTime
+                    ZonedDateTime::class -> Scalars.zonedDateTime
+                    LocalDateTime::class -> Scalars.localDateTime
+                    ByteArray::class -> Scalars.byteArray
+                    Any::class -> Scalars.json
+                    Map::class -> Scalars.json
+                    else -> super.willGenerateGraphQLType(type)
+                }
+            },
+            dataFetcherFactoryProvider = SimpleKotlinDataFetcherFactoryProvider(objectMapper)
         )
 
         val queries = listOf(
-                TopLevelObject(eventsApi),
-                TopLevelObject(userApi)
+            TopLevelObject(eventsApi),
+            TopLevelObject(userApi)
         )
 
         val mutations = listOf(
-                TopLevelObject(accountApi)
+            TopLevelObject(accountApi)
         )
 
-        val schema = GraphQLSchema.newSchema(toSchema(config, queries, mutations)).additionalType(Scalars.dateTime).build()
+        val schema =
+            GraphQLSchema.newSchema(toSchema(config, queries, mutations)).additionalType(Scalars.dateTime).build()
 
         // Return the GraphQL bean.
         return GraphQL.newGraphQL(schema).build()

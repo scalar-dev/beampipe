@@ -24,6 +24,7 @@ import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -118,7 +119,7 @@ class EventsApi {
                 .groupBy(timeBucket)
                 .orderBy(timeBucket)
                 .map {
-                    Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneId.of("UTC")), it[count] ?: 0)
+                    Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneOffset.UTC), it[count] ?: 0)
                 }
         }
 
@@ -132,7 +133,7 @@ class EventsApi {
                 .groupBy(timeBucket)
                 .orderBy(timeBucket)
                 .map {
-                    Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneId.of("UTC")), it[count] ?: 0)
+                    Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneOffset.UTC), it[count] ?: 0)
                 }
         }
 
