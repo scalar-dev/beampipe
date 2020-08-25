@@ -3,7 +3,9 @@ package io.beampipe.server.graphql
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
+import io.beampipe.server.db.util.AtTimeZone
 import io.beampipe.server.db.util.TimeBucketGapFill
+import io.beampipe.server.db.util.TimeBucketGapFillStartEnd
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
@@ -11,6 +13,7 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
+import org.jetbrains.exposed.sql.`java-time`.timestampLiteral
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
@@ -21,6 +24,8 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 import javax.inject.Inject
@@ -40,7 +45,7 @@ class EventsApi {
     @Inject
     lateinit var userApi: UserApi
 
-    data class Bucket(val time: Instant, val count: Long)
+    data class Bucket(val time: ZonedDateTime, val count: Long)
     data class Count(val key: String?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
 
@@ -57,12 +62,12 @@ class EventsApi {
             val startTime: Instant?,
             val endTime: Instant?
     ) {
-        fun toStartTime() = when (type) {
+        fun toStartTime(): Instant = when (type) {
             "custom" -> startTime!!
             else -> timePeriodToStartTime(Instant.now(), type)
         }
 
-        fun toEndTime() = when (type) {
+        fun toEndTime(): Instant = when (type) {
             "custom" -> endTime!!
             else -> Instant.now()
         }
@@ -91,27 +96,35 @@ class EventsApi {
             private val domain: String,
             private val startTime: Instant,
             private val endTime: Instant,
-            private val comparisonStartTime: Instant?
+            private val comparisonStartTime: Instant?,
+            private val timeZone: ZoneId
     ) {
         private fun preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
                 Events.time.greaterEq(periodStartTime) and
                 Events.time.less(periodEndTime)
 
-        suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
-           val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
-           val count = Events.time.count().castTo<Long?>(LongColumnType())
+        private fun timeBucket(bucketDuration: String?) = TimeBucketGapFillStartEnd(
+                stringLiteral("1 ${bucketDuration ?: "day"}"),
+                AtTimeZone(Events.time, stringLiteral(timeZone.id)),
+                timestampLiteral(startTime),
+                timestampLiteral(endTime)
+        ).alias("time_bucket")
 
-           Events.slice(timeBucket, count)
-                   .select { preselect(startTime, endTime) }
-                   .groupBy(timeBucket)
-                   .orderBy(timeBucket)
-                   .map {
-                       Bucket(it[timeBucket], it[count] ?: 0)
-                   }
-       }
+        suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
+            val timeBucket = timeBucket(bucketDuration)
+            val count = Events.time.count().castTo<Long?>(LongColumnType())
+
+            Events.slice(timeBucket, count)
+                    .select { preselect(startTime, endTime) }
+                    .groupBy(timeBucket)
+                    .orderBy(timeBucket)
+                    .map {
+                        Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneId.of("UTC")), it[count] ?: 0)
+                    }
+        }
 
         suspend fun bucketedUnique(bucketDuration: String?) = newSuspendedTransaction {
-            val timeBucket = TimeBucketGapFill(stringLiteral("1 ${bucketDuration ?: "day"}"), Events.time).alias("timeBucket")
+            val timeBucket = timeBucket(bucketDuration)
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
 
             Events
@@ -120,7 +133,7 @@ class EventsApi {
                     .groupBy(timeBucket)
                     .orderBy(timeBucket)
                     .map {
-                        Bucket(it[timeBucket], it[count] ?: 0)
+                        Bucket(it[timeBucket].atZone(timeZone).withZoneSameInstant(ZoneId.of("UTC")), it[count] ?: 0)
                     }
         }
 
@@ -233,8 +246,19 @@ class EventsApi {
 
     suspend fun events(context: Context, domain: String, timePeriod: TimePeriod): EventsQuery = newSuspendedTransaction {
         val userId = userApi.user(context)?.id
-        matchingDomain(userId, domain)
+        val domainRow = matchingDomain(userId, domain)
+        val timeZone = if (userId != null) {
+            domainRow[Accounts.timeZone]
+        } else {
+            "UTC"
+        }
 
-        EventsQuery(domain, timePeriod.toStartTime(), timePeriod.toEndTime(), timePeriod.toPreviousStartTime())
+        EventsQuery(
+                domain,
+                timePeriod.toStartTime(),
+                timePeriod.toEndTime(),
+                timePeriod.toPreviousStartTime(),
+                ZoneId.of(timeZone)
+        )
     }
 }

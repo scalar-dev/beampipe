@@ -112,7 +112,7 @@ export const LineChart = ({
         yAxisID: `${index}`,
         data: dataset.data.map(
           ({ time, count }: { time: string; count: number }) => ({
-            x: moment(time).toDate(),
+            x: moment.parseZone(time).toDate(),
             y: count,
           })
         ),

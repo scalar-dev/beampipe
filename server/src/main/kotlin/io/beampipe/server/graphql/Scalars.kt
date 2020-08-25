@@ -19,6 +19,7 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.GraphQLScalarType
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.UUID
@@ -96,27 +97,53 @@ object Scalars {
                 }
             })
             .build()
+
+
     var localDateTime = GraphQLScalarType.newScalar()
             .name("LocalDateTime")
             .description("LocalDataTime scalar")
             .coercing(object : Coercing<LocalDateTime, String> {
                 override fun serialize(input: Any): String {
-                    return (input as LocalDateTime).format(localFormatter)
+                    return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(input as LocalDateTime)
                 }
 
                 override fun parseValue(input: Any): LocalDateTime {
-                    return LocalDateTime.parse(input.toString(), localFormatter)
+                    return LocalDateTime.parse(input.toString())
                 }
 
                 override fun parseLiteral(input: Any): LocalDateTime? {
                     return if (input is StringValue) {
-                        return LocalDateTime.parse(input.value, localFormatter)
+                        return LocalDateTime.parse(input.value)
                     } else {
                         null
                     }
                 }
             })
             .build()
+
+
+    var zonedDateTime = GraphQLScalarType.newScalar()
+            .name("ZonedDateTime")
+            .description("ZonedDataTime scalar")
+            .coercing(object : Coercing<ZonedDateTime, String> {
+                override fun serialize(input: Any): String {
+                    return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(input as ZonedDateTime)
+                }
+
+                override fun parseValue(input: Any): ZonedDateTime {
+                    return ZonedDateTime.parse(input.toString())
+                }
+
+                override fun parseLiteral(input: Any): ZonedDateTime? {
+                    return if (input is StringValue) {
+                        return ZonedDateTime.parse(input.value)
+                    } else {
+                        null
+                    }
+                }
+            })
+            .build()
+
     var json = GraphQLScalarType.newScalar()
             .name("Json")
             .description("A JSON blob")

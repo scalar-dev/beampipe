@@ -13,6 +13,7 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,6 +42,7 @@ class GraphQLFactory {
                     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
                         UUID::class -> Scalars.uuid
                         Instant::class -> Scalars.dateTime
+                        ZonedDateTime::class -> Scalars.zonedDateTime
                         LocalDateTime::class -> Scalars.localDateTime
                         ByteArray::class -> Scalars.byteArray
                         Any::class -> Scalars.json
