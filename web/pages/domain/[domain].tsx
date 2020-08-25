@@ -221,7 +221,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topPages.length > 0}
           >
-            <Table data={stats.data?.events.topPages} />
+            <Table
+              data={stats.data?.events.topPages}
+              columnHeadings={["Page", "Visits"]}
+            />
           </NonIdealState>
         </Card>
 
@@ -234,6 +237,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             >
               <Table
                 showImages
+                columnHeadings={["Source", "Visits"]}
                 data={stats.data?.events.topSources.map((source: any) => ({
                   key: source.source || source.referrer,
                   count: source.count,
@@ -258,7 +262,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topCountries.length > 0}
           >
-            <Table data={stats.data?.events.topCountries} />
+            <Table
+              columnHeadings={["Country", "Visits"]}
+              data={stats.data?.events.topCountries}
+            />
           </NonIdealState>
         </Card>
 
@@ -268,7 +275,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topScreenSizes.length > 0}
           >
-            <Table data={stats.data?.events.topScreenSizes} />
+            <Table
+              columnHeadings={["Screen Size", "Visits"]}
+              data={stats.data?.events.topScreenSizes}
+            />
           </NonIdealState>
         </Card>
 
@@ -281,7 +291,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topDevices.length > 0}
           >
-            <Table data={stats.data?.events.topDevices} />
+            <Table
+              columnHeadings={["Device", "Visits"]}
+              data={stats.data?.events.topDevices}
+            />
           </NonIdealState>
         </Card>
 
@@ -292,7 +305,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               isLoading={stats.fetching}
               isIdeal={stats.data?.events.topDeviceClasses.length > 0}
             >
-              <Table data={stats.data?.events.topDeviceClasses} />
+              <Table
+                columnHeadings={["Device Class", "Visits"]}
+                data={stats.data?.events.topDeviceClasses}
+              />
             </NonIdealState>
           </div>
         </Card>
@@ -306,7 +322,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topOperatingSystems.length > 0}
           >
-            <Table data={stats.data?.events.topOperatingSystems} />
+            <Table
+              columnHeadings={["OS", "Visits"]}
+              data={stats.data?.events.topOperatingSystems}
+            />
           </NonIdealState>
         </Card>
 
@@ -316,7 +335,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topAgents.length > 0}
           >
-            <Table data={stats.data?.events.topAgents} />
+            <Table
+              columnHeadings={["User Agent", "Visits"]}
+              data={stats.data?.events.topAgents}
+            />
           </NonIdealState>
         </Card>
       </div>
