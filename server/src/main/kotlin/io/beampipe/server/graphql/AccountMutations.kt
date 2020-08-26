@@ -7,13 +7,11 @@ import com.stripe.param.CustomerCreateParams
 import com.stripe.param.checkout.SessionCreateParams
 import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
-import io.beampipe.server.db.Domains
+import io.beampipe.server.graphql.util.Context
+import io.beampipe.server.graphql.util.CustomException
 import io.beampipe.server.stripe.StripeClient
 import io.micronaut.context.annotation.Property
 import org.apache.commons.validator.routines.EmailValidator
-import org.jetbrains.exposed.exceptions.ExposedSQLException
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -25,14 +23,14 @@ import java.util.UUID
 import javax.inject.Inject
 
 
-class AccountApi(
+class AccountMutations(
     @Property(
         name = "stripe.product",
         defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
     ) val stripeProduct: String
 ) {
     @Inject
-    lateinit var userApi: UserApi
+    lateinit var accountQuery: AccountQuery
 
     @Inject
     lateinit var stripeClient: StripeClient
@@ -175,58 +173,4 @@ class AccountApi(
                 }.value
             }
         }
-
-
-    suspend fun deleteDomain(context: Context, id: UUID): UUID {
-        if (context.authentication == null) {
-            throw Exception("Not allowed")
-        } else {
-            newSuspendedTransaction {
-                Domains.deleteWhere {
-                    Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
-                }
-            }
-
-            return id
-        }
-    }
-
-    suspend fun createOrUpdateDomain(context: Context, id: UUID?, domain: String, public: Boolean): UUID {
-        if (context.authentication == null) {
-            throw Exception("Not allowed")
-        } else {
-            val user = userApi.user(context)!!
-
-
-            return newSuspendedTransaction {
-                if (id != null) {
-                    Domains.slice(Domains.id).select {
-                        Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
-                    }.firstOrNull() ?: throw Exception("Domain not found")
-
-                    Domains.update({ Domains.id.eq(id) }) {
-                        it[Domains.domain] = domain
-                        it[Domains.public] = public
-                    }
-
-                    id
-                } else {
-                    try {
-                        Domains.insertAndGetId {
-                            it[accountId] = user.id
-                            it[Domains.domain] = domain
-                            it[Domains.public] = public
-                        }.value
-
-                    } catch (e: ExposedSQLException) {
-                        if (e.sqlState == "23505") {
-                            throw CustomException("This domain has already been configured (perhaps by another user)");
-                        } else {
-                            throw e
-                        }
-                    }
-                }
-            }
-        }
-    }
 }

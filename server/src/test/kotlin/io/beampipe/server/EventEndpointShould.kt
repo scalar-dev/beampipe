@@ -4,7 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.beampipe.server.api.EventEndpoint
-import io.beampipe.server.graphql.EventsApi
+import io.beampipe.server.graphql.EventQuery
 import io.micronaut.configuration.graphql.GraphQLRequestBody
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
@@ -47,7 +47,7 @@ class EventEndpointShould : TestPropertyProvider {
     )
 
     data class Response<T>(val data: T)
-    data class Events(val events: List<EventsApi.Event>)
+    data class Events(val events: List<EventQuery.Event>)
 
     @Test
     fun insert_events() {

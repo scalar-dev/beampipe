@@ -1,4 +1,4 @@
-package io.beampipe.server.graphql
+package io.beampipe.server.graphql.util
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
