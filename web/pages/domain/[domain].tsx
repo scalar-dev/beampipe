@@ -131,6 +131,77 @@ const Toolbar = ({
   </div>
 );
 
+const Pill = React.forwardRef<
+  HTMLAnchorElement,
+  { selected?: boolean } & React.DetailedHTMLProps<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement
+  >
+>(({ selected = false, children, ...otherProps }, ref) => (
+  <li className="ml-3 flex">
+    <a
+      ref={ref}
+      className={`transition duration-200 text-xs my-auto inline-block font-medium border-b-2 ${
+        selected
+          ? "text-gray-600 border-gray-400"
+          : "text-gray-500 border-transparent hover:text-gray-600"
+      }`}
+      href="#"
+      {...otherProps}
+    >
+      {children}
+    </a>
+  </li>
+));
+
+const Pills: React.FunctionComponent = ({ children }) => (
+  <ul className="flex items-center">{children}</ul>
+);
+
+type DevicesTab = "Screen Size" | "Device" | "Class";
+
+const DevicesCard = ({ stats }: { stats: any }) => {
+  const tabs: DevicesTab[] = ["Screen Size", "Device", "Class"];
+  const [selected, setSelected] = useState<DevicesTab>(tabs[0]);
+
+  const data = {
+    "Screen Size": stats.data?.events.topScreenSizes,
+    Device: stats.data?.events.topDevices,
+    Class: stats.data?.events.topDeviceClasses,
+  };
+  console.log(tabs);
+
+  return (
+    <DashboardCard position="right">
+      <CardTitle>
+        <div className="flex flex-wrap">
+          <div className="flex-1">Top Devices</div>
+          <Pills>
+            {tabs.map((tab) => (
+              <Pill
+                key={tab}
+                onClick={(e) => {
+                  setSelected(tab);
+                  e.preventDefault();
+                }}
+                selected={selected === tab}
+              >
+                {tab}
+              </Pill>
+            ))}
+          </Pills>
+        </div>
+      </CardTitle>
+      <NonIdealState
+        isLoading={stats.fetching}
+        isIdeal={stats.data?.events.topScreenSizes.length > 0}
+      >
+        <Table columnHeadings={[selected, "Visits"]} data={data[selected]} />
+      </NonIdealState>
+    </DashboardCard>
+  );
+};
+
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "day" });
 
@@ -207,44 +278,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </NonIdealState>
         </DashboardCard>
 
-        <DashboardCard position="right">
-          <CardTitle>Top Screen Sizes</CardTitle>
-          <NonIdealState
-            isLoading={stats.fetching}
-            isIdeal={stats.data?.events.topScreenSizes.length > 0}
-          >
-            <Table
-              columnHeadings={["Screen Size", "Visits"]}
-              data={stats.data?.events.topScreenSizes}
-            />
-          </NonIdealState>
-        </DashboardCard>
-
-        <DashboardCard position="left">
-          <CardTitle>Top Devices</CardTitle>
-          <NonIdealState
-            isLoading={stats.fetching}
-            isIdeal={stats.data?.events.topDevices.length > 0}
-          >
-            <Table
-              columnHeadings={["Device", "Visits"]}
-              data={stats.data?.events.topDevices}
-            />
-          </NonIdealState>
-        </DashboardCard>
-
-        <DashboardCard position="right">
-          <CardTitle>Top Device Classes</CardTitle>
-          <NonIdealState
-            isLoading={stats.fetching}
-            isIdeal={stats.data?.events.topDeviceClasses.length > 0}
-          >
-            <Table
-              columnHeadings={["Device Class", "Visits"]}
-              data={stats.data?.events.topDeviceClasses}
-            />
-          </NonIdealState>
-        </DashboardCard>
+        <DevicesCard stats={stats} />
 
         <DashboardCard position="left">
           <CardTitle>Top Operating Systems</CardTitle>

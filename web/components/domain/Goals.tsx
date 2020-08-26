@@ -358,6 +358,7 @@ export const GoalsCard = ({
         <Table
           columnHeadings={["Goals", "Count"]}
           data={stats.data?.events.goals}
+          showPercentages="max"
         />
       </NonIdealState>
     </DashboardCard>
