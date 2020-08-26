@@ -99,10 +99,9 @@ const Modal: React.FunctionComponent = ({ children }) => {
 
 const CreateGoalModal: React.FunctionComponent<{
   domain: string;
-  visible: boolean;
   onComplete: () => void;
   onCancel: () => void;
-}> = ({ domain, visible, onCancel, onComplete }) => {
+}> = ({ domain, onCancel, onComplete }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [eventType, setEventType] = useState("");
@@ -143,150 +142,148 @@ const CreateGoalModal: React.FunctionComponent<{
 
   return (
     <>
-      {visible && (
-        <Modal>
-          <ModalBody>
-            <form className="w-full" onSubmit={(e) => e.preventDefault()}>
-              <div className="md:flex md:items-center mb-6">
-                <div className="w-24">
-                  <label
-                    className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
-                    htmlFor="name"
-                  >
-                    Name
-                  </label>
-                </div>
-                <div className="flex-1">
-                  <input
-                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    id="name"
-                    type="text"
-                    placeholder="e.g. signup event"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                </div>
+      <Modal>
+        <ModalBody>
+          <form className="w-full" onSubmit={(e) => e.preventDefault()}>
+            <div className="md:flex md:items-center mb-6">
+              <div className="w-24">
+                <label
+                  className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
+                  htmlFor="name"
+                >
+                  Name
+                </label>
               </div>
-
-              <div className="md:flex md:items-center mb-6">
-                <div className="w-32">
-                  <label
-                    className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
-                    htmlFor="description"
-                  >
-                    Description
-                  </label>
-                </div>
-                <div className="flex-1">
-                  <input
-                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    id="description"
-                    type="text"
-                    placeholder="optional description"
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                  />
-                </div>
+              <div className="flex-1">
+                <input
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="name"
+                  type="text"
+                  placeholder="e.g. signup event"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
               </div>
+            </div>
 
-              <div className="md:flex md:items-center mb-6">
-                <div className="w-32">
-                  <label
-                    className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
-                    htmlFor="domain"
-                  >
-                    Event type
-                  </label>
-                </div>
-                <div className="flex-1">
-                  <datalist id="event-types">
-                    {query.data.domain.eventTypes.map((e: string) => (
-                      <option key={e}>{e}</option>
-                    ))}
-                  </datalist>
-                  <input
-                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    id="event_type"
-                    type="text"
-                    list="event-types"
-                    placeholder="e.g. signup event"
-                    value={eventType}
-                    onChange={(e) => {
-                      setEventType(e.target.value);
-                    }}
-                  />
-                </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="w-32">
+                <label
+                  className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
+                  htmlFor="description"
+                >
+                  Description
+                </label>
               </div>
-
-              <div className="md:flex md:items-center mb-6">
-                <div className="w-48">
-                  <label
-                    className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
-                    htmlFor="domain"
-                  >
-                    Path
-                  </label>
-                </div>
-                <div className="flex-1">
-                  <input
-                    className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    id="name"
-                    type="text"
-                    placeholder="e.g. signup event"
-                    value={path}
-                    onChange={(e) => {
-                      setPath(e.target.value);
-                    }}
-                  />
-                </div>
+              <div className="flex-1">
+                <input
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="description"
+                  type="text"
+                  placeholder="optional description"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                />
               </div>
-              {error && <p className="text-red-500 pb-4 italic">{error}</p>}
-            </form>
-          </ModalBody>
-          <ModalFooter>
-            <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-              <button
-                type="button"
-                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={async () => {
-                  const result = await createGoal({
-                    domainId: query.data.domain.id,
-                    name,
-                    description,
-                    eventType,
-                    path,
-                  });
+            </div>
 
-                  if (
-                    !onApiError(
-                      result.error,
-                      "An unspecified error occurred",
-                      setError
-                    )
-                  ) {
-                    onComplete();
-                  }
-                }}
-              >
-                Create
-              </button>
-            </span>
-            <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-              <button
-                type="button"
-                className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                onClick={onCancel}
-              >
-                Cancel
-              </button>
-            </span>
-          </ModalFooter>
-        </Modal>
-      )}
+            <div className="md:flex md:items-center mb-6">
+              <div className="w-32">
+                <label
+                  className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
+                  htmlFor="domain"
+                >
+                  Event type
+                </label>
+              </div>
+              <div className="flex-1">
+                <datalist id="event-types">
+                  {query.data?.domain?.eventTypes?.map((e: string) => (
+                    <option key={e}>{e}</option>
+                  ))}
+                </datalist>
+                <input
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="event_type"
+                  type="text"
+                  list="event-types"
+                  placeholder="e.g. signup event"
+                  value={eventType}
+                  onChange={(e) => {
+                    setEventType(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="md:flex md:items-center mb-6">
+              <div className="w-48">
+                <label
+                  className="block text-gray-500 font-bold mb-1 md:mb-0 pr-4"
+                  htmlFor="domain"
+                >
+                  Path
+                </label>
+              </div>
+              <div className="flex-1">
+                <input
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="name"
+                  type="text"
+                  placeholder="e.g. signup event"
+                  value={path}
+                  onChange={(e) => {
+                    setPath(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            {error && <p className="text-red-500 pb-4 italic">{error}</p>}
+          </form>
+        </ModalBody>
+        <ModalFooter>
+          <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+            <button
+              type="button"
+              className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+              onClick={async () => {
+                const result = await createGoal({
+                  domainId: query.data.domain.id,
+                  name,
+                  description,
+                  eventType,
+                  path,
+                });
+
+                if (
+                  !onApiError(
+                    result.error,
+                    "An unspecified error occurred",
+                    setError
+                  )
+                ) {
+                  onComplete();
+                }
+              }}
+            >
+              Create
+            </button>
+          </span>
+          <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+            <button
+              type="button"
+              className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+              onClick={onCancel}
+            >
+              Cancel
+            </button>
+          </span>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };
@@ -332,17 +329,18 @@ export const GoalsCard = ({
           </IfUserLoggedIn>
         </div>
       </CardTitle>
-      <CreateGoalModal
-        domain={domain}
-        visible={modalVisible}
-        onCancel={() => {
-          setModalVisible(false);
-        }}
-        onComplete={() => {
-          setModalVisible(false);
-          refetch();
-        }}
-      />
+      {modalVisible && (
+        <CreateGoalModal
+          domain={domain}
+          onCancel={() => {
+            setModalVisible(false);
+          }}
+          onComplete={() => {
+            setModalVisible(false);
+            refetch();
+          }}
+        />
+      )}
       <NonIdealState
         isLoading={stats.fetching}
         isIdeal={stats.data?.events.goals.length > 0}
