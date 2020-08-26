@@ -262,7 +262,7 @@ class EventQuery {
                             )
                 }
                 .slice(Goals.id, Goals.name, sum)
-                .selectAll()
+                .select { Domains.domain eq domain }
                 .groupBy(Goals.id)
                 .orderBy(sum, SortOrder.DESC)
                 .map {
