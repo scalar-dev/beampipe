@@ -264,6 +264,7 @@ class EventQuery {
                 .slice(Goals.id, Goals.name, sum)
                 .selectAll()
                 .groupBy(Goals.id)
+                .orderBy(sum, SortOrder.DESC)
                 .map {
                     Count(it[Goals.name], it[sum] ?: 0)
                 }

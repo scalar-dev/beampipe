@@ -11,7 +11,7 @@ interface TableProps {
     image?: ReactNode;
   }[];
 
-  showPercentages?: boolean;
+  showPercentages?: "max" | "sum" | null;
   columnHeadings?: [string, string];
 }
 
@@ -22,18 +22,25 @@ const Bar = ({ percentage }: { percentage: number }) => (
       height="100%"
       className="fill-current text-green-600 hover:text-green-500"
     >
-      <rect width={`${100.0 * percentage}%`} height="100%"></rect>
+      <rect width={`${100.0 * percentage}%`} height="100%" rx={3}></rect>
     </svg>
   </div>
 );
 
-export const Table = ({ showImages = false, data, showPercentages = true, columnHeadings = ["", ""] }: TableProps) => {
+export const Table = ({
+  showImages = false,
+  data,
+  showPercentages = "sum",
+  columnHeadings = ["", ""],
+}: TableProps) => {
   if (data.length === 0) {
     return null;
   }
 
   const maxCount = _.maxBy(data, "count")!.count;
-  const sumCount = _.sumBy(data, "count")!
+  const sumCount = _.sumBy(data, "count")!;
+
+  const denominator = showPercentages === "sum" ? sumCount : maxCount;
 
   return (
     <table className="w-full table-fixed">
@@ -55,15 +62,15 @@ export const Table = ({ showImages = false, data, showPercentages = true, column
         {data?.map((item) => (
           <tr key={item.reactKey || item.key} className="border-t-2">
             {showImages && <td className="w-6 p-1">{item.image}</td>}
-            <td className="px-2 text-xs font-mono py-1 truncate">
+            <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">
               {item.key || "none"}
               <Bar percentage={maxCount === 0 ? 0 : item.count / maxCount} />
             </td>
             <td className="px-2 text-right text-xs w-1/5">{item.count}</td>
             {showPercentages ? (
               <td className="text-right w-12 text-xs text-gray-600">
-                {sumCount > 0
-                  ? numeral(item.count / sumCount).format("0%")
+                {denominator > 0
+                  ? numeral(item.count / denominator).format("0%")
                   : null}
               </td>
             ) : null}
