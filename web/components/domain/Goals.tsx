@@ -21,7 +21,7 @@ const ModalFooter: React.FunctionComponent = ({ children }) => (
   </div>
 );
 
-const Modal: React.FunctionComponent = ({ children }) => {
+const Modal: React.FunctionComponent = ({ children, ...otherProps }) => {
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -56,41 +56,9 @@ const Modal: React.FunctionComponent = ({ children }) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
+          {...otherProps}
         >
           {children}
-          {/* <div className="sm:flex sm:items-start">
-              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <svg
-                  className="h-6 w-6 text-red-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3
-                  className="text-lg leading-6 font-medium text-gray-900"
-                  id="modal-headline"
-                >
-                  Deactivate account
-                </h3>
-                <div className="mt-2">
-                  <p className="text-sm leading-5 text-gray-500">
-                    Are you sure you want to deactivate your account? All of
-                    your data will be permanently removed. This action cannot be
-                    undone.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
@@ -142,7 +110,7 @@ const CreateGoalModal: React.FunctionComponent<{
 
   return (
     <>
-      <Modal>
+      <Modal data-cy="modal-create-goal">
         <ModalBody>
           <form className="w-full" onSubmit={(e) => e.preventDefault()}>
             <div className="md:flex md:items-center mb-6">
@@ -158,6 +126,7 @@ const CreateGoalModal: React.FunctionComponent<{
                 <input
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="name"
+                  data-cy="input-goal-name"
                   type="text"
                   placeholder="e.g. signup event"
                   value={name}
@@ -182,6 +151,7 @@ const CreateGoalModal: React.FunctionComponent<{
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="description"
                   type="text"
+                  data-cy="input-goal-description"
                   placeholder="optional description"
                   value={description}
                   onChange={(e) => {
@@ -211,7 +181,8 @@ const CreateGoalModal: React.FunctionComponent<{
                   id="event_type"
                   type="text"
                   list="event-types"
-                  placeholder="e.g. signup event"
+                  data-cy="input-goal-event-type"
+                  placeholder="e.g. signup"
                   value={eventType}
                   onChange={(e) => {
                     setEventType(e.target.value);
@@ -234,8 +205,9 @@ const CreateGoalModal: React.FunctionComponent<{
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="name"
                   type="text"
-                  placeholder="e.g. signup event"
+                  placeholder="e.g. /"
                   value={path}
+                  data-cy="input-goal-path"
                   onChange={(e) => {
                     setPath(e.target.value);
                   }}
@@ -304,7 +276,7 @@ export const GoalsCard = ({
   };
 
   return (
-    <DashboardCard position="full">
+    <DashboardCard position="full" data-cy="goals-card">
       <CardTitle>
         <div className="flex">
           <div className="flex-auto overflow-auto">Goals</div>
@@ -349,7 +321,9 @@ export const GoalsCard = ({
             You haven't configured any goals yet.
             <IfUserLoggedIn>
               <div className="pt-4">
-                <Button onClick={createGoal}>Create a goal</Button>
+                <Button data-cy="button-create-goal" onClick={createGoal}>
+                  Create a goal
+                </Button>
               </div>
             </IfUserLoggedIn>
           </div>

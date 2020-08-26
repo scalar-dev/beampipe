@@ -77,6 +77,7 @@ export const SignupForm = () => {
           id="username"
           name="username"
           type="text"
+          data-cy="email"
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -94,6 +95,7 @@ export const SignupForm = () => {
           name="password"
           id="password"
           type="password"
+          data-cy="password"
           placeholder="******************"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -116,7 +118,9 @@ export const SignupForm = () => {
 
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
-        <Button onClick={signUp}>Sign up</Button>
+        <Button data-cy="submit" onClick={signUp}>
+          Sign up
+        </Button>
         <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
           Already signed up?{" "}
           <Link href="/sign-in">
