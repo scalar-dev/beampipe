@@ -7,50 +7,20 @@ import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
-  LineChart,
   timePeriodToFineBucket,
 } from "../../components/viz/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
 import { AuthProvider } from "../../utils/auth";
-import { Stats, StatsCounter } from "../../components/viz/Stats";
-import { Spinner } from "../../components/Spinner";
-import numeral from "numeral";
+import { Stats } from "../../components/viz/Stats";
 import { DomainPicker } from "../../components/viz/DomainPicker";
 import { TimePicker, TimePeriod } from "../../components/viz/TimePicker";
-
-const cardHeight = "28rem";
-
-const LiveCounter = ({ domain }: { domain: string }) => {
-  const [liveStats] = useQuery({
-    query: gql`
-      query stats($domain: String!) {
-        liveUnique(domain: $domain)
-      }
-    `,
-    pollInterval: 5000,
-    requestPolicy: "network-only",
-    variables: {
-      domain,
-    },
-  });
-  return (
-    <StatsCounter
-      value={
-        liveStats.data ? (
-          <div className="animate-pulse">
-            {numeral(liveStats.data.liveUnique).format("0.[0]a")}
-          </div>
-        ) : (
-          <Spinner />
-        )
-      }
-      title="Online now"
-      delta={null}
-    />
-  );
-};
+import { GoalsCard } from "../../components/domain/Goals";
+import { DashboardCard } from "../../components/domain/DashboardCard";
+import { LiveCounter } from "../../components/domain/LiveCounter";
+import React from "react";
+import { TimeChart } from "../../components/domain/TimeChart";
 
 const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
@@ -65,48 +35,6 @@ const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
     </div>
   </Card>
 );
-
-const Chart = ({
-  stats,
-  timePeriod,
-}: {
-  stats: any;
-  timePeriod: TimePeriod;
-}) => {
-  const isDayMode = timePeriodToFineBucket(timePeriod) === "day";
-
-  return (
-    <Card classNames="w-full" style={{ height: "22rem" }}>
-      <NonIdealState
-        isLoading={stats.fetching}
-        isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}
-      >
-        <LineChart
-          data={[
-            {
-              data: stats.data?.events?.bucketed,
-              type: "line",
-              label: "Page views",
-              borderColor: "#0ba360",
-            },
-            {
-              data: stats.data?.events?.bucketedUnique,
-              type: "bar",
-              backgroundColor: (context: any) => {
-                return isDayMode &&
-                  context.dataset.data[context.dataIndex].x.getDay() % 6 === 0
-                  ? "rgba(113, 128, 150, 0.5)"
-                  : "rgba(203, 213, 224, 0.5)";
-              },
-              label: "Unique visitors",
-            },
-          ]}
-          timePeriod={timePeriod}
-        />
-      </NonIdealState>
-    </Card>
-  );
-};
 
 const query = gql`
   query stats(
@@ -167,6 +95,11 @@ const query = gql`
         count
       }
 
+      goals {
+        key
+        count
+      }
+
       countUnique
       previousCountUnique
       count
@@ -177,10 +110,31 @@ const query = gql`
   }
 `;
 
+const Toolbar = ({
+  timePeriod,
+  setTimePeriod,
+}: {
+  timePeriod: TimePeriod;
+  setTimePeriod: (timePeriod: TimePeriod) => void;
+}) => (
+  <div className="py-2">
+    <div className="flex flex-row max-w-full">
+      <div className="flex-1">
+        <IfUserLoggedIn>
+          <DomainPicker />
+        </IfUserLoggedIn>
+      </div>
+      <div>
+        <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
+      </div>
+    </div>
+  </div>
+);
+
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "day" });
 
-  const [stats] = useQuery({
+  const [stats, refetchStats] = useQuery({
     query,
     variables: {
       domain,
@@ -196,26 +150,12 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
 
   return (
     <div className="container mx-auto flex flex-col">
-      <div className="py-2">
-        <div className="flex flex-row max-w-full">
-          <div className="flex-1">
-            <IfUserLoggedIn>
-              <DomainPicker />
-            </IfUserLoggedIn>
-          </div>
-          <div>
-            <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
-          </div>
-        </div>
-      </div>
+      <Toolbar timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
       <div className="flex flex-row flex-wrap">
         <TopBar stats={stats} domain={domain} />
-        <Chart stats={stats} timePeriod={timePeriod} />
+        <TimeChart stats={stats} timePeriod={timePeriod} />
 
-        <Card
-          classNames="w-full md:w-1/2 md:pr-4"
-          style={{ height: cardHeight }}
-        >
+        <DashboardCard position="left">
           <CardTitle>Top Pages</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -226,9 +166,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               columnHeadings={["Page", "Visits"]}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+        <DashboardCard position="right">
           <CardTitle>Top Sources</CardTitle>
           <div className="flex flex-1 max-w-full">
             <NonIdealState
@@ -252,12 +192,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               />
             </NonIdealState>
           </div>
-        </Card>
+        </DashboardCard>
 
-        <Card
-          classNames="w-full md:w-1/2 md:pr-4"
-          style={{ height: cardHeight }}
-        >
+        <DashboardCard position="left">
           <CardTitle>Top Countries</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -268,9 +205,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topCountries}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+        <DashboardCard position="right">
           <CardTitle>Top Screen Sizes</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -281,12 +218,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topScreenSizes}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
 
-        <Card
-          classNames="w-full md:w-1/2 md:pr-4"
-          style={{ height: cardHeight }}
-        >
+        <DashboardCard position="left">
           <CardTitle>Top Devices</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -297,27 +231,22 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topDevices}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+        <DashboardCard position="right">
           <CardTitle>Top Device Classes</CardTitle>
-          <div className="flex-1">
-            <NonIdealState
-              isLoading={stats.fetching}
-              isIdeal={stats.data?.events.topDeviceClasses.length > 0}
-            >
-              <Table
-                columnHeadings={["Device Class", "Visits"]}
-                data={stats.data?.events.topDeviceClasses}
-              />
-            </NonIdealState>
-          </div>
-        </Card>
+          <NonIdealState
+            isLoading={stats.fetching}
+            isIdeal={stats.data?.events.topDeviceClasses.length > 0}
+          >
+            <Table
+              columnHeadings={["Device Class", "Visits"]}
+              data={stats.data?.events.topDeviceClasses}
+            />
+          </NonIdealState>
+        </DashboardCard>
 
-        <Card
-          classNames="w-full md:w-1/2 md:pr-4"
-          style={{ height: cardHeight }}
-        >
+        <DashboardCard position="left">
           <CardTitle>Top Operating Systems</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -328,9 +257,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topOperatingSystems}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
 
-        <Card classNames="w-full md:w-1/2" style={{ height: cardHeight }}>
+        <DashboardCard position="right">
           <CardTitle>Top User Agents</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
@@ -341,7 +270,13 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topAgents}
             />
           </NonIdealState>
-        </Card>
+        </DashboardCard>
+
+        <GoalsCard
+          domain={domain}
+          stats={stats}
+          refetch={() => refetchStats({ requestPolicy: "network-only" })}
+        />
       </div>
     </div>
   );

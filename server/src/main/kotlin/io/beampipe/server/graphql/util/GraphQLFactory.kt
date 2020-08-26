@@ -1,4 +1,4 @@
-package io.beampipe.server.graphql
+package io.beampipe.server.graphql.util
 
 import com.expediagroup.graphql.SchemaGeneratorConfig
 import com.expediagroup.graphql.TopLevelObject
@@ -9,6 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.GraphQLType
+import io.beampipe.server.graphql.AccountMutations
+import io.beampipe.server.graphql.AccountQuery
+import io.beampipe.server.graphql.DomainMutations
+import io.beampipe.server.graphql.DomainQuery
+import io.beampipe.server.graphql.EventQuery
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import java.time.Instant
@@ -21,19 +26,14 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 @Factory
-class GraphQLFactory {
-    @Inject
-    lateinit var eventsApi: EventsApi
-
-    @Inject
-    lateinit var userApi: UserApi
-
-    @Inject
-    lateinit var accountApi: AccountApi
-
-    @Inject
-    lateinit var objectMapper: ObjectMapper
-
+class GraphQLFactory(
+    @Inject val eventQuery: EventQuery,
+    @Inject val accountQuery: AccountQuery,
+    @Inject val accountMutations: AccountMutations,
+    @Inject val domainQuery: DomainQuery,
+    @Inject val domainMutations: DomainMutations,
+    @Inject val objectMapper: ObjectMapper
+) {
     @Bean
     @Singleton
     fun graphQL(): GraphQL {
@@ -55,12 +55,14 @@ class GraphQLFactory {
         )
 
         val queries = listOf(
-            TopLevelObject(eventsApi),
-            TopLevelObject(userApi)
+            TopLevelObject(eventQuery),
+            TopLevelObject(accountQuery),
+            TopLevelObject(domainQuery)
         )
 
         val mutations = listOf(
-            TopLevelObject(accountApi)
+            TopLevelObject(accountMutations),
+            TopLevelObject(domainMutations)
         )
 
         val schema =

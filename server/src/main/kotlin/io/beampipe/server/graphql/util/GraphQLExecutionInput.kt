@@ -1,6 +1,7 @@
-package io.beampipe.server.graphql
+package io.beampipe.server.graphql.util
 
 import graphql.ExecutionInput
+import io.beampipe.server.graphql.util.Context
 import io.micronaut.configuration.graphql.DefaultGraphQLExecutionInputCustomizer
 import io.micronaut.configuration.graphql.GraphQLExecutionInputCustomizer
 import io.micronaut.context.annotation.Replaces
