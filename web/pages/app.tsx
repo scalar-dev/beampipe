@@ -197,6 +197,7 @@ const AddOrEditDomain = ({
             id="domain"
             type="text"
             placeholder="foo.com"
+            data-cy="input-domain-name"
             value={domainName}
             onChange={(e) => {
               setValidDomain(isValidDomain(e.target.value));
@@ -237,6 +238,7 @@ const AddOrEditDomain = ({
         <div className="md:w-2/3">
           <Button
             disabled={!validDomain}
+            data-cy="button-save-domain"
             onClick={async () => {
               const result = await executeMutation({
                 id: domain?.id,
@@ -269,6 +271,7 @@ const AddOrEditDomain = ({
               className="float-right"
               type="button"
               intent="danger"
+              data-cy="button-domain-delete"
               onClick={async () => {
                 if (confirm("Are you sure you want to delete this domain?")) {
                   const result = await executeDelete({ id: domain.id });
@@ -329,7 +332,9 @@ const DomainCard: React.FunctionComponent<{
               href="/domain/[domain]"
               as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a className="hover:text-gray-500 break-words">{domain.domain}</a>
+              <a data-cy="a-domain" className="hover:text-gray-500 break-words">
+                {domain.domain}
+              </a>
             </Link>
           </div>
 
@@ -338,6 +343,7 @@ const DomainCard: React.FunctionComponent<{
               <>
                 <a
                   href="#"
+                  data-cy="button-domain-settings"
                   className="text-gray-600 hover:text-gray-500"
                   onClick={(e) => {
                     setState("editing");
@@ -419,7 +425,11 @@ const DomainList = ({
         <div className="py-12 text-xl text-gray-600 text-center font-extrabold">
           You haven't setup any domains yet.
           <div className="text-green-600 hover:text-green-500 pt-4 underline">
-            <a href="#" onClick={() => setShowAddDomain(true)}>
+            <a
+              href="#"
+              data-cy="add-domain"
+              onClick={() => setShowAddDomain(true)}
+            >
               Add a domain to get started
             </a>
           </div>
