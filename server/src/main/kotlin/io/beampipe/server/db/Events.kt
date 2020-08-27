@@ -10,6 +10,7 @@ object Events : UUIDTable("event") {
     val type = varchar("type", 64)
     val city = varchar("city", 1024).nullable()
     val country = varchar("country", 1024).nullable()
+    val isoCountryCode = text("iso_country_code").nullable()
     val domain = varchar("domain", 1024)
     val path = varchar("path", 1024)
     val userId = long("user_id")

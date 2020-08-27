@@ -100,6 +100,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
                 it[path] = uri.path ?: "/"
                 it[city] = ipCity.map { it.city.name }.orElse(null)
                 it[country] = ipCity.map { it.country.name }.orElse(null)
+                it[isoCountryCode] = ipCity.map { it.country.isoCode }.orElse(null)
                 it[Events.referrer] = event.referrer
                 it[Events.referrerClean] = referrer
                 it[source_] = event.source
