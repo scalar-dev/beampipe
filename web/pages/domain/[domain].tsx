@@ -21,6 +21,8 @@ import { DashboardCard } from "../../components/domain/DashboardCard";
 import { LiveCounter } from "../../components/domain/LiveCounter";
 import React from "react";
 import { TimeChart } from "../../components/domain/TimeChart";
+import MapChart from "../../components/domain/MapChart";
+import { Pills, Pill } from "../../components/Pills";
 
 const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
@@ -72,6 +74,7 @@ const query = gql`
 
       topCountries {
         key
+        numericKey
         count
       }
 
@@ -131,33 +134,6 @@ const Toolbar = ({
   </div>
 );
 
-const Pill = React.forwardRef<
-  HTMLAnchorElement,
-  { selected?: boolean } & React.DetailedHTMLProps<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
-  >
->(({ selected = false, children, ...otherProps }, ref) => (
-  <li className="ml-3 flex">
-    <a
-      ref={ref}
-      className={`transition duration-200 text-xs my-auto inline-block font-medium border-b-2 ${
-        selected
-          ? "text-gray-600 border-gray-400"
-          : "text-gray-500 border-transparent hover:text-gray-600"
-      }`}
-      href="#"
-      {...otherProps}
-    >
-      {children}
-    </a>
-  </li>
-));
-
-const Pills: React.FunctionComponent = ({ children }) => (
-  <ul className="flex items-center">{children}</ul>
-);
-
 type DevicesTab = "Screen Size" | "Device" | "Class";
 
 const DevicesCard = ({ stats }: { stats: any }) => {
@@ -169,7 +145,6 @@ const DevicesCard = ({ stats }: { stats: any }) => {
     Device: stats.data?.events.topDevices,
     Class: stats.data?.events.topDeviceClasses,
   };
-  console.log(tabs);
 
   return (
     <DashboardCard position="right">
@@ -197,6 +172,53 @@ const DevicesCard = ({ stats }: { stats: any }) => {
         isIdeal={stats.data?.events.topScreenSizes.length > 0}
       >
         <Table columnHeadings={[selected, "Visits"]} data={data[selected]} />
+      </NonIdealState>
+    </DashboardCard>
+  );
+};
+
+const MapCard = ({ stats }: { stats: any }) => {
+  const [selected, setSelected] = useState<"table" | "map">("map");
+
+  return (
+    <DashboardCard position="left">
+      <CardTitle>
+        <div className="flex flex-wrap">
+          <div className="flex-1">Top Countries</div>
+          <Pills>
+            <Pill
+              onClick={(e) => {
+                setSelected("map");
+                e.preventDefault();
+              }}
+              selected={selected === "map"}
+            >
+              Map
+            </Pill>
+            <Pill
+              onClick={(e) => {
+                setSelected("table");
+                e.preventDefault();
+              }}
+              selected={selected === "table"}
+            >
+              Table
+            </Pill>
+          </Pills>
+        </div>
+      </CardTitle>
+      <NonIdealState
+        isLoading={stats.fetching}
+        isIdeal={stats.data?.events.topCountries.length > 0}
+      >
+        {selected === "table" ? (
+          <Table
+            columnHeadings={["Country", "Visits"]}
+            data={stats.data?.events.topCountries}
+          />
+        ) : (
+          <MapChart data={stats.data?.events.topCountries} />
+        )}
       </NonIdealState>
     </DashboardCard>
   );
@@ -265,19 +287,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </div>
         </DashboardCard>
 
-        <DashboardCard position="left">
-          <CardTitle>Top Countries</CardTitle>
-          <NonIdealState
-            isLoading={stats.fetching}
-            isIdeal={stats.data?.events.topCountries.length > 0}
-          >
-            <Table
-              columnHeadings={["Country", "Visits"]}
-              data={stats.data?.events.topCountries}
-            />
-          </NonIdealState>
-        </DashboardCard>
-
+        <MapCard stats={stats} />
         <DevicesCard stats={stats} />
 
         <DashboardCard position="left">

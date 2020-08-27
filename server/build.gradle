@@ -64,6 +64,7 @@ dependencies {
 
     implementation("commons-validator:commons-validator:1.7")
     implementation("com.snowplowanalytics:java-referer-parser:0.4.0-rc4")
+    implementation("com.neovisionaries:nv-i18n:1.27")
 
     kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
