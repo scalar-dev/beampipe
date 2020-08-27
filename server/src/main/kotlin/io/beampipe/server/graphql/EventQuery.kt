@@ -1,5 +1,6 @@
 package io.beampipe.server.graphql
 
+import com.neovisionaries.i18n.CountryCode
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
@@ -8,12 +9,10 @@ import io.beampipe.server.db.util.AtTimeZone
 import io.beampipe.server.db.util.TimeBucketGapFillStartEnd
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
+import io.beampipe.server.slack.logger
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ExpressionAlias
-import org.jetbrains.exposed.sql.FieldSet
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
-import org.jetbrains.exposed.sql.QueryAlias
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
@@ -49,14 +48,21 @@ fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = 
     else -> throw Exception("Invalid time period")
 }
 
+val countryNameToCode = CountryCode.values()
+    .map { it.getName() to it.numeric }
+    .toMap()
+
 @Singleton
 class EventQuery {
+
     @Inject
     lateinit var accountQuery: AccountQuery
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
     data class Count(val key: String?, val count: Long)
+    data class CountryCount(val key: String?, val numericKey: Int?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
+
 
     data class Event(
         val type: String,
@@ -108,6 +114,7 @@ class EventQuery {
         private val comparisonStartTime: Instant?,
         private val timeZone: ZoneId
     ) {
+
         private fun preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
                 Events.time.greaterEq(periodStartTime) and
                 Events.time.less(periodEndTime)
@@ -195,6 +202,12 @@ class EventQuery {
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
         suspend fun topCountries(n: Int?) = topBy(Events.country, n)
+            .map {
+                if (it.key !in countryNameToCode) {
+                    LOG.warn("Country name not found: {}", it.key)
+                }
+                CountryCount(it.key, countryNameToCode[it.key], it.count)
+            }
 
         suspend fun topDevices(n: Int?) = topBy(Events.deviceName, n)
 
@@ -233,22 +246,12 @@ class EventQuery {
                 .count()
         }
 
-        private fun QueryAlias.sliceAliasedQuery(): FieldSet {
-            return slice(columns + query
-                .set
-                .fields
-                .filterNot { it in query.set.source.columns }
-                .filterIsInstance<ExpressionAlias<Any>>()
-                .map { this[it] }
-            )
-        }
-
         suspend fun goals() = newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType()).alias("count")
 
             val eventTypePathCount = Events
                 .slice(Events.type, Events.path, count)
-                .selectAll()
+                .select { Events.domain eq domain }
                 .groupBy(Events.type, Events.path)
                 .alias("event_type_path_by_count")
 
@@ -317,4 +320,9 @@ class EventQuery {
                 zoneId
             )
         }
+
+    companion object {
+        val LOG = logger()
+    }
 }
+
