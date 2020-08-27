@@ -4,18 +4,18 @@ import {
   Geography,
   ZoomableGroup,
 } from "react-simple-maps";
-import world from "world-atlas/countries-110m.json";
 import { scaleLinear } from "d3";
 import _ from "lodash";
 import { useState, ReactNode } from "react";
 import Tippy from "@tippyjs/react";
 import React from "react";
 import { followCursor } from "tippy.js";
+import world from "./world-110m.json";
 
 interface MapChartProps {
   data: {
     key: string;
-    numericKey: number;
+    isoCode: string;
     count: number;
   }[];
 }
@@ -34,7 +34,6 @@ const MapChart = ({ data }: MapChartProps) => {
         followCursor
         content={tooltipContent}
         visible={tooltipContent != null}
-        inlinePositioning
         plugins={[followCursor]}
       >
         <div className="w-full h-full">
@@ -45,18 +44,18 @@ const MapChart = ({ data }: MapChartProps) => {
                   {({ geographies }) =>
                     geographies.map((geo) => {
                       const d = data.find(
-                        (row) => row.numericKey?.toString() === geo.id
+                        (row) => row.isoCode === geo.properties.ISO_A2
                       );
 
                       return (
                         <Geography
-                          key={geo.id}
+                          key={geo.properties.name}
                           geography={geo}
-                          fill={geo.id && d ? colorScale(d.count) : "#e2e8f0"}
+                          fill={d ? colorScale(d.count) : "#e2e8f0"}
                           onMouseEnter={() => {
                             setTooltipContent(
                               <>
-                                <b>{geo.properties.name}</b>
+                                <b>{geo.properties.NAME}</b>
                                 <br />
                                 Unique visitors: {d?.count || 0}
                               </>
