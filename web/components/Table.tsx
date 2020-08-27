@@ -5,8 +5,7 @@ import numeral from "numeral";
 interface TableProps {
   showImages?: boolean;
   data: {
-    key: string;
-    reactKey?: string;
+    key: string | null;
     count: number;
     image?: ReactNode;
   }[];
@@ -61,8 +60,8 @@ export const Table = ({
         </tr>
       </thead>
       <tbody>
-        {data?.slice(0, maxRows).map((item) => (
-          <tr key={item.reactKey || item.key} className="border-t-2">
+        {data?.slice(0, maxRows).map((item, idx) => (
+          <tr key={idx} className="border-t-2">
             {showImages && <td className="w-6 p-1">{item.image}</td>}
             <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">
               {item.key || "none"}
