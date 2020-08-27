@@ -74,8 +74,8 @@ const query = gql`
 
       topCountries {
         key
-        numericKey
         count
+        data
       }
 
       topDevices {
@@ -217,7 +217,13 @@ const MapCard = ({ stats }: { stats: any }) => {
             data={stats.data?.events.topCountries}
           />
         ) : (
-          <MapChart data={stats.data?.events.topCountries} />
+          <MapChart
+            data={stats.data?.events.topCountries.map((country: any) => ({
+              key: country.key,
+              count: country.count,
+              isoCode: country.data.iso_country_code,
+            }))}
+          />
         )}
       </NonIdealState>
     </DashboardCard>
@@ -273,7 +279,6 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                 columnHeadings={["Source", "Visits"]}
                 data={stats.data?.events.topSources.map((source: any) => ({
                   key: source.source || source.referrer,
-                  reactKey: `${source.source}_${source.referrer}`,
                   count: source.count,
                   image: source.referrer && (
                     <img

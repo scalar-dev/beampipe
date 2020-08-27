@@ -1,6 +1,5 @@
 package io.beampipe.server.graphql
 
-import com.neovisionaries.i18n.CountryCode
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
@@ -47,10 +46,6 @@ fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = 
     else -> throw Exception("Invalid time period")
 }
 
-val countryNameToCode = CountryCode.values()
-    .map { it.getName() to it.numeric }
-    .toMap()
-
 @Singleton
 class EventQuery {
 
@@ -58,8 +53,7 @@ class EventQuery {
     lateinit var accountQuery: AccountQuery
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
-    data class Count(val key: String?, val count: Long)
-    data class CountryCount(val key: String?, val numericKey: Int?, val count: Long)
+    data class Count(val key: String?, val count: Long, val data: Map<String, String>? = null)
     data class Source(val referrer: String?, val source: String?, val count: Long)
 
 
@@ -168,18 +162,28 @@ class EventQuery {
             null
         }
 
-        private suspend fun topBy(column: Column<*>, n: Int?) = newSuspendedTransaction {
+        private suspend fun topBy(n: Int?, primaryColumn: Column<*>, vararg otherColumns: Column<*>) = newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
-            Events.slice(column, count)
+            Events.slice(primaryColumn, *otherColumns, count)
                 .select { preselect(startTime, endTime) }
-                .groupBy(column)
+                .groupBy(primaryColumn, *otherColumns)
                 .having { count.greaterEq(1L) }
                 .orderBy(count, SortOrder.DESC)
                 .limit(n ?: 100)
-                .map { Count(it[column]?.toString(), it[count] ?: 0) }
+                .map {
+                    Count(
+                        it[primaryColumn]?.toString(),
+                        it[count] ?: 0,
+                        if (otherColumns.isNotEmpty()) {
+                            otherColumns.map { col -> col.name to it[col].toString() }.toMap()
+                        } else {
+                            null
+                        }
+                    )
+                }
         }
 
-        suspend fun topPages(n: Int?) = topBy(Events.path, n)
+        suspend fun topPages(n: Int?) = topBy(n, Events.path)
 
         suspend fun topSources(n: Int?) = newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
@@ -198,23 +202,17 @@ class EventQuery {
                 .map { Source(it[Events.referrerClean], it[Events.sourceClean], it[count] ?: 0) }
         }
 
-        suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
+        suspend fun topScreenSizes(n: Int?) = topBy(n, Events.device)
 
-        suspend fun topCountries(n: Int?) = topBy(Events.country, n)
-            .map {
-                if (it.key !in countryNameToCode) {
-                    LOG.warn("Country name not found: {}", it.key)
-                }
-                CountryCount(it.key, countryNameToCode[it.key], it.count)
-            }
+        suspend fun topCountries(n: Int?) = topBy(n, Events.country, Events.isoCountryCode)
 
-        suspend fun topDevices(n: Int?) = topBy(Events.deviceName, n)
+        suspend fun topDevices(n: Int?) = topBy(n, Events.deviceName)
 
-        suspend fun topDeviceClasses(n: Int?) = topBy(Events.deviceClass, n)
+        suspend fun topDeviceClasses(n: Int?) = topBy(n, Events.deviceClass)
 
-        suspend fun topOperatingSystems(n: Int?) = topBy(Events.operationGystemName, n)
+        suspend fun topOperatingSystems(n: Int?) = topBy(n, Events.operationGystemName)
 
-        suspend fun topAgents(n: Int?) = topBy(Events.agentName, n)
+        suspend fun topAgents(n: Int?) = topBy(n, Events.agentName)
 
         suspend fun countUnique() = newSuspendedTransaction {
             Events
@@ -268,7 +266,7 @@ class EventQuery {
                 .groupBy(Goals.id)
                 .orderBy(sum, SortOrder.DESC)
                 .map {
-                    Count(it[Goals.name], it[sum] ?: 0)
+                    Count(it[Goals.name], it[sum] ?: 0, null)
                 }
         }
 
