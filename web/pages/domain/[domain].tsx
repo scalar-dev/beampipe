@@ -225,7 +225,7 @@ const MapCard = ({ stats }: { stats: any }) => {
 };
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "day" });
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
 
   const [stats, refetchStats] = useQuery({
     query,
