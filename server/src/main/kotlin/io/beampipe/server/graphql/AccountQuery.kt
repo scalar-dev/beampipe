@@ -3,6 +3,7 @@ package io.beampipe.server.graphql
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
+import io.beampipe.server.graphql.util.Context
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.exists
@@ -13,7 +14,7 @@ import java.util.UUID
 import javax.inject.Singleton
 
 @Singleton
-class UserApi {
+class AccountQuery {
     data class User(val id: UUID, val email: String?, val name: String?)
     data class UserSettings(val email: String?, val name: String?, val timeZone: String, val subscription: String)
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)

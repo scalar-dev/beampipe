@@ -3,6 +3,7 @@ import { useMutation } from "urql";
 import gql from "graphql-tag";
 import { Button } from "./Buttons";
 import Link from "next/link";
+import { onApiError } from "../utils/errors";
 
 const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -45,17 +46,13 @@ export const SignupForm = () => {
       return;
     }
 
-    if (result.error) {
-      const userMessage = result.error.graphQLErrors[0].extensions?.userMessage;
+    const error = onApiError(
+      result.error,
+      "There was an errror creating your account :-(. Please get in touch hello@beampipe.io",
+      setError
+    );
 
-      if (userMessage) {
-        setError(userMessage);
-      } else {
-        setError(
-          "There was an errror creating your account :-(. Please get in touch hello@beampipe.io"
-        );
-      }
-    } else {
+    if (!error) {
       if (await login(email, password)) {
         window.location.assign("/app");
       } else {
@@ -80,6 +77,7 @@ export const SignupForm = () => {
           id="username"
           name="username"
           type="text"
+          data-cy="email"
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -97,6 +95,7 @@ export const SignupForm = () => {
           name="password"
           id="password"
           type="password"
+          data-cy="password"
           placeholder="******************"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -119,12 +118,13 @@ export const SignupForm = () => {
 
       {error && <p className="text-red-500 pb-4 italic">{error}</p>}
       <div className="flex items-center justify-between">
-        <Button onClick={signUp}>Sign up</Button>
+        <Button data-cy="submit" onClick={signUp}>
+          Sign up
+        </Button>
         <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
-          Already signed up? <Link href="/sign-in">
-            <a
-              className="font-bold text-sm text-blue-600 hover:text-blue-800 underline"
-            >
+          Already signed up?{" "}
+          <Link href="/sign-in">
+            <a className="font-bold text-sm text-blue-600 hover:text-blue-800 underline">
               Login
             </a>
           </Link>

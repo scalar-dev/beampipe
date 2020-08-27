@@ -1,4 +1,4 @@
-package io.beampipe.server.graphql
+package io.beampipe.server.graphql.util
 
 import graphql.ErrorType
 import graphql.GraphQLError
