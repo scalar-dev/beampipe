@@ -26,7 +26,6 @@ import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -176,7 +175,7 @@ class EventQuery {
                 .groupBy(column)
                 .having { count.greaterEq(1L) }
                 .orderBy(count, SortOrder.DESC)
-                .limit(n ?: 10)
+                .limit(n ?: 100)
                 .map { Count(it[column]?.toString(), it[count] ?: 0) }
         }
 

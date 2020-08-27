@@ -34,7 +34,6 @@ const MapChart = ({ data }: MapChartProps) => {
         followCursor
         content={tooltipContent}
         visible={tooltipContent != null}
-        inlinePositioning
         plugins={[followCursor]}
       >
         <div className="w-full h-full">
@@ -50,7 +49,7 @@ const MapChart = ({ data }: MapChartProps) => {
 
                       return (
                         <Geography
-                          key={geo.id}
+                          key={geo.properties.name}
                           geography={geo}
                           fill={geo.id && d ? colorScale(d.count) : "#e2e8f0"}
                           onMouseEnter={() => {
