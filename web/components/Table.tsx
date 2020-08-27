@@ -13,6 +13,7 @@ interface TableProps {
 
   showPercentages?: "max" | "sum" | null;
   columnHeadings?: [string, string];
+  maxRows?: number;
 }
 
 const Bar = ({ percentage }: { percentage: number }) => (
@@ -32,6 +33,7 @@ export const Table = ({
   data,
   showPercentages = "sum",
   columnHeadings = ["", ""],
+  maxRows = 10,
 }: TableProps) => {
   if (data.length === 0) {
     return null;
@@ -59,7 +61,7 @@ export const Table = ({
         </tr>
       </thead>
       <tbody>
-        {data?.map((item) => (
+        {data?.slice(0, maxRows).map((item) => (
           <tr key={item.reactKey || item.key} className="border-t-2">
             {showImages && <td className="w-6 p-1">{item.image}</td>}
             <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">
