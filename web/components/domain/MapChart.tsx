@@ -40,8 +40,6 @@ const MapChart = ({ data }: MapChartProps) => {
         <div className="w-full h-full">
           <ComposableMap className="w-full h-full">
             <ZoomableGroup>
-              {/* <Sphere stroke="#E4E5E6" strokeWidth={0.5} /> */}
-              {/* <Graticule stroke="#E4E5E6" strokeWidth={0.5} /> */}
               {data && (
                 <Geographies geography={world}>
                   {({ geographies }) =>
@@ -54,7 +52,7 @@ const MapChart = ({ data }: MapChartProps) => {
                         <Geography
                           key={geo.id}
                           geography={geo}
-                          fill={geo.id && d ? colorScale(d.count) : "#D6D6DA"}
+                          fill={geo.id && d ? colorScale(d.count) : "#e2e8f0"}
                           onMouseEnter={() => {
                             setTooltipContent(
                               <>
@@ -71,10 +69,12 @@ const MapChart = ({ data }: MapChartProps) => {
                             default: {
                               outline: "none",
                               opacity: 1.0,
+                              stroke: "#a0aec0"
                             },
                             hover: {
                               outline: "none",
                               stroke: "#ff5233",
+                              strokeWidth: 5,
                               opacity: 0.5,
                             },
                             pressed: {
