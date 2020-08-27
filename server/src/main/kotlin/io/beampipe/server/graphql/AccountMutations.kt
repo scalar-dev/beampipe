@@ -127,11 +127,11 @@ class AccountMutations(
         return session.id
     }
 
-    suspend fun cancelSubscription(context: Context): String {
-        return newSuspendedTransaction {
+    suspend fun cancelSubscription(context: Context): String = context.withAccountId { accountId ->
+        newSuspendedTransaction {
             val stripeId = Accounts
                 .slice(Accounts.stripeId)
-                .select { Accounts.id.eq(context.accountId) }
+                .select { Accounts.id.eq(accountId) }
                 .first()[Accounts.stripeId]
 
             val subscriptionId = Customer.retrieve(stripeId)
@@ -147,7 +147,7 @@ class AccountMutations(
         }
     }
 
-    suspend fun createUser(context: Context, email: String, password: String, emailOk: Boolean) =
+    suspend fun createUser(email: String, password: String, emailOk: Boolean) =
         newSuspendedTransaction {
             if (!EmailValidator.getInstance().isValid(email)) {
                 throw CustomException("Email address is invalid")
