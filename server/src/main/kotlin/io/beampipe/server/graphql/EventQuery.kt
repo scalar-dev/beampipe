@@ -1,10 +1,15 @@
 package io.beampipe.server.graphql
 
+import com.neovisionaries.i18n.CountryCode
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
+import io.beampipe.server.db.Goals
 import io.beampipe.server.db.util.AtTimeZone
 import io.beampipe.server.db.util.TimeBucketGapFillStartEnd
+import io.beampipe.server.graphql.util.Context
+import io.beampipe.server.graphql.util.CustomException
+import io.beampipe.server.slack.logger
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
@@ -21,7 +26,9 @@ import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
+import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.time.ZoneId
@@ -33,7 +40,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?) = when (timePeriodStart ?: "day") {
+fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = when (timePeriodStart ?: "day") {
     "day" -> origin.minus(1, ChronoUnit.DAYS)
     "hour" -> origin.minus(1, ChronoUnit.HOURS)
     "week" -> origin.minus(7, ChronoUnit.DAYS)
@@ -41,14 +48,21 @@ fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?) = when (tim
     else -> throw Exception("Invalid time period")
 }
 
+val countryNameToCode = CountryCode.values()
+    .map { it.getName() to it.numeric }
+    .toMap()
+
 @Singleton
-class EventsApi {
+class EventQuery {
+
     @Inject
-    lateinit var userApi: UserApi
+    lateinit var accountQuery: AccountQuery
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
     data class Count(val key: String?, val count: Long)
+    data class CountryCount(val key: String?, val numericKey: Int?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
+
 
     data class Event(
         val type: String,
@@ -100,6 +114,7 @@ class EventsApi {
         private val comparisonStartTime: Instant?,
         private val timeZone: ZoneId
     ) {
+
         private fun preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
                 Events.time.greaterEq(periodStartTime) and
                 Events.time.less(periodEndTime)
@@ -170,11 +185,12 @@ class EventsApi {
         suspend fun topSources(n: Int?) = newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
             Events.slice(Events.referrerClean, Events.sourceClean, count)
-                .select { preselect(startTime, endTime) and
-                        // We have some cases of refferer being null and source being not null.
-                        // Looks like the Google bot
-                        // Should probably be fixed with a migration
-                        not(Events.referrerClean.isNull() and Events.sourceClean.isNotNull())
+                .select {
+                    preselect(startTime, endTime) and
+                            // We have some cases of refferer being null and source being not null.
+                            // Looks like the Google bot
+                            // Should probably be fixed with a migration
+                            not(Events.referrerClean.isNull() and Events.sourceClean.isNotNull())
                 }
                 .groupBy(Events.referrerClean, Events.sourceClean)
                 .having { count.greaterEq(1L) }
@@ -186,6 +202,12 @@ class EventsApi {
         suspend fun topScreenSizes(n: Int?) = topBy(Events.device, n)
 
         suspend fun topCountries(n: Int?) = topBy(Events.country, n)
+            .map {
+                if (it.key !in countryNameToCode) {
+                    LOG.warn("Country name not found: {}", it.key)
+                }
+                CountryCount(it.key, countryNameToCode[it.key], it.count)
+            }
 
         suspend fun topDevices(n: Int?) = topBy(Events.deviceName, n)
 
@@ -224,6 +246,33 @@ class EventsApi {
                 .count()
         }
 
+        suspend fun goals() = newSuspendedTransaction {
+            val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType()).alias("count")
+
+            val eventTypePathCount = Events
+                .slice(Events.type, Events.path, count)
+                .select { Events.domain eq domain }
+                .groupBy(Events.type, Events.path)
+                .alias("event_type_path_by_count")
+
+            val sum = eventTypePathCount[count].castTo<Long>(LongColumnType()).sum()
+
+            Goals
+                .join(Domains, JoinType.INNER, Goals.domain, Domains.id)
+                .join(eventTypePathCount, JoinType.INNER, null, null) {
+                    eventTypePathCount[Events.type].eq(Goals.eventType) and (
+                            eventTypePathCount[Events.path].eq(Goals.path) or Goals.path.eq("") or Goals.path.isNull()
+                            )
+                }
+                .slice(Goals.id, Goals.name, sum)
+                .select { Domains.domain eq domain }
+                .groupBy(Goals.id)
+                .orderBy(sum, SortOrder.DESC)
+                .map {
+                    Count(it[Goals.name], it[sum] ?: 0)
+                }
+        }
+
         suspend fun previousBounceCount() = if (comparisonStartTime != null) {
             newSuspendedTransaction {
                 Events
@@ -239,7 +288,7 @@ class EventsApi {
     }
 
     suspend fun liveUnique(context: Context, domain: String) = newSuspendedTransaction {
-        val userId = userApi.user(context)?.id
+        val userId = accountQuery.user(context)?.id
         matchingDomain(userId, domain)
 
         Events
@@ -254,13 +303,13 @@ class EventsApi {
 
     suspend fun events(context: Context, domain: String, timePeriod: TimePeriod, timeZone: String?): EventsQuery =
         newSuspendedTransaction {
-            val userId = userApi.user(context)?.id
+            val userId = accountQuery.user(context)?.id
             val domainRow = matchingDomain(userId, domain)
 
             val zoneId = when {
                 timeZone != null -> ZoneId.of(timeZone)
                 userId != null -> ZoneId.of(domainRow[Accounts.timeZone])
-                else -> ZoneId.of("UTC")
+                else -> ZoneOffset.UTC
             }
 
             EventsQuery(
@@ -271,4 +320,9 @@ class EventsApi {
                 zoneId
             )
         }
+
+    companion object {
+        val LOG = logger()
+    }
 }
+
