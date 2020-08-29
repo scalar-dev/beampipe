@@ -14,6 +14,8 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+fun canonicaliseDomain(domain:String) = domain.trim().toLowerCase()
+
 @Singleton
 class DomainMutations(@Inject val accountQuery: AccountQuery) {
     suspend fun deleteDomain(context: Context, id: UUID): UUID = context.withAccountId {
@@ -52,7 +54,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
                     context.checkDomainAccess(id)
 
                     Domains.update({ Domains.id.eq(id) }) {
-                        it[Domains.domain] = domain
+                        it[Domains.domain] = canonicaliseDomain(domain)
                         it[Domains.public] = public
                     }
 
@@ -61,7 +63,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
                     try {
                         Domains.insertAndGetId {
                             it[Domains.accountId] = accountId
-                            it[Domains.domain] = domain
+                            it[Domains.domain] = canonicaliseDomain(domain)
                             it[Domains.public] = public
                         }.value
 
