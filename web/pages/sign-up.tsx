@@ -9,7 +9,7 @@ import { AuthProvider } from "../utils/auth";
 const SignUp = () => {
   return (
     <AuthProvider>
-      <Layout title="beampipe - login">
+      <Layout title="sign up">
         <div className="m-auto w-full p-8 md:max-w-xl">
           <Card>
             <Title>Sign up</Title>

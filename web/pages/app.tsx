@@ -476,7 +476,7 @@ const Page = () => {
   });
 
   return (
-    <Layout title="beampipe | domains">
+    <Layout title="domains">
       <div className="container mx-auto">
         {!query.fetching ? (
           <DomainList
