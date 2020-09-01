@@ -4,6 +4,7 @@ import { TimePeriod } from "./TimePicker";
 import moment from "moment";
 import numeral from "numeral";
 import { NICE_NUMBER_FORMAT } from "./Stats";
+import _ from "lodash";
 
 export const timePeriodToBucket = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
@@ -89,36 +90,30 @@ export const LineChart = ({
             },
           },
         ],
-        yAxes: [
-          {
-            type: "linear",
-            id: "0",
-            position: "left",
-            ticks: {
-              precision: 0,
-              callback: (value) => {
-                return numeral(value).format(NICE_NUMBER_FORMAT);
-              },
-            },
-          } as ChartYAxe,
-        ],
+        yAxes: _.chain(data)
+          .map((ds) => ds.yAxisID)
+          .uniq()
+          .map<ChartYAxe>(
+            (yAxis: string, index: number) =>
+              ({
+                type: "linear",
+                id: yAxis,
+                position: index === 0 ? "left" : "right",
+                ticks: {
+                  precision: 0,
+                  callback: (value) => {
+                    return numeral(value).format(NICE_NUMBER_FORMAT);
+                  },
+                },
+                gridLines: {
+                  display: index === 0,
+                },
+              } as ChartYAxe)
+          )
+          .value(),
       };
 
-      if (data.length > 1) {
-        chart.current.options.scales?.yAxes?.push({
-          type: "linear",
-          id: "1",
-          position: "right",
-          ticks: {
-            precision: 0,
-          },
-          gridLines: {
-            display: false,
-          },
-        } as ChartYAxe);
-      }
-
-      chart.current.data.datasets = data.map((dataset, index) => ({
+      chart.current.data.datasets = data.map((dataset) => ({
         label: dataset.label,
         lineTension: 0,
         backgroundColor: dataset.backgroundColor || gradient,
@@ -127,7 +122,7 @@ export const LineChart = ({
         pointBorderColor: "rgba(0, 0, 0, 0)",
         pointBackgroundColor: "rgba(0, 0, 0, 0)",
         type: dataset.type,
-        yAxisID: `${index}`,
+        yAxisID: dataset.yAxisID,
         data: dataset.data.map(
           ({ time, count }: { time: string; count: number }) => ({
             x: moment.parseZone(time).toDate(),
