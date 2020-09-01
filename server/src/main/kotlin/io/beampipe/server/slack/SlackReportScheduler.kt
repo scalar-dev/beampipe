@@ -157,7 +157,7 @@ class SlackReportScheduler() {
         }
     }
 
-    @Scheduled(fixedRate = "10s")
+    @Scheduled(fixedRate = "10m")
     fun run() = GlobalScope.launch(Dispatchers.IO) {
         newSuspendedTransaction {
             LOG.info("Checking for summary subscriptions")
