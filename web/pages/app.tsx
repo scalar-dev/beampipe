@@ -73,11 +73,13 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
 };
 
 const InnerDomainChart = ({ domain }: { domain: string }) => {
+  const timePeriod = { type: "week" };
+
   const [query] = useQuery({
     query: gql`
-      query stats($domain: String!) {
-        events(domain: $domain, timePeriod: { type: "week" }) {
-          bucketed(bucketDuration: "day") {
+      query stats($domain: String!, $timePeriod: TimePeriodInput!) {
+        events(domain: $domain, timePeriod: $timePeriod) {
+          bucketedUnique(bucketDuration: "day") {
             time
             count
           }
@@ -93,6 +95,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
     `,
     variables: {
       domain,
+      timePeriod,
     },
   });
 
@@ -101,20 +104,31 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       nonIdeal={
         <div className="text-center">
           <div className="text-xl text-gray-500 pb-4">
-            No events recorded in the past week
+            No events recorded in the past {timePeriod.type}
           </div>
         </div>
       }
-      isIdeal={!_.every(query.data?.events?.bucketed, (x) => x.count == 0)}
+      isIdeal={
+        !_.every(query.data?.events?.bucketedUnique, (x) => x.count == 0)
+      }
       isLoading={query.fetching}
     >
       <div className="h-48">
         <LineChart
           data={[
             {
-              label: "Page views",
-              data: query.data?.events?.bucketed,
+              data: query.data?.events?.bucketedUnique,
               borderColor: "#0ba360",
+              type: "bar",
+              yAxisID: "visitors",
+              backgroundColor: (context: any) => {
+                return context.dataset.data[context.dataIndex].x.getDay() %
+                  6 ===
+                  0
+                  ? "rgba(113, 128, 150, 0.5)"
+                  : "rgba(203, 213, 224, 0.5)";
+              },
+              label: "Unique visitors",
             },
           ]}
           timePeriod={{ type: "week" }}
