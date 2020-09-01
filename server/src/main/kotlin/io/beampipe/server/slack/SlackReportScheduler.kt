@@ -63,7 +63,7 @@ class SlackReportScheduler() {
         if (change == null) {
             return ""
         } else {
-            val df = DecimalFormat("##.##%")
+            val df = DecimalFormat("##.#%")
             val formattedPercent = df.format(change)
 
             if (change > 0) {
@@ -79,7 +79,7 @@ class SlackReportScheduler() {
         if (value == null) {
             return "-"
         } else {
-            val df = DecimalFormat("#.##")
+            val df = DecimalFormat("#.#")
             return df.format(value)
         }
     }
@@ -120,8 +120,8 @@ class SlackReportScheduler() {
             null
         }
 
-        val countChange = computeChange(count.toDouble(), prevCount?.toDouble())
-        val countUniqueChange = computeChange(countUnique.toDouble(), prevCountUnique?.toDouble())
+        val countChange = computeChange(count, prevCount)
+        val countUniqueChange = computeChange(countUnique, prevCountUnique)
         val bounceRateChange = computeChange(bounceRate, prevBounceRate)
 
         val response = Slack.getInstance()
