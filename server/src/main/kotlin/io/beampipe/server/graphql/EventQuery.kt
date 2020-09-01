@@ -37,7 +37,6 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = when (timePeriodStart ?: "day") {
     "day" -> origin.minus(1, ChronoUnit.DAYS)
     "hour" -> origin.minus(1, ChronoUnit.HOURS)

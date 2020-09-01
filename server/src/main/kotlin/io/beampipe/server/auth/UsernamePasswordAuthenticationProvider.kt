@@ -18,6 +18,8 @@ import java.time.Instant
 import java.util.Base64
 import javax.inject.Singleton
 
+fun canonicaliseEmail(email: String) = email.trim().toLowerCase()
+
 @Singleton
 class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
     override fun authenticate(
@@ -26,9 +28,10 @@ class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
     ): Publisher<AuthenticationResponse> {
         return Flowable.fromFuture(
             GlobalScope.future {
+                val email = canonicaliseEmail(authenticationRequest!!.identity as String)
                 val account = newSuspendedTransaction {
                     Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
-                        .select { Accounts.email.eq(authenticationRequest!!.identity as String) }
+                        .select { Accounts.email.eq(email) }
                         .firstOrNull()
                 }
 

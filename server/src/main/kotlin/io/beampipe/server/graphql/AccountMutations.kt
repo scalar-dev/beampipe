@@ -5,6 +5,7 @@ import com.stripe.model.Subscription
 import com.stripe.model.checkout.Session
 import com.stripe.param.CustomerCreateParams
 import com.stripe.param.checkout.SessionCreateParams
+import io.beampipe.server.auth.canonicaliseEmail
 import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.graphql.util.Context
@@ -56,7 +57,7 @@ class AccountMutations(
             Accounts.update({
                 Accounts.id.eq(accountId)
             }) {
-                it[Accounts.email] = email
+                it[Accounts.email] = canonicaliseEmail(email)
             }
 
             email

@@ -399,7 +399,7 @@ const LaptopThing = () => (
 const IndexPage = () => {
   return (
     <AuthProvider>
-      <Layout title="beampipe.io | dead simple web analytics">
+      <Layout title="dead simple web analytics">
         <Hero />
         <LaptopThing />
 
