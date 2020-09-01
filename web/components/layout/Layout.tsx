@@ -82,17 +82,19 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   const user = useContext(UserContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const fullTitle = `beampipe.io | ${title}`;
+
   return (
     <>
       <Head>
-        <title>beampipe.io | {title}</title>
+        <title>{fullTitle}</title>
         <link rel="icon" href="/static/favicon.ico" />
         <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={title} />
+        <meta property="og:title" content={fullTitle} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={`beampipe.io | ${title}`} />
+        <meta name="twitter:title" content={fullTitle} />
         <meta name="twitter:description" content={metaDescription} />
       </Head>
 
