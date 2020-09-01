@@ -67,10 +67,20 @@ class SlackReportScheduler() {
             val formattedPercent = df.format(change)
 
             if (change > 0) {
-                return ":arrow_up $formattedPercent"
+                return ":arrow_up: $formattedPercent"
             } else {
-                return ":arrow_down $formattedPercent"
+                return ":arrow_down: $formattedPercent"
             }
+        }
+    }
+
+
+    private fun formatDouble(value: Double?): String {
+        if (value == null) {
+            return "-"
+        } else {
+            val df = DecimalFormat("#.##")
+            return df.format(value)
         }
     }
 
@@ -131,7 +141,7 @@ class SlackReportScheduler() {
                                 .build(),
                             block("*Page views*: $count ${formatChange(countChange)}"),
                             block("*Unique visitors*: $countUnique ${formatChange(countUniqueChange)}"),
-                            block("*Bounce rate*: ${bounceRate ?: "-"} ${formatChange(bounceRateChange)}")
+                            block("*Bounce rate*: ${formatDouble(bounceRate)} ${formatChange(bounceRateChange)}")
                         )
                     )
                     .build()
