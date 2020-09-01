@@ -226,7 +226,7 @@ const Settings = () => {
 
   return (
     <AuthProvider>
-      <Layout title="beampipe - settings">
+      <Layout title="settings">
         <div className="container mx-auto">
           <Title>Settings</Title>
 
