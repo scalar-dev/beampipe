@@ -26,10 +26,12 @@ export const TimeChart = ({
               type: "line",
               label: "Page views",
               borderColor: "#0ba360",
+              yAxisID: "page_views"
             },
             {
               data: stats.data?.events?.bucketedUnique,
               type: "bar",
+              yAxisID: "visitors",
               backgroundColor: (context: any) => {
                 return isDayMode &&
                   context.dataset.data[context.dataIndex].x.getDay() % 6 === 0
