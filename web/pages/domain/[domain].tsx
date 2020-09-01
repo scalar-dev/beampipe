@@ -336,7 +336,7 @@ const DomainPage = () => {
 
   return (
     <AuthProvider>
-      <Layout title={`beampipe | ${router.query.domain}`}>
+      <Layout title={router.query.domain as string}>
         <Root domain={router.query.domain as string} />
       </Layout>
     </AuthProvider>
