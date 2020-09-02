@@ -221,12 +221,13 @@ const Why = () => (
         <div>
           <div className="text-lg font-bold">Free for small sites.</div>
           <p>
-            We want privacy-respecting analytics to be available to everyone. We
-            offer a free tier for small sites (up to 10k page views per month).
+            We think privacy-friendly analytics should be available to everyone.
+            Our free tier for small sites includes up to 10k page views per
+            month.
           </p>
           <p className="mt-4">
-            If you go over your usage limits due to a traffic spike, we won't
-            cut you off.
+            If you are lucky enough to see a spike in traffic putting you over
+            the limit, we won't cut you off.
           </p>
         </div>
       </BulletCard>
