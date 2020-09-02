@@ -10,67 +10,44 @@ import { AuthProvider } from "../utils/auth";
 import { Tick } from "../components/marketing/Tick";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChartLine,
-  IconDefinition,
-  faCookieBite,
-  faClipboardList,
-  faProjectDiagram,
-  faCheckCircle,
   faAt,
   faClipboardCheck,
   faBook,
+  faCode,
+  faCookieBite,
+  faProjectDiagram,
+  IconDefinition,
+  faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  faSlack,
   faTwitter,
   faProductHunt,
   faMedium,
 } from "@fortawesome/free-brands-svg-icons";
-import { Laptop } from "../components/marketing/Laptop";
-
-export const Hero = () => {
-  return (
-    <div className="py-12 bg-green-600 text-white text-center">
-      <div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-        <div className="flex flex-col w-full justify-center items-center text-center">
-          <h1 className="my-4 text-6xl font-extrabold">
-            dead simple web analytics
-          </h1>
-          <p className="leading-normal text-2xl mb-8">
-            beampipe offers <b>simple</b>, <b>privacy-focussed</b> web
-            analytics. <b>free</b> for upto 10k monthly page views.
-          </p>
-          <IfUserLoggedIn>
-            <Link href="/app">
-              <a className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg">
-                Go to app
-              </a>
-            </Link>
-          </IfUserLoggedIn>
-          <IfAnonymous>
-            <div className="flex flex-gap">
-              <Link href="/sign-up">
-                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                  Sign up free
-                </a>
-              </Link>
-              <Link href="/domain/beampipe.io">
-                <a className="mx-2 hover:underline bg-white text-gray-800 font-bold rounded-full my-2 py-4 px-8 shadow-lg">
-                  Live demo
-                </a>
-              </Link>
-            </div>
-          </IfAnonymous>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { Screenshot } from "../components/marketing/Screenshot";
+import { ReactNode } from "react";
 
 interface PricingBoxProps {
   title: React.ReactNode;
   price: React.ReactNode;
 }
+
+const ProductHuntButton = () => (
+  <div className="m-auto py-4">
+    <a
+      href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
+      target="_blank"
+    >
+      <img
+        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
+        alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
+        style={{ width: "250px", height: "54px" }}
+        width="250px"
+        height="54px"
+      />
+    </a>
+  </div>
+);
 
 const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
   title,
@@ -99,79 +76,160 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
   );
 };
 
-const FeatureCard: React.FunctionComponent<{ icon: IconDefinition }> = ({
-  icon,
-  children,
-}) => (
-  <div className="flex mt-4 rounded-lg shadow-lg bg-white p-8">
-    <div>
-      <FontAwesomeIcon
-        size="2x"
-        className="fill-current w-4 h-4 mr-2"
-        icon={icon}
-      />
+const FeatureCard: React.FunctionComponent<{
+  title: ReactNode;
+  image: ReactNode;
+}> = ({ title, image, children }) => (
+  <div className="flex flex-col md:flex-row p-4 md:p-8 mb-8 text-gray-800">
+    <div className="w-full md:w-1/2 md:pr-8 pb-8">
+      <div className="text-4xl font-extrabold">{title}</div>
+      <div className="text-xl">{children}</div>
     </div>
-    <div className="text-xlarge font-extrabold">{children}</div>
+    <div className="w-full md:w-1/2 flex justify-end">{image}</div>
+  </div>
+);
+
+const Icon: React.FunctionComponent<{ icon: IconDefinition }> = ({ icon }) => (
+  <div className="text-white bg-purple-600 rounded-lg shadow-lg p-2 m-auto w-12 h-12 flex">
+    <FontAwesomeIcon className="fill-current m-auto" size="lg" icon={icon} />
+  </div>
+);
+
+const BulletCard: React.FunctionComponent = ({ children }) => (
+  <div className="w-full md:w-1/2 p-4 md:p-8">
+    <div className="flex flex-row items-start">{children}</div>
   </div>
 );
 
 const Features = () => (
-  <div className="pt-8">
+  <div className="md:pt-8">
     <div className="container mx-auto">
-      <div className="mx-auto text-6xl text-center font-extrabold py-4 text-purple-600">
-        Features
+      <FeatureCard
+        title="Simple, powerful web analytics dashboard."
+        image={
+          <Screenshot>
+            <img src="/screenshot2.png" />
+          </Screenshot>
+        }
+      >
+        <p>
+          See only what you need to know. No more scrolling through endless
+          reports.
+        </p>
+
+        <p className="mt-4">Your dashboard is live and updated in realtime.</p>
+
+        <p className="mt-4">
+          Easily filter by traffic source, region or time period.
+        </p>
+      </FeatureCard>
+
+      <FeatureCard
+        title="Slack integration."
+        image={
+          <Screenshot>
+            <img src="/slack2.png" className="w-full" />
+          </Screenshot>
+        }
+      >
+        <p>Receive daily or weekly summary reports straight to Slack.</p>
+        <p className="mt-4">
+          Get notified when specific events occur e.g. sign ups or purchases.
+        </p>
+      </FeatureCard>
+
+      <FeatureCard
+        title="Track goals and conversions."
+        image={
+          <Screenshot>
+            <img src="/goals.png" className="w-full m-auto" />
+          </Screenshot>
+        }
+      >
+        <p>Use our javascript SDK to record user interactions and metadata.</p>
+        <p className="mt-4">
+          Better understand how your product is being used, improve sales
+          funnels and increase conversion rates.
+        </p>
+      </FeatureCard>
+
+      <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
+        Why beampipe?
       </div>
 
-      <div className="mx-auto md:grid md:grid-cols-2 md:gap-5 text-gray-800">
-        <FeatureCard icon={faChartLine}>
-          Full featured web analytics dashboard
-          <p className="text-gray-600 font-normal">
-            We show you only what you need to know. No more scrolling through
-            endless reports.
-          </p>
-        </FeatureCard>
+      <div className="flex flex-wrap">
+        <BulletCard>
+          <div className="flex pr-4">
+            <Icon icon={faCode} />
+          </div>
+          <div>
+            <div className="text-lg font-bold">
+              Light-weight tracking script.
+            </div>
+            <p>
+              Our tracker script is tiny. This means a faster loading page and
+              happier users.
+            </p>
+            <p className="mt-4">
+              Setup is easy with just a single snippet to add to your site.
+            </p>
+          </div>
+        </BulletCard>
 
-        <FeatureCard icon={faCookieBite}>
-          Light-weight tracking script. No cookies.
-          <p className="text-gray-600 font-normal">
-            Our tracker script is tiny and doesn't use Cookies. This means a
-            faster loading page and happier users.
-          </p>
-        </FeatureCard>
+        <BulletCard>
+          <div className="flex pr-4">
+            <Icon icon={faCookieBite} />
+          </div>
+          <div>
+            <div className="text-lg font-bold">
+              Privacy-focussed. No cookies.
+            </div>
+            <p>
+              We do not use cookies or other personal identifiers. Our service
+              is compliant with GDPR, PECR, CCPA.
+            </p>
+            <p className="mt-4">
+              Save yourself data compliance headaches without sacrificing
+              insights.
+            </p>
+          </div>
+        </BulletCard>
 
-        <FeatureCard icon={faClipboardList}>
-          Compliant with GDPR, PECR, CCPA.
-          <p className="text-gray-600 font-normal">
-            No more data compliance headaches. We don't track your users'
-            personal information.
-          </p>
-        </FeatureCard>
+        <BulletCard>
+          <div className="flex pr-4">
+            <Icon icon={faProjectDiagram} />
+          </div>
+          <div>
+            <div className="text-lg font-bold">Own your data.</div>
+            <p>
+              Unlike Google Analytics, you maintain control over your analytics
+              data.
+            </p>
 
-        <FeatureCard icon={faProjectDiagram}>
-          Full featured GraphQL API for data access.
-          <p className="text-gray-600 font-normal">
-            The analytics data is yours. Filter and fetch it easily with our
-            GraphQL API.
-          </p>
-        </FeatureCard>
+            <p className="mt-4">
+              Export to CSV or use our GraphQL API to filter and fetch your data
+              on demand.
+            </p>
+          </div>
+        </BulletCard>
 
-        <FeatureCard icon={faCheckCircle}>
-          Goals and conversions.
-          <p className="text-gray-600 font-normal">
-            Use our simple javascript API to log events from your site. Track
-            logins, sign-ups and everything else. Better understand your users
-            and tighten sales funnels.
-          </p>
-        </FeatureCard>
-
-        <FeatureCard icon={faSlack}>
-          Slack integration (Pro)
-          <p className="text-gray-600 font-normal">
-            Our Slack integration can notify you whenever a user signs up to
-            your product. For more established teams, receive a daily or weekly
-            report for your site.
-          </p>
-        </FeatureCard>
+        <BulletCard>
+          <div className="flex pr-4">
+            <Icon icon={faDollarSign} />
+          </div>
+          <div>
+            <div className="text-lg font-bold">Free for small sites.</div>
+            <p>
+              We want privacy-respecting analytics to be available to everyone.
+              We offer a free tier for small sites (up to 10k page views per
+              month).
+            </p>
+            <p className="mt-4">
+              If you go over your usage limits due to a traffic spike, we won't
+              cut you off.
+            </p>
+          </div>
+        </BulletCard>
       </div>
     </div>
   </div>
@@ -192,7 +250,7 @@ const GreenTag: React.FunctionComponent = ({ children }) => (
 
 const Pricing = () => {
   return (
-    <div className="p-8">
+    <div className="py-8">
       <div className="container mx-auto text-gray-800">
         <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
           Pricing
@@ -362,37 +420,53 @@ const Footer = () => (
   </footer>
 );
 
-const LaptopThing = () => (
+const Hero = () => (
   <div className="container mx-auto">
-    <div className="px-2 py-4 md:w-full flex flex-col">
-      <div className="text-6xl py-8 text-purple-600 font-extrabold text-center">
+    <div className="px-2 pb-4 md:pt-4 md:w-full flex flex-col">
+      <div className="text-6xl text-purple-600 font-extrabold text-center">
         Simple. Powerful. Private.
-      </div>
-      <Laptop />
-    </div>
-    <div className="flex flex-col">
-      <div className="m-auto py-8">
-        <Link href="/sign-up">
-          <a className="rounded-lg p-6 hover:bg-purple-500 bg-purple-600 text-white text-3xl font-semibold leading-tight shadow-md">
-            Get started now.
-          </a>
-        </Link>
-      </div>
-      <div className="m-auto py-8">
-        <a
-          href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
-          target="_blank"
-        >
-          <img
-            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
-            alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
-            style={{ width: "250px", height: "54px" }}
-            width="250px"
-            height="54px"
-          />
-        </a>
+        <p className="leading-normal text-2xl text-gray-800 font-medium">
+          beampipe offers <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
+          <b>free</b> for upto 10k monthly page views.
+        </p>
       </div>
     </div>
+
+    <div className="flex flex-col py-4">
+      <div className="m-auto flex items-center justify-center">
+        <IfUserLoggedIn>
+          <Link href="/app">
+            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md md:mr-4">
+              Go to app
+            </a>
+          </Link>
+        </IfUserLoggedIn>
+        <IfAnonymous>
+          <Link href="/sign-up">
+            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+              Sign up free
+            </a>
+          </Link>
+
+          <Link href="/domain/beampipe.io">
+            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
+              Live demo
+            </a>
+          </Link>
+        </IfAnonymous>
+      </div>
+    </div>
+  </div>
+);
+
+const BigScreenshot = () => (
+  <div className="flex py-8 px-2 md:px-32 justify-center">
+    <Screenshot>
+      {/* <img src="/screenshot.png" alt="Beampipe screnshot" /> */}
+      <video loop autoPlay muted playsInline preload="1">
+        <source type="video/mp4" src="/video.mp4" />
+      </video>
+    </Screenshot>
   </div>
 );
 
@@ -400,11 +474,22 @@ const IndexPage = () => {
   return (
     <AuthProvider>
       <Layout title="dead simple web analytics">
-        <Hero />
-        <LaptopThing />
+        <div className="from-gray-100 to-white bg-gradient-to-b">
+          <Hero />
+          <BigScreenshot />
+        </div>
 
-        <Features />
+        <div className="from-white to-gray-100 bg-gradient-to-b">
+          <Features />
+        </div>
+
+       
+
         <Pricing />
+
+        <div className="flex justify-center">
+          <ProductHuntButton />
+        </div>
 
         <Footer />
       </Layout>
