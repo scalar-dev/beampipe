@@ -108,7 +108,7 @@ const Features = () => (
         title="Simple, powerful web analytics dashboard."
         image={
           <Screenshot>
-            <img src="/screenshot2.png" />
+            <img src="/images/screenshot2.png" />
           </Screenshot>
         }
       >
@@ -128,7 +128,7 @@ const Features = () => (
         title="Slack integration."
         image={
           <Screenshot>
-            <img src="/slack2.png" className="w-full" />
+            <img src="/images/slack2.png" className="w-full" />
           </Screenshot>
         }
       >
@@ -142,7 +142,7 @@ const Features = () => (
         title="Track goals and conversions."
         image={
           <Screenshot>
-            <img src="/goals.png" className="w-full m-auto" />
+            <img src="/images/goals.png" className="w-full m-auto" />
           </Screenshot>
         }
       >
