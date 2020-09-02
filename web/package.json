@@ -47,7 +47,7 @@
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.5",
     "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "1.6.2",
+    "tailwindcss": "1.7.0",
     "typescript": "3.9.7"
   },
   "license": "ISC"
