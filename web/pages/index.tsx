@@ -33,7 +33,7 @@ interface PricingBoxProps {
 }
 
 const ProductHuntButton = () => (
-  <div className="m-auto py-4">
+  <div className="m-auto py-8">
     <a
       href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
       target="_blank"
@@ -80,7 +80,7 @@ const FeatureCard: React.FunctionComponent<{
   title: ReactNode;
   image: ReactNode;
 }> = ({ title, image, children }) => (
-  <div className="flex flex-col md:flex-row p-4 md:p-8 mb-8 text-gray-800">
+  <div className="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
     <div className="w-full md:w-1/2 md:pr-8 pb-8">
       <div className="text-4xl font-extrabold">{title}</div>
       <div className="text-xl">{children}</div>
@@ -152,85 +152,84 @@ const Features = () => (
           funnels and increase conversion rates.
         </p>
       </FeatureCard>
+    </div>
+  </div>
+);
 
-      <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
-        Why beampipe?
-      </div>
+const Why = () => (
+  <div className="container mx-auto">
+    <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
+      Why beampipe?
+    </div>
 
-      <div className="flex flex-wrap">
-        <BulletCard>
-          <div className="flex pr-4">
-            <Icon icon={faCode} />
-          </div>
-          <div>
-            <div className="text-lg font-bold">
-              Light-weight tracking script.
-            </div>
-            <p>
-              Our tracker script is tiny. This means a faster loading page and
-              happier users.
-            </p>
-            <p className="mt-4">
-              Setup is easy with just a single snippet to add to your site.
-            </p>
-          </div>
-        </BulletCard>
+    <div className="flex flex-wrap">
+      <BulletCard>
+        <div className="flex pr-4">
+          <Icon icon={faCode} />
+        </div>
+        <div>
+          <div className="text-lg font-bold">Light-weight tracking script.</div>
+          <p>
+            Our tracker script is tiny. This means a faster loading page and
+            happier users.
+          </p>
+          <p className="mt-4">
+            Setup is easy with just a single snippet to add to your site.
+          </p>
+        </div>
+      </BulletCard>
 
-        <BulletCard>
-          <div className="flex pr-4">
-            <Icon icon={faCookieBite} />
-          </div>
-          <div>
-            <div className="text-lg font-bold">
-              Privacy-focussed. No cookies.
-            </div>
-            <p>
-              We do not use cookies or other personal identifiers. Our service
-              is compliant with GDPR, PECR, CCPA.
-            </p>
-            <p className="mt-4">
-              Save yourself data compliance headaches without sacrificing
-              insights.
-            </p>
-          </div>
-        </BulletCard>
+      <BulletCard>
+        <div className="flex pr-4">
+          <Icon icon={faCookieBite} />
+        </div>
+        <div>
+          <div className="text-lg font-bold">Privacy-focussed. No cookies.</div>
+          <p>
+            We do not use cookies or other personal identifiers. Our service is
+            compliant with GDPR, PECR, CCPA.
+          </p>
+          <p className="mt-4">
+            Save yourself data compliance headaches without sacrificing
+            insights.
+          </p>
+        </div>
+      </BulletCard>
 
-        <BulletCard>
-          <div className="flex pr-4">
-            <Icon icon={faProjectDiagram} />
-          </div>
-          <div>
-            <div className="text-lg font-bold">Own your data.</div>
-            <p>
-              Unlike Google Analytics, you maintain control over your analytics
-              data.
-            </p>
+      <BulletCard>
+        <div className="flex pr-4">
+          <Icon icon={faProjectDiagram} />
+        </div>
+        <div>
+          <div className="text-lg font-bold">Own your data.</div>
+          <p>
+            Unlike Google Analytics, you maintain control over your analytics
+            data.
+          </p>
 
-            <p className="mt-4">
-              Export to CSV or use our GraphQL API to filter and fetch your data
-              on demand.
-            </p>
-          </div>
-        </BulletCard>
+          <p className="mt-4">
+            Export to CSV or use our GraphQL API to filter and fetch your data
+            on demand.
+          </p>
+        </div>
+      </BulletCard>
 
-        <BulletCard>
-          <div className="flex pr-4">
-            <Icon icon={faDollarSign} />
-          </div>
-          <div>
-            <div className="text-lg font-bold">Free for small sites.</div>
-            <p>
-              We want privacy-respecting analytics to be available to everyone.
-              We offer a free tier for small sites (up to 10k page views per
-              month).
-            </p>
-            <p className="mt-4">
-              If you go over your usage limits due to a traffic spike, we won't
-              cut you off.
-            </p>
-          </div>
-        </BulletCard>
-      </div>
+      <BulletCard>
+        <div className="flex pr-4">
+          <Icon icon={faDollarSign} />
+        </div>
+        <div>
+          <div className="text-lg font-bold">Free for small sites.</div>
+          <p>
+            We want privacy-respecting analytics to be available to everyone. We
+            offer a free tier for small sites (up to 10k page views per month).
+          </p>
+          <p className="mt-4">
+            If you go over your usage limits due to a traffic spike, we won't
+            cut you off.
+          </p>
+        </div>
+      </BulletCard>
     </div>
   </div>
 );
@@ -312,7 +311,7 @@ const Pricing = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-green-600 text-white mt-16">
+  <footer className="bg-green-600 text-white pt-8">
     <div className="container mx-auto  px-8">
       <div className="w-full flex flex-col md:flex-row pt-6">
         <div className="flex-1 mb-6">
@@ -414,7 +413,7 @@ const Footer = () => (
       </div>
 
       <div className="pb-6 text-center w-full text-sm">
-        Copright © Beampipe 2020
+        Copright © Beampipe 2020.
       </div>
     </div>
   </footer>
@@ -479,16 +478,17 @@ const IndexPage = () => {
           <BigScreenshot />
         </div>
 
-        <div className="from-white to-gray-100 bg-gradient-to-b">
+        <div className="bg-white">
           <Features />
         </div>
 
-       
+        <div className="from-white to-gray-100 bg-gradient-to-b">
+          <Why />
+          <Pricing />
 
-        <Pricing />
-
-        <div className="flex justify-center">
-          <ProductHuntButton />
+          <div className="flex justify-center">
+            <ProductHuntButton />
+          </div>
         </div>
 
         <Footer />
