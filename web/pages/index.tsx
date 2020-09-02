@@ -39,11 +39,11 @@ const ProductHuntButton = () => (
       target="_blank"
     >
       <img
-        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=light"
-        alt="Beampipe - Simple, privacy-focussed web analytics. Free sign up. | Product Hunt Embed"
+        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=dark"
+        alt="Beampipe - Privacy-focussed web analytics. Free for smaller sites. | Product Hunt Embed"
         style={{ width: "250px", height: "54px" }}
-        width="250px"
-        height="54px"
+        width="250"
+        height="54"
       />
     </a>
   </div>
@@ -249,7 +249,7 @@ const GreenTag: React.FunctionComponent = ({ children }) => (
 
 const Pricing = () => {
   return (
-    <div className="py-8">
+    <div className="pt-8">
       <div className="container mx-auto text-gray-800">
         <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
           Pricing
@@ -425,7 +425,7 @@ const Hero = () => (
       <div className="text-6xl text-purple-600 font-extrabold text-center">
         Simple. Powerful. Private.
         <p className="leading-normal text-2xl text-gray-800 font-medium">
-          beampipe offers <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
+          beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
           <b>free</b> for upto 10k monthly page views.
         </p>
       </div>
@@ -473,16 +473,16 @@ const IndexPage = () => {
   return (
     <AuthProvider>
       <Layout title="dead simple web analytics">
-        <div className="from-gray-100 to-white bg-gradient-to-b">
+        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Hero />
           <BigScreenshot />
         </div>
 
-        <div className="bg-white">
+        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Features />
         </div>
 
-        <div className="from-white to-gray-100 bg-gradient-to-b">
+        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Why />
           <Pricing />
 
