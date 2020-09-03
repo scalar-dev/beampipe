@@ -22,13 +22,6 @@ export const TimeChart = ({
         <LineChart
           data={[
             {
-              data: stats.data?.events?.bucketed,
-              type: "line",
-              label: "Page views",
-              borderColor: "#0ba360",
-              yAxisID: "page_views"
-            },
-            {
               data: stats.data?.events?.bucketedUnique,
               type: "bar",
               yAxisID: "visitors",

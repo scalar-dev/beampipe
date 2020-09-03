@@ -82,7 +82,7 @@ const FeatureCard: React.FunctionComponent<{
 }> = ({ title, image, children }) => (
   <div className="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
     <div className="w-full md:w-1/2 md:pr-8 pb-8">
-      <div className="text-4xl font-extrabold">{title}</div>
+      <div className="text-4xl font-black tracking-tight">{title}</div>
       <div className="text-xl">{children}</div>
     </div>
     <div className="w-full md:w-1/2 flex justify-end">{image}</div>
@@ -158,7 +158,7 @@ const Features = () => (
 
 const Why = () => (
   <div className="container mx-auto">
-    <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
+    <div className="mx-auto text-6xl font-black tracking-tight py-4 text-center text-purple-600">
       Why beampipe?
     </div>
 
@@ -170,8 +170,8 @@ const Why = () => (
         <div>
           <div className="text-lg font-bold">Light-weight tracking script.</div>
           <p>
-            Our tracker script is tiny. This means a faster loading page and
-            happier users.
+            Our tracker script is <b>tiny</b>. This means a faster loading page
+            and happier users.
           </p>
           <p className="mt-4">
             Setup is easy with just a single snippet to add to your site.
@@ -203,13 +203,13 @@ const Why = () => (
         <div>
           <div className="text-lg font-bold">Own your data.</div>
           <p>
-            Unlike Google Analytics, you maintain control over your analytics
-            data.
+            Unlike Google Analytics, <b>you</b> maintain control over your
+            analytics data.
           </p>
 
           <p className="mt-4">
-            Export to CSV or use our GraphQL API to filter and fetch your data
-            on demand.
+            Export to <b>CSV</b> or use our <b>GraphQL API</b> to filter and
+            fetch your data on demand.
           </p>
         </div>
       </BulletCard>
@@ -221,9 +221,9 @@ const Why = () => (
         <div>
           <div className="text-lg font-bold">Free for small sites.</div>
           <p>
-            We think privacy-friendly analytics should be available to everyone.
-            Our free tier for small sites includes up to 10k page views per
-            month.
+            We think privacy-friendly analytics should be available to{" "}
+            <b>everyone</b>. Our free tier for small sites includes up to 10k
+            page views per month.
           </p>
           <p className="mt-4">
             If you are lucky enough to see a spike in traffic putting you over
@@ -252,7 +252,7 @@ const Pricing = () => {
   return (
     <div className="pt-8">
       <div className="container mx-auto text-gray-800">
-        <div className="mx-auto text-6xl font-extrabold py-4 text-center text-purple-600">
+        <div className="mx-auto text-6xl font-black tracking-tight py-4 text-center text-purple-600">
           Pricing
         </div>
         <p className="text-center pb-4 text-gray-600 font-bold">
@@ -424,7 +424,9 @@ const Hero = () => (
   <div className="container mx-auto">
     <div className="px-2 pb-4 md:pt-4 md:w-full flex flex-col">
       <div className="text-6xl text-purple-600 font-extrabold text-center">
-        Simple. Powerful. Private.
+        <div className="font-black tracking-tight">
+          Simple. Powerful. Private.
+        </div>
         <p className="leading-normal text-2xl text-gray-800 font-medium">
           beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
           <b>free</b> for upto 10k monthly page views.
@@ -485,6 +487,19 @@ const IndexPage = () => {
 
         <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Why />
+
+          <div className="mx-auto container py-8 text-center">
+            <div className="font-black leading-tight text-6xl text-gray-800">
+              Take back control of your analytics.
+            </div>
+            <div className="pt-8">
+              <Link href="/sign-up">
+                <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+                  Get started.
+                </a>
+              </Link>
+            </div>
+          </div>
           <Pricing />
 
           <div className="flex justify-center">

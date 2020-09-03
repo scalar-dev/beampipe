@@ -14,7 +14,7 @@ export const Card: React.FunctionComponent<CardProps> = ({
 }) => (
   <div className={`pb-4 ${classNames}`}>
     <div
-      className={`flex flex-col rounded overflow-hidden shadow-lg bg-white p-4`}
+      className={`flex flex-col overflow-hidden shadow-md rounded-md bg-white p-4`}
       {...otherProps}
     >
       {children}

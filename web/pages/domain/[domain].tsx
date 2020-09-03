@@ -1,7 +1,6 @@
 import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
-import gql from "graphql-tag";
 import { useState } from "react";
 import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
@@ -23,11 +22,12 @@ import React from "react";
 import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
+import { StatsQuery } from "../../components/domain/StatsQuery";
 
 const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
     <div className="flex flex-row flex-wrap flex-1">
-      <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
+      <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
         {domain}
       </div>
       <div className="flex flex-row flex-1 md:flex-none">
@@ -37,81 +37,6 @@ const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
     </div>
   </Card>
 );
-
-const query = gql`
-  query stats(
-    $domain: String!
-    $bucketDuration: String!
-    $uniqueBucketDuration: String!
-    $timePeriod: TimePeriodInput!
-  ) {
-    events(domain: $domain, timePeriod: $timePeriod) {
-      bucketed(bucketDuration: $bucketDuration) {
-        time
-        count
-      }
-
-      bucketedUnique(bucketDuration: $uniqueBucketDuration) {
-        time
-        count
-      }
-
-      topPages {
-        key
-        count
-      }
-
-      topSources {
-        referrer
-        source
-        count
-      }
-
-      topScreenSizes {
-        key
-        count
-      }
-
-      topCountries {
-        key
-        count
-        data
-      }
-
-      topDevices {
-        key
-        count
-      }
-
-      topDeviceClasses {
-        key
-        count
-      }
-
-      topOperatingSystems {
-        key
-        count
-      }
-
-      topAgents {
-        key
-        count
-      }
-
-      goals {
-        key
-        count
-      }
-
-      countUnique
-      previousCountUnique
-      count
-      previousCount
-      bounceCount
-      previousBounceCount
-    }
-  }
-`;
 
 const Toolbar = ({
   timePeriod,
@@ -150,7 +75,7 @@ const DevicesCard = ({ stats }: { stats: any }) => {
     <DashboardCard position="right">
       <CardTitle>
         <div className="flex flex-wrap">
-          <div className="flex-1">Top Devices</div>
+          <div className="flex-1">Devices</div>
           <Pills>
             {tabs.map((tab) => (
               <Pill
@@ -184,7 +109,7 @@ const MapCard = ({ stats }: { stats: any }) => {
     <DashboardCard position="left">
       <CardTitle>
         <div className="flex flex-wrap">
-          <div className="flex-1">Top Countries</div>
+          <div className="flex-1">Countries</div>
           <Pills>
             <Pill
               onClick={(e) => {
@@ -234,7 +159,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
 
   const [stats, refetchStats] = useQuery({
-    query,
+    query: StatsQuery,
     variables: {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
@@ -255,7 +180,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <TimeChart stats={stats} timePeriod={timePeriod} />
 
         <DashboardCard position="left">
-          <CardTitle>Top Pages</CardTitle>
+          <CardTitle>Pages</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topPages.length > 0}
@@ -268,7 +193,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </DashboardCard>
 
         <DashboardCard position="right">
-          <CardTitle>Top Sources</CardTitle>
+          <CardTitle>Sources</CardTitle>
           <div className="flex flex-1 max-w-full">
             <NonIdealState
               isLoading={stats.fetching}
@@ -296,7 +221,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <DevicesCard stats={stats} />
 
         <DashboardCard position="left">
-          <CardTitle>Top Operating Systems</CardTitle>
+          <CardTitle>Operating Systems</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topOperatingSystems.length > 0}
@@ -309,7 +234,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </DashboardCard>
 
         <DashboardCard position="right">
-          <CardTitle>Top User Agents</CardTitle>
+          <CardTitle>User Agents</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topAgents.length > 0}
