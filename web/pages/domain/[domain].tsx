@@ -27,7 +27,7 @@ import { StatsQuery } from "../../components/domain/StatsQuery";
 const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
     <div className="flex flex-row flex-wrap flex-1">
-      <div className="text-2xl text-gray-800 font-extrabold flex-1 my-auto">
+      <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
         {domain}
       </div>
       <div className="flex flex-row flex-1 md:flex-none">

@@ -50,7 +50,7 @@ export const StatsCounter = ({
     <div className="text-gray-500 font-bold text-xs uppercase whitespace-no-wrap">
       {title}
     </div>
-    <div className="text-3xl font-bold text-gray-800">{value}</div>
+    <div className="text-3xl font-black leading-tight text-gray-800">{value}</div>
     {delta && (
       <div className="text-gray-800 font-bold whitespace-no-wrap">{delta}</div>
     )}
