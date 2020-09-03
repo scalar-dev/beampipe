@@ -75,7 +75,7 @@ const DevicesCard = ({ stats }: { stats: any }) => {
     <DashboardCard position="right">
       <CardTitle>
         <div className="flex flex-wrap">
-          <div className="flex-1">Top Devices</div>
+          <div className="flex-1">Devices</div>
           <Pills>
             {tabs.map((tab) => (
               <Pill
@@ -109,7 +109,7 @@ const MapCard = ({ stats }: { stats: any }) => {
     <DashboardCard position="left">
       <CardTitle>
         <div className="flex flex-wrap">
-          <div className="flex-1">Top Countries</div>
+          <div className="flex-1">Countries</div>
           <Pills>
             <Pill
               onClick={(e) => {
@@ -180,7 +180,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <TimeChart stats={stats} timePeriod={timePeriod} />
 
         <DashboardCard position="left">
-          <CardTitle>Top Pages</CardTitle>
+          <CardTitle>Pages</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topPages.length > 0}
@@ -193,7 +193,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </DashboardCard>
 
         <DashboardCard position="right">
-          <CardTitle>Top Sources</CardTitle>
+          <CardTitle>Sources</CardTitle>
           <div className="flex flex-1 max-w-full">
             <NonIdealState
               isLoading={stats.fetching}
@@ -221,7 +221,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <DevicesCard stats={stats} />
 
         <DashboardCard position="left">
-          <CardTitle>Top Operating Systems</CardTitle>
+          <CardTitle>Operating Systems</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topOperatingSystems.length > 0}
@@ -234,7 +234,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         </DashboardCard>
 
         <DashboardCard position="right">
-          <CardTitle>Top User Agents</CardTitle>
+          <CardTitle>User Agents</CardTitle>
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topAgents.length > 0}
