@@ -1,7 +1,6 @@
 import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
-import gql from "graphql-tag";
 import { useState } from "react";
 import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
@@ -23,6 +22,7 @@ import React from "react";
 import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
+import { StatsQuery } from "../../components/domain/StatsQuery";
 
 const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
   <Card classNames="w-full">
@@ -37,81 +37,6 @@ const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
     </div>
   </Card>
 );
-
-const query = gql`
-  query stats(
-    $domain: String!
-    $bucketDuration: String!
-    $uniqueBucketDuration: String!
-    $timePeriod: TimePeriodInput!
-  ) {
-    events(domain: $domain, timePeriod: $timePeriod) {
-      bucketed(bucketDuration: $bucketDuration) {
-        time
-        count
-      }
-
-      bucketedUnique(bucketDuration: $uniqueBucketDuration) {
-        time
-        count
-      }
-
-      topPages {
-        key
-        count
-      }
-
-      topSources {
-        referrer
-        source
-        count
-      }
-
-      topScreenSizes {
-        key
-        count
-      }
-
-      topCountries {
-        key
-        count
-        data
-      }
-
-      topDevices {
-        key
-        count
-      }
-
-      topDeviceClasses {
-        key
-        count
-      }
-
-      topOperatingSystems {
-        key
-        count
-      }
-
-      topAgents {
-        key
-        count
-      }
-
-      goals {
-        key
-        count
-      }
-
-      countUnique
-      previousCountUnique
-      count
-      previousCount
-      bounceCount
-      previousBounceCount
-    }
-  }
-`;
 
 const Toolbar = ({
   timePeriod,
@@ -234,7 +159,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
 
   const [stats, refetchStats] = useQuery({
-    query,
+    query: StatsQuery,
     variables: {
       domain,
       bucketDuration: timePeriodToBucket(timePeriod),
