@@ -2,7 +2,7 @@
 title: 'Slack integration'
 ---
 
-Beampipe features built-in Slack integration with our Pro subscription. Any events fired in your application (see [Custom events](/custom-events) can be used to trigger Slack notifications.
+Beampipe features built-in Slack integration with our Pro subscription. You can subscribe to notifications for custom events logged by your site (see [Custom events](/custom-events) or receive weekly traffic summary reports.
 
 
 ## 1. Configure our Slack bot
@@ -11,12 +11,36 @@ Go to Beampipe's **Settings** page. Here you should see an **Add to Slack** butt
 
 
 
-## 2. Subscribe to events
+## 2. Subscribe to notifications
 
-To subscribe to particular events within a Slack channel, first head over to the Slack channel where you want the notifications to appear. You can then use the Beampipe slash command as follows:
+You can see a list of commands at any time by doing:
+
+```text
+/beampipe help
+```
+
+To receive notifications when a particular event is triggered, first head over to the Slack channel where you want the notifications to appear. You can then use the Beampipe slash command as follows:
 
 ```text
 /beampipe subscribe example.com signup
 ```
 
-Here `signup` can be any event type logged from your application. Once configured, you'll receive notifications for any matching events in your Slack channel.
+Here `example.com` is your domain id and `signup` can be any event type logged by your site. You'll receive notifications for any matching events in your Slack channel. This can be great for sharing success when you get a signup or a subscription upgrade.
+
+To get a weekly traffic summary report, 
+
+```text
+/beampipe summary
+```
+
+This will be sent at 5pm every Friday in whatever timezone you've configured in your user settings (by default UTC).
+
+To unsubscribe from any of these notifications,
+
+```text
+/beampipe list
+```
+
+You'll see a list of your active subscriptions within the current channel and can click to ubsubscribe.
+
+![Slack subscription list](/slack_subscription_list.png)
