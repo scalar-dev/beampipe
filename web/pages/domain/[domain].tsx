@@ -323,7 +323,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <GoalsCard
           domain={domain}
           stats={stats}
-          refetch={() => refetchStats({ requestPolicy: "network-only" })}
+          refetch={() => {
+            refetchStats({ requestPolicy: "network-only" }); 
+            refetchDrilldownStats({ requestPolicy: "network-only" });
+          }}
         />
       </div>
     </div>
