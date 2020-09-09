@@ -23,20 +23,56 @@ import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
-  <Card classNames="w-full">
-    <div className="flex flex-row flex-wrap flex-1">
-      <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
-        {domain}
+const TopBar = ({
+  domain,
+  stats,
+  drilldown,
+  setDrilldown,
+}: {
+  domain: string;
+  stats: any;
+  drilldown: DrilldownState;
+  setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
+}) => {
+  return (
+    <Card classNames="w-full">
+      <div className="flex flex-row flex-wrap flex-1">
+        <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
+          {domain}
+          {drilldown.referrer && (
+            <div>
+              <button
+                className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full"
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    referrer: undefined,
+                  }))
+                }
+              >
+                source:{" "}
+                {drilldown.referrer.isDirect
+                  ? "Direct/none"
+                  : drilldown.referrer.source}
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 ml-2"
+                  icon={faTimes}
+                />
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-row flex-1 md:flex-none">
+          <LiveCounter domain={domain} />
+          <Stats stats={stats.data?.events} />
+        </div>
       </div>
-      <div className="flex flex-row flex-1 md:flex-none">
-        <LiveCounter domain={domain} />
-        <Stats stats={stats.data?.events} />
-      </div>
-    </div>
-  </Card>
-);
+    </Card>
+  );
+};
 
 const Toolbar = ({
   timePeriod,
@@ -155,8 +191,16 @@ const MapCard = ({ stats }: { stats: any }) => {
   );
 };
 
+interface DrilldownState {
+  referrer?: {
+    isDirect: boolean;
+    source: string | null;
+  }
+}
+
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
+  const [drilldown, setDrilldown] = useState<DrilldownState>({});
 
   const [stats, refetchStats] = useQuery({
     query: StatsQuery,
@@ -172,12 +216,36 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     },
   });
 
+  const isDrilldown: boolean = drilldown.referrer != null;
+
+  const [drilldownStats, refetchDrilldownStats] = useQuery({
+    query: StatsQuery,
+    variables: {
+      domain,
+      bucketDuration: timePeriodToBucket(timePeriod),
+      uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
+      timePeriod: {
+        type: timePeriod.type,
+        startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
+        endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
+      },
+      ...drilldown
+    },
+    pause: !isDrilldown
+  });
+
+
   return (
     <div className="container mx-auto flex flex-col">
       <Toolbar timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
       <div className="flex flex-row flex-wrap">
-        <TopBar stats={stats} domain={domain} />
-        <TimeChart stats={stats} timePeriod={timePeriod} />
+        <TopBar stats={stats} domain={domain} drilldown={drilldown} setDrilldown={setDrilldown} />
+        <TimeChart
+          stats={stats}
+          showDrilldown={isDrilldown}
+          drilldownStats={drilldownStats}
+          timePeriod={timePeriod}
+        />
 
         <DashboardCard position="left">
           <CardTitle>Pages</CardTitle>
@@ -196,12 +264,18 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           <CardTitle>Sources</CardTitle>
           <div className="flex flex-1 max-w-full">
             <NonIdealState
-              isLoading={stats.fetching}
+              isLoading={stats.fetching || drilldownStats.fetching}
               isIdeal={stats.data?.events.topSources.length > 0}
             >
               <Table
                 showImages
                 columnHeadings={["Source", "Visits"]}
+                onClick={(source) =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    referrer: { source, isDirect: source == null },
+                  }))
+                }
                 data={stats.data?.events.topSources.map((source: any) => ({
                   key: source.source || source.referrer,
                   count: source.count,
