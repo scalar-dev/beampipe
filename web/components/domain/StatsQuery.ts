@@ -6,8 +6,11 @@ export const StatsQuery = gql`
     $bucketDuration: String!
     $uniqueBucketDuration: String!
     $timePeriod: TimePeriodInput!
+    $referrer: ReferrerInput
+    $page: PageInput
+    $country: CountryInput
   ) {
-    events(domain: $domain, timePeriod: $timePeriod) {
+    events(domain: $domain, timePeriod: $timePeriod, referrer: $referrer, page: $page, country: $country) {
       bucketed(bucketDuration: $bucketDuration) {
         time
         count

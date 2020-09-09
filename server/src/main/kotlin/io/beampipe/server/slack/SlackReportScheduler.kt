@@ -97,7 +97,8 @@ class SlackReportScheduler() {
             timePeriod.toStartTime(),
             timePeriod.toEndTime(),
             timePeriod.toPreviousStartTime(),
-            timeZone
+            timeZone,
+            emptyList()
         )
 
         val count = report.count()

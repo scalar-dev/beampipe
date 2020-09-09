@@ -93,7 +93,14 @@ class EventQuery {
             .count()
     }
 
-    suspend fun events(context: Context, domain: String, timePeriod: TimePeriod, timeZone: String?): EventStats =
+    suspend fun events(
+        context: Context,
+        domain: String,
+        timePeriod: TimePeriod,
+        timeZone: String?,
+        referrer: Drilldown.Referrer?,
+        page: Drilldown.Page?,
+        country: Drilldown.Country?) : EventStats =
         newSuspendedTransaction {
             val userId = accountQuery.user(context)?.id
             val domainRow = matchingDomain(userId, domain)
@@ -109,7 +116,8 @@ class EventQuery {
                 timePeriod.toStartTime(),
                 timePeriod.toEndTime(),
                 timePeriod.toPreviousStartTime(),
-                zoneId
+                zoneId,
+                listOfNotNull(referrer, page, country)
             )
         }
 }

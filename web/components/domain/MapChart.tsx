@@ -18,9 +18,10 @@ interface MapChartProps {
     isoCode: string;
     count: number;
   }[];
+  onClick: (isoCode: string) => void;
 }
 
-const MapChart = ({ data }: MapChartProps) => {
+const MapChart = ({ data, onClick }: MapChartProps) => {
   const maxVal = _.maxBy(data, "count")?.count;
   const colorScale = scaleLinear<string>()
     .domain([0, maxVal!!])
@@ -49,7 +50,7 @@ const MapChart = ({ data }: MapChartProps) => {
 
                       return (
                         <Geography
-                          key={geo.properties.name}
+                          key={geo.properties.NAME}
                           geography={geo}
                           fill={d ? colorScale(d.count) : "#e2e8f0"}
                           onMouseEnter={() => {
@@ -64,11 +65,13 @@ const MapChart = ({ data }: MapChartProps) => {
                           onMouseLeave={() => {
                             setTooltipContent(null);
                           }}
+                          onClick={() => onClick(geo.properties.ISO_A2)}
+                          className="cursor-pointer"
                           style={{
                             default: {
                               outline: "none",
                               opacity: 1.0,
-                              stroke: "#a0aec0"
+                              stroke: "#a0aec0",
                             },
                             hover: {
                               outline: "none",

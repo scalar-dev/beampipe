@@ -8,11 +8,13 @@ import io.beampipe.server.db.util.TimeBucketGapFillStartEnd
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.LongColumnType
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.`java-time`.timestampLiteral
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.booleanLiteral
 import org.jetbrains.exposed.sql.castTo
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.countDistinct
@@ -26,16 +28,45 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
 
+sealed class Drilldown {
+    abstract fun SqlExpressionBuilder.select(): Op<Boolean>
+
+    fun selectSql(sql: SqlExpressionBuilder) = sql.select()
+
+    data class Referrer(val source: String?, val referrer: String?, val isDirect: Boolean?) : Drilldown() {
+        override fun SqlExpressionBuilder.select() = if (isDirect == true) {
+            Events.sourceClean.isNull()
+        } else if (source != null) {
+            Events.sourceClean eq source
+        } else {
+            Events.referrerClean eq referrer
+        }
+    }
+
+    data class Country(val isoCode: String) : Drilldown() {
+        override fun SqlExpressionBuilder.select() = Events.isoCountryCode eq isoCode
+    }
+
+    data class Page(val path: String) : Drilldown() {
+        override fun SqlExpressionBuilder.select() = Events.path eq path
+    }
+}
+
 data class EventStats(
     private val domain: String,
     private val startTime: Instant,
     private val endTime: Instant,
     private val comparisonStartTime: Instant?,
-    private val timeZone: ZoneId
+    private val timeZone: ZoneId,
+    private val drilldowns: List<Drilldown>
 ) {
-    private fun SqlExpressionBuilder.preselect(periodStartTime: Instant, periodEndTime: Instant) = Events.domain.eq(domain) and
-            Events.time.greaterEq(periodStartTime) and
-            Events.time.less(periodEndTime)
+    private fun SqlExpressionBuilder.preselect(periodStartTime: Instant, periodEndTime: Instant) =
+        Events.domain.eq(domain) and
+                Events.time.greaterEq(periodStartTime) and
+                Events.time.less(periodEndTime) and
+                drilldowns.map { drilldown ->
+                    drilldown.selectSql(this)
+                }.fold<Op<Boolean>,Op<Boolean>>(Op.TRUE) { a, b -> a and b }
 
     private fun timeBucket(bucketDuration: String?) = TimeBucketGapFillStartEnd(
         stringLiteral("1 ${bucketDuration ?: "day"}"),
