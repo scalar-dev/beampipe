@@ -50,7 +50,7 @@ export const TimeChart = ({
   return (
     <DashboardCard position="full" style={{ height: "22rem" }}>
       <NonIdealState
-        isLoading={stats.fetching}
+        isLoading={stats.fetching || drilldownStats.fetching}
         isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}
       >
         <LineChart

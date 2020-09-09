@@ -8,12 +8,11 @@ interface TableProps {
     key: string | null;
     count: number;
     image?: ReactNode;
+    onClick?: () => void;
   }[];
-
   showPercentages?: "max" | "sum" | null;
   columnHeadings?: [string, string];
   maxRows?: number;
-  onClick?: (key: string | null) => void;
 }
 
 const Bar = ({ percentage }: { percentage: number }) => (
@@ -34,7 +33,6 @@ export const Table = ({
   showPercentages = "sum",
   columnHeadings = ["", ""],
   maxRows = 10,
-  onClick
 }: TableProps) => {
   if (data.length === 0) {
     return null;
@@ -66,9 +64,13 @@ export const Table = ({
           <tr
             key={idx}
             className={`border-t-2 ${
-              onClick ? "cursor-pointer hover:bg-gray-100" : ""
+              item.onClick ? "cursor-pointer hover:bg-gray-100" : ""
             }`}
-            onClick={onClick ? () => onClick(item.key) : undefined}
+            onClick={() => {
+              if (item.onClick) {
+                item.onClick();
+              }
+            }}
           >
             {showImages && <td className="w-6 p-1">{item.image}</td>}
             <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">

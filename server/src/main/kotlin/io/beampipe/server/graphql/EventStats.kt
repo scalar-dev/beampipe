@@ -33,11 +33,13 @@ sealed class Drilldown {
 
     fun selectSql(sql: SqlExpressionBuilder) = sql.select()
 
-    data class Referrer(val source: String?, val isDirect: Boolean?) : Drilldown() {
+    data class Referrer(val source: String?, val referrer: String?, val isDirect: Boolean?) : Drilldown() {
         override fun SqlExpressionBuilder.select() = if (isDirect == true) {
             Events.sourceClean.isNull()
-        } else {
+        } else if (source != null) {
             Events.sourceClean eq source
+        } else {
+            Events.referrerClean eq referrer
         }
     }
 

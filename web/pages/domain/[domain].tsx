@@ -26,6 +26,16 @@ import { StatsQuery } from "../../components/domain/StatsQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
+const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
+  if (referrer.isDirect) {
+    return "source: Direct/None";
+  } else if (referrer.source) {
+    return `source: ${referrer.source}`;
+  } else {
+    return `referrer: ${referrer.referrer}`;
+  }
+};
+
 const TopBar = ({
   domain,
   stats,
@@ -53,10 +63,7 @@ const TopBar = ({
                   }))
                 }
               >
-                source:{" "}
-                {drilldown.referrer.isDirect
-                  ? "Direct/none"
-                  : drilldown.referrer.source}
+                {sourceDrilldownText(drilldown.referrer)}
                 <FontAwesomeIcon
                   className="fill-current w-4 h-4 ml-2"
                   icon={faTimes}
@@ -191,11 +198,14 @@ const MapCard = ({ stats }: { stats: any }) => {
   );
 };
 
+interface ReferrerDrilldown {
+  isDirect: boolean;
+  source: string | null;
+  referrer: string | null;
+}
+
 interface DrilldownState {
-  referrer?: {
-    isDirect: boolean;
-    source: string | null;
-  }
+  referrer?: ReferrerDrilldown;
 }
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
@@ -229,17 +239,21 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
         endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
       },
-      ...drilldown
+      ...drilldown,
     },
-    pause: !isDrilldown
+    pause: !isDrilldown,
   });
-
 
   return (
     <div className="container mx-auto flex flex-col">
       <Toolbar timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
       <div className="flex flex-row flex-wrap">
-        <TopBar stats={stats} domain={domain} drilldown={drilldown} setDrilldown={setDrilldown} />
+        <TopBar
+          stats={stats}
+          domain={domain}
+          drilldown={drilldown}
+          setDrilldown={setDrilldown}
+        />
         <TimeChart
           stats={stats}
           showDrilldown={isDrilldown}
@@ -270,12 +284,6 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               <Table
                 showImages
                 columnHeadings={["Source", "Visits"]}
-                onClick={(source) =>
-                  setDrilldown((prevState) => ({
-                    ...prevState,
-                    referrer: { source, isDirect: source == null },
-                  }))
-                }
                 data={stats.data?.events.topSources.map((source: any) => ({
                   key: source.source || source.referrer,
                   count: source.count,
@@ -285,6 +293,15 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                       src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
                     />
                   ),
+                  onClick: () =>
+                    setDrilldown((prevState) => ({
+                      ...prevState,
+                      referrer: {
+                        source: source.source,
+                        referrer: source.referrer,
+                        isDirect: source.source == null && source.referrer == null,
+                      },
+                    })),
                 }))}
               />
             </NonIdealState>
@@ -324,7 +341,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           domain={domain}
           stats={stats}
           refetch={() => {
-            refetchStats({ requestPolicy: "network-only" }); 
+            refetchStats({ requestPolicy: "network-only" });
             refetchDrilldownStats({ requestPolicy: "network-only" });
           }}
         />
