@@ -46,7 +46,7 @@ class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
 
                     val dec: Base64.Decoder = Base64.getDecoder()
                     val salt = dec.decode(account[Accounts.salt])
-                    val hash = hashPassword(authenticationRequest!!.secret as String, salt)
+                    val hash = hashPassword(authenticationRequest.secret as String, salt)
 
                     if (hash == account[Accounts.password]) {
                         UserDetails(

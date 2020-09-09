@@ -23,20 +23,97 @@ import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-const TopBar = ({ domain, stats }: { domain: string; stats: any }) => (
-  <Card classNames="w-full">
-    <div className="flex flex-row flex-wrap flex-1">
-      <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
-        {domain}
-      </div>
-      <div className="flex flex-row flex-1 md:flex-none">
-        <LiveCounter domain={domain} />
-        <Stats stats={stats.data?.events} />
-      </div>
-    </div>
-  </Card>
+const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
+  if (referrer.isDirect) {
+    return "source: Direct/None";
+  } else if (referrer.source) {
+    return `source: ${referrer.source}`;
+  } else {
+    return `referrer: ${referrer.referrer}`;
+  }
+};
+
+const DrilldownPill: React.FunctionComponent<{ onClick: () => void }> = ({
+  onClick,
+  children,
+}) => (
+  <button
+    className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full mr-2"
+    onClick={onClick}
+  >
+    {children}
+    <FontAwesomeIcon className="fill-current w-4 h-4 ml-2" icon={faTimes} />
+  </button>
 );
+
+const TopBar = ({
+  domain,
+  stats,
+  drilldown,
+  setDrilldown,
+}: {
+  domain: string;
+  stats: any;
+  drilldown: DrilldownState;
+  setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
+}) => {
+  return (
+    <Card classNames="w-full">
+      <div className="flex flex-row flex-wrap flex-1">
+        <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
+          {domain}
+          <div>
+            {drilldown.referrer && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    referrer: undefined,
+                  }))
+                }
+              >
+                {sourceDrilldownText(drilldown.referrer)}
+              </DrilldownPill>
+            )}
+
+            {drilldown.page && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    page: undefined,
+                  }))
+                }
+              >
+                page: {drilldown.page.path}
+              </DrilldownPill>
+            )}
+
+            {drilldown.country && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    country: undefined,
+                  }))
+                }
+              >
+                country: {drilldown.country.isoCode}
+              </DrilldownPill>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-row flex-1 md:flex-none">
+          <LiveCounter domain={domain} />
+          <Stats stats={stats.data?.events} />
+        </div>
+      </div>
+    </Card>
+  );
+};
 
 const Toolbar = ({
   timePeriod,
@@ -102,7 +179,7 @@ const DevicesCard = ({ stats }: { stats: any }) => {
   );
 };
 
-const MapCard = ({ stats }: { stats: any }) => {
+const MapCard = ({ stats, setDrilldown }: { stats: any, setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>> }) => {
   const [selected, setSelected] = useState<"table" | "map">("map");
 
   return (
@@ -148,6 +225,12 @@ const MapCard = ({ stats }: { stats: any }) => {
               count: country.count,
               isoCode: country.data.iso_country_code,
             }))}
+            onClick={(isoCode) =>
+              setDrilldown((prevState) => ({
+                ...prevState,
+                country: { isoCode },
+              }))
+            }
           />
         )}
       </NonIdealState>
@@ -155,8 +238,29 @@ const MapCard = ({ stats }: { stats: any }) => {
   );
 };
 
+interface ReferrerDrilldown {
+  isDirect: boolean;
+  source: string | null;
+  referrer: string | null;
+}
+
+interface PageDrilldown {
+  path: string;
+}
+
+interface CountryDrilldown {
+  isoCode: string;
+}
+
+interface DrilldownState {
+  referrer?: ReferrerDrilldown;
+  page?: PageDrilldown;
+  country?: CountryDrilldown;
+}
+
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
+  const [drilldown, setDrilldown] = useState<DrilldownState>({});
 
   const [stats, refetchStats] = useQuery({
     query: StatsQuery,
@@ -172,12 +276,44 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     },
   });
 
+  const isDrilldown: boolean = _.some([
+    drilldown.page,
+    drilldown.referrer,
+    drilldown.country,
+  ]);
+
+  const [drilldownStats, refetchDrilldownStats] = useQuery({
+    query: StatsQuery,
+    variables: {
+      domain,
+      bucketDuration: timePeriodToBucket(timePeriod),
+      uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
+      timePeriod: {
+        type: timePeriod.type,
+        startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
+        endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
+      },
+      ...drilldown,
+    },
+    pause: !isDrilldown,
+  });
+
   return (
     <div className="container mx-auto flex flex-col">
       <Toolbar timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
       <div className="flex flex-row flex-wrap">
-        <TopBar stats={stats} domain={domain} />
-        <TimeChart stats={stats} timePeriod={timePeriod} />
+        <TopBar
+          stats={stats}
+          domain={domain}
+          drilldown={drilldown}
+          setDrilldown={setDrilldown}
+        />
+        <TimeChart
+          stats={stats}
+          showDrilldown={isDrilldown}
+          drilldownStats={drilldownStats}
+          timePeriod={timePeriod}
+        />
 
         <DashboardCard position="left">
           <CardTitle>Pages</CardTitle>
@@ -188,6 +324,12 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             <Table
               data={stats.data?.events.topPages}
               columnHeadings={["Page", "Visits"]}
+              onClick={(path) =>
+                setDrilldown((prevState) => ({
+                  ...prevState,
+                  page: { path: path! },
+                }))
+              }
             />
           </NonIdealState>
         </DashboardCard>
@@ -196,7 +338,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           <CardTitle>Sources</CardTitle>
           <div className="flex flex-1 max-w-full">
             <NonIdealState
-              isLoading={stats.fetching}
+              isLoading={stats.fetching || drilldownStats.fetching}
               isIdeal={stats.data?.events.topSources.length > 0}
             >
               <Table
@@ -211,13 +353,23 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                       src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
                     />
                   ),
+                  onClick: () =>
+                    setDrilldown((prevState) => ({
+                      ...prevState,
+                      referrer: {
+                        source: source.source,
+                        referrer: source.referrer,
+                        isDirect:
+                          source.source == null && source.referrer == null,
+                      },
+                    })),
                 }))}
               />
             </NonIdealState>
           </div>
         </DashboardCard>
 
-        <MapCard stats={stats} />
+        <MapCard stats={stats} setDrilldown={setDrilldown} />
         <DevicesCard stats={stats} />
 
         <DashboardCard position="left">
@@ -249,7 +401,10 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <GoalsCard
           domain={domain}
           stats={stats}
-          refetch={() => refetchStats({ requestPolicy: "network-only" })}
+          refetch={() => {
+            refetchStats({ requestPolicy: "network-only" });
+            refetchDrilldownStats({ requestPolicy: "network-only" });
+          }}
         />
       </div>
     </div>
