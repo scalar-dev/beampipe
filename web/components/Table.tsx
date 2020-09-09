@@ -10,6 +10,7 @@ interface TableProps {
     image?: ReactNode;
     onClick?: () => void;
   }[];
+  onClick?: (key: string | null) => void;
   showPercentages?: "max" | "sum" | null;
   columnHeadings?: [string, string];
   maxRows?: number;
@@ -33,6 +34,7 @@ export const Table = ({
   showPercentages = "sum",
   columnHeadings = ["", ""],
   maxRows = 10,
+  onClick
 }: TableProps) => {
   if (data.length === 0) {
     return null;
@@ -64,9 +66,13 @@ export const Table = ({
           <tr
             key={idx}
             className={`border-t-2 ${
-              item.onClick ? "cursor-pointer hover:bg-gray-100" : ""
+              onClick || item.onClick ? "cursor-pointer hover:bg-gray-100" : ""
             }`}
             onClick={() => {
+              if (onClick) {
+                onClick(item.key);
+              }
+
               if (item.onClick) {
                 item.onClick();
               }

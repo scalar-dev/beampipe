@@ -36,6 +36,19 @@ const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   }
 };
 
+const DrilldownPill: React.FunctionComponent<{ onClick: () => void }> = ({
+  onClick,
+  children,
+}) => (
+  <button
+    className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full mr-2"
+    onClick={onClick}
+  >
+    {children}
+    <FontAwesomeIcon className="fill-current w-4 h-4 ml-2" icon={faTimes} />
+  </button>
+);
+
 const TopBar = ({
   domain,
   stats,
@@ -52,10 +65,9 @@ const TopBar = ({
       <div className="flex flex-row flex-wrap flex-1">
         <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
           {domain}
-          {drilldown.referrer && (
-            <div>
-              <button
-                className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full"
+          <div>
+            {drilldown.referrer && (
+              <DrilldownPill
                 onClick={() =>
                   setDrilldown((prevState) => ({
                     ...prevState,
@@ -64,13 +76,35 @@ const TopBar = ({
                 }
               >
                 {sourceDrilldownText(drilldown.referrer)}
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 ml-2"
-                  icon={faTimes}
-                />
-              </button>
-            </div>
-          )}
+              </DrilldownPill>
+            )}
+
+            {drilldown.page && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    page: undefined,
+                  }))
+                }
+              >
+                page: {drilldown.page.path}
+              </DrilldownPill>
+            )}
+
+            {drilldown.country && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    country: undefined,
+                  }))
+                }
+              >
+                country: {drilldown.country.isoCode}
+              </DrilldownPill>
+            )}
+          </div>
         </div>
         <div className="flex flex-row flex-1 md:flex-none">
           <LiveCounter domain={domain} />
@@ -145,7 +179,7 @@ const DevicesCard = ({ stats }: { stats: any }) => {
   );
 };
 
-const MapCard = ({ stats }: { stats: any }) => {
+const MapCard = ({ stats, setDrilldown }: { stats: any, setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>> }) => {
   const [selected, setSelected] = useState<"table" | "map">("map");
 
   return (
@@ -191,6 +225,12 @@ const MapCard = ({ stats }: { stats: any }) => {
               count: country.count,
               isoCode: country.data.iso_country_code,
             }))}
+            onClick={(isoCode) =>
+              setDrilldown((prevState) => ({
+                ...prevState,
+                country: { isoCode },
+              }))
+            }
           />
         )}
       </NonIdealState>
@@ -204,8 +244,18 @@ interface ReferrerDrilldown {
   referrer: string | null;
 }
 
+interface PageDrilldown {
+  path: string;
+}
+
+interface CountryDrilldown {
+  isoCode: string;
+}
+
 interface DrilldownState {
   referrer?: ReferrerDrilldown;
+  page?: PageDrilldown;
+  country?: CountryDrilldown;
 }
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
@@ -226,7 +276,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     },
   });
 
-  const isDrilldown: boolean = drilldown.referrer != null;
+  const isDrilldown: boolean = _.some([
+    drilldown.page,
+    drilldown.referrer,
+    drilldown.country,
+  ]);
 
   const [drilldownStats, refetchDrilldownStats] = useQuery({
     query: StatsQuery,
@@ -270,6 +324,12 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
             <Table
               data={stats.data?.events.topPages}
               columnHeadings={["Page", "Visits"]}
+              onClick={(path) =>
+                setDrilldown((prevState) => ({
+                  ...prevState,
+                  page: { path: path! },
+                }))
+              }
             />
           </NonIdealState>
         </DashboardCard>
@@ -299,7 +359,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                       referrer: {
                         source: source.source,
                         referrer: source.referrer,
-                        isDirect: source.source == null && source.referrer == null,
+                        isDirect:
+                          source.source == null && source.referrer == null,
                       },
                     })),
                 }))}
@@ -308,7 +369,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </div>
         </DashboardCard>
 
-        <MapCard stats={stats} />
+        <MapCard stats={stats} setDrilldown={setDrilldown} />
         <DevicesCard stats={stats} />
 
         <DashboardCard position="left">
