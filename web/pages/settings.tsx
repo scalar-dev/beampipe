@@ -1,6 +1,5 @@
 import { AuthProvider, secured } from "../utils/auth";
 import { Layout } from "../components/layout/Layout";
-import { Button } from "../components/Buttons";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Spinner } from "../components/Spinner";
@@ -16,10 +15,8 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, ReactNode } from "react";
-import {
-  getTimezones,
-  renderTimeZone,
-} from "../utils/timezones";
+import { getTimezones, renderTimeZone } from "../utils/timezones";
+import { BasicBullets, ProBullets } from "../components/marketing/Pricing";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
@@ -167,8 +164,17 @@ const Settings = () => {
         settings {
           name
           email
+          accountId
           subscription
           timeZone
+          domains {
+            current
+            max
+          }
+          pageViews {
+            current
+            max
+          }
         }
       }
     `,
@@ -180,11 +186,11 @@ const Settings = () => {
     }
   `);
 
-  const [, cancel] = useMutation(gql`
-    mutation cancel {
-      cancelSubscription
-    }
-  `);
+  // const [, cancel] = useMutation(gql`
+  //   mutation cancel {
+  //     cancelSubscription
+  //   }
+  // `);
 
   const [, updateName] = useMutation(gql`
     mutation updateName($name: String!) {
@@ -219,46 +225,76 @@ const Settings = () => {
     });
   };
 
-  const onCancelClick = async () => {
-    await cancel();
-    rexecuteQuery({ requestPolicy: "network-only" });
-  };
-
   return (
     <AuthProvider>
       <Layout title="settings">
         <div className="container mx-auto">
           <Title>Settings</Title>
 
-          <div className="p-4 bg-white rounded overflow-hidden shadow-lg w-full">
+          <div className="p-4 bg-white rounded-md overflow-hidden shadow-md w-full">
             <div className="flex flex-col">
-              <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">
-                  Current subscription
-                </div>
-                <div>
-                  {settings?.subscription === "pro" ? (
-                    <>
-                      <div className="font-extrabold">pro</div>
-                      <div>
-                        <Button onClick={onCancelClick}>Cancel</Button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-extrabold">
-                        {settings?.subscription}
-                      </div>
-                      <div>
-                        <Button onClick={onSubscribeClick}>Upgrade</Button>
-                      </div>
-                    </>
+              <div className="text-2xl">Subscription</div>
+
+              <div className="flex flex-row my-4 pb-4">
+                <div className="mx-auto flex flex-row space-x-8">
+                  {settings.subscription !== "pro" && (
+                    <div className="p-4 font-bold">
+                      <div className="text-2xl">Basic</div>
+                      <BasicBullets />
+                    </div>
                   )}
+
+                  <div
+                    className={`${
+                      settings.subscription === "pro"
+                        ? ""
+                        : "cursor-pointer bg-gray-300 hover:bg-gray-200 rounded-md shadow-md"
+                    } p-4 font-bold`}
+                    onClick={
+                      settings.subscription !== "pro"
+                        ? onSubscribeClick
+                        : undefined
+                    }
+                  >
+                    <div className="text-2xl">
+                      {settings.subscription === "basic" ? "Upgrade to " : ""}
+                      Pro
+                    </div>
+                    <ProBullets />
+
+                    {settings.subscription === "pro" ? (
+                      <a
+                        className="text-xs hover:underline font-medium"
+                        href={`mailto:hello@beampipe.io?subject=Cancel account ${settings.accountId}`}
+                      >
+                        Cancel subscription
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
+              <div className="text-2xl border-t pt-4">Usage</div>
+
+              <div className="pb-4 flex flex-row text-2xl text-gray-800 font-bold justify-center space-x-8">
+                <div className="p-8">
+                  <div className="text-lg">Domains</div>
+                  <div className="text-gray-800">
+                    {settings.domains.current} / {settings.domains.max}
+                  </div>
+                </div>
+                <div className="p-8">
+                  <div className="text-lg">Page views</div>
+                  <div className="text-gray-800">
+                    {settings.pageViews.current} / {settings.pageViews.max}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-2xl border-t pt-4">Details</div>
+
               <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">Name</div>
+                <div className="text-right pr-4 w-1/2 font-bold">Name</div>
                 <div>
                   <EditableText
                     initialValue={settings?.name}
@@ -277,7 +313,9 @@ const Settings = () => {
               </div>
 
               <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">Email address</div>
+                <div className="text-right pr-4 w-1/2 font-bold">
+                  Email address
+                </div>
                 <div>
                   <EditableText
                     initialValue={settings?.email}
@@ -296,7 +334,9 @@ const Settings = () => {
               </div>
 
               <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">Display timezone</div>
+                <div className="text-right pr-4 w-1/2 font-bold">
+                  Display timezone
+                </div>
                 <div>
                   <EditableSelect
                     initialValue={settings?.timeZone}
@@ -321,9 +361,10 @@ const Settings = () => {
                 </div>
               </div>
 
+              <div className="text-2xl pt-4 border-t mt-4">Integrations</div>
+
               <div className="flex flex-row p-4">
-                <div className="text-right pr-4 w-1/2">Slack integration</div>
-                <div>
+                <div className="mx-auto">
                   <Link href="/oauth/login/slack">
                     <a>
                       <img

@@ -16,7 +16,19 @@ import javax.inject.Singleton
 @Singleton
 class AccountQuery {
     data class User(val id: UUID, val email: String?, val name: String?)
-    data class UserSettings(val email: String?, val name: String?, val timeZone: String, val subscription: String)
+
+    data class Quota(val current: Long, val max: Long)
+
+    data class UserSettings(
+        val email: String?,
+        val name: String?,
+        val accountId: UUID,
+        val timeZone: String,
+        val subscription: String,
+        val domains: Quota,
+        val pageViews: Quota
+    )
+
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
     fun user(context: Context) = if (context.authentication != null) {
@@ -29,21 +41,44 @@ class AccountQuery {
         null
     }
 
-    fun settings(context: Context) = if (context.authentication != null) {
-        transaction {
-            Accounts.select { Accounts.id.eq(UUID.fromString(context.authentication.attributes["accountId"] as String)) }
+    fun maxPageViews(subscription: String): Long = when (subscription) {
+        "basic" -> 10_000
+        "pro" -> 100_000
+        else -> 10_000
+    }
+
+    fun maxDomains(subscription: String): Long = when (subscription) {
+        "basic" -> 5
+        "pro" -> 20
+        else -> 5
+    }
+
+    suspend fun settings(context: Context) = context.withAccountId { accountId ->
+        newSuspendedTransaction {
+            val domains = Domains
+                .slice(Domains.domain)
+                .select { Domains.accountId eq accountId }
+                .map { it[Domains.domain] }
+
+            val pageViews = Events.select { Events.domain inList domains }
+                .count()
+
+            Accounts.select { Accounts.id.eq(accountId) }
                 .map {
+                    val subscription = it[Accounts.subscription]
+
                     UserSettings(
                         it[Accounts.email],
                         it[Accounts.name],
+                        it[Accounts.id].value,
                         it[Accounts.timeZone],
-                        it[Accounts.subscription]
+                        it[Accounts.subscription],
+                        Quota(domains.size.toLong(), maxDomains(subscription)),
+                        Quota(pageViews, maxPageViews(subscription))
                     )
                 }
                 .firstOrNull()
         }
-    } else {
-        null
     }
 
     suspend fun domains(context: Context): List<Domain> = newSuspendedTransaction {
