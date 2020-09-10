@@ -15,3 +15,7 @@
   items:
   - label: 'Beampipe'
     link: 'https://beampipe.io'
+
+  - label: 'Changelog'
+    link: '/changelog'
+
