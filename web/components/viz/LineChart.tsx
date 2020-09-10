@@ -86,6 +86,7 @@ export const LineChart = ({
               unit: timePeriodToBucket(timePeriod),
             },
             stacked: true,
+            offset: true,
             gridLines: {
               display: false,
             },
