@@ -2,7 +2,11 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import { useState } from "react";
-import { Layout, IfUserLoggedIn, IfAnonymous } from "../../components/layout/Layout";
+import {
+  Layout,
+  IfUserLoggedIn,
+  IfAnonymous,
+} from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
@@ -26,6 +30,7 @@ import { StatsQuery } from "../../components/domain/StatsQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { TakeBackControl, Footer } from "..";
+import Link from "next/link";
 
 const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   if (referrer.isDirect) {
@@ -124,11 +129,20 @@ const Toolbar = ({
   setTimePeriod: (timePeriod: TimePeriod) => void;
 }) => (
   <div className="py-2">
-    <div className="flex flex-row max-w-full">
+    <div className="flex flex-row max-w-full items-center">
       <div className="flex-1">
         <IfUserLoggedIn>
           <DomainPicker />
         </IfUserLoggedIn>
+        <IfAnonymous>
+          <div className="align-middle">
+            <Link href="/sign-up">
+              <a className="hover:text-purple-600 text-gray-600 text-lg font-bold leading-tight">
+                Get beampipe for your site.
+              </a>
+            </Link>
+          </div>
+        </IfAnonymous>
       </div>
       <div>
         <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
@@ -139,7 +153,13 @@ const Toolbar = ({
 
 type DevicesTab = "Screen Size" | "Device" | "Class";
 
-const DevicesCard = ({ stats, drilldownStats }: { stats: any, drilldownStats: any | null }) => {
+const DevicesCard = ({
+  stats,
+  drilldownStats,
+}: {
+  stats: any;
+  drilldownStats: any | null;
+}) => {
   const tabs: DevicesTab[] = ["Screen Size", "Device", "Class"];
   const [selected, setSelected] = useState<DevicesTab>(tabs[0]);
 
@@ -149,7 +169,7 @@ const DevicesCard = ({ stats, drilldownStats }: { stats: any, drilldownStats: an
     Class: stats.data?.events.topDeviceClasses,
   };
 
- const drillDownData = {
+  const drillDownData = {
     "Screen Size": drilldownStats?.data?.events.topScreenSizes,
     Device: drilldownStats?.data?.events.topDevices,
     Class: drilldownStats?.data?.events.topDeviceClasses,
