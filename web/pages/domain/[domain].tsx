@@ -2,7 +2,11 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import { useState } from "react";
-import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
+import {
+  Layout,
+  IfUserLoggedIn,
+  IfAnonymous,
+} from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
@@ -25,6 +29,8 @@ import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { TakeBackControl, Footer } from "..";
+import Link from "next/link";
 
 const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   if (referrer.isDirect) {
@@ -123,11 +129,20 @@ const Toolbar = ({
   setTimePeriod: (timePeriod: TimePeriod) => void;
 }) => (
   <div className="py-2">
-    <div className="flex flex-row max-w-full">
+    <div className="flex flex-row max-w-full items-center">
       <div className="flex-1">
         <IfUserLoggedIn>
           <DomainPicker />
         </IfUserLoggedIn>
+        <IfAnonymous>
+          <div className="align-middle">
+            <Link href="/sign-up">
+              <a className="hover:text-purple-600 text-gray-600 text-lg font-bold leading-tight">
+                Get beampipe for your site.
+              </a>
+            </Link>
+          </div>
+        </IfAnonymous>
       </div>
       <div>
         <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
@@ -138,7 +153,13 @@ const Toolbar = ({
 
 type DevicesTab = "Screen Size" | "Device" | "Class";
 
-const DevicesCard = ({ stats }: { stats: any }) => {
+const DevicesCard = ({
+  stats,
+  drilldownStats,
+}: {
+  stats: any;
+  drilldownStats: any | null;
+}) => {
   const tabs: DevicesTab[] = ["Screen Size", "Device", "Class"];
   const [selected, setSelected] = useState<DevicesTab>(tabs[0]);
 
@@ -146,6 +167,12 @@ const DevicesCard = ({ stats }: { stats: any }) => {
     "Screen Size": stats.data?.events.topScreenSizes,
     Device: stats.data?.events.topDevices,
     Class: stats.data?.events.topDeviceClasses,
+  };
+
+  const drillDownData = {
+    "Screen Size": drilldownStats?.data?.events.topScreenSizes,
+    Device: drilldownStats?.data?.events.topDevices,
+    Class: drilldownStats?.data?.events.topDeviceClasses,
   };
 
   return (
@@ -170,16 +197,28 @@ const DevicesCard = ({ stats }: { stats: any }) => {
         </div>
       </CardTitle>
       <NonIdealState
-        isLoading={stats.fetching}
+        isLoading={stats.fetching || drilldownStats?.fetching}
         isIdeal={stats.data?.events.topScreenSizes.length > 0}
       >
-        <Table columnHeadings={[selected, "Visits"]} data={data[selected]} />
+        <Table
+          columnHeadings={[selected, "Visits"]}
+          data={data[selected]}
+          drilldownData={drillDownData[selected]}
+        />
       </NonIdealState>
     </DashboardCard>
   );
 };
 
-const MapCard = ({ stats, setDrilldown }: { stats: any, setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>> }) => {
+const MapCard = ({
+  stats,
+  drilldownStats,
+  setDrilldown,
+}: {
+  stats: any;
+  drilldownStats: any | null;
+  setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
+}) => {
   const [selected, setSelected] = useState<"table" | "map">("map");
 
   return (
@@ -210,13 +249,14 @@ const MapCard = ({ stats, setDrilldown }: { stats: any, setDrilldown: React.Disp
         </div>
       </CardTitle>
       <NonIdealState
-        isLoading={stats.fetching}
+        isLoading={stats.fetching || drilldownStats?.fetching}
         isIdeal={stats.data?.events.topCountries.length > 0}
       >
         {selected === "table" ? (
           <Table
             columnHeadings={["Country", "Visits"]}
             data={stats.data?.events.topCountries}
+            drilldownData={drilldownStats?.data?.events.topCountries}
           />
         ) : (
           <MapChart
@@ -323,6 +363,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           >
             <Table
               data={stats.data?.events.topPages}
+              drilldownData={
+                isDrilldown ? drilldownStats.data?.events.topPages : null
+              }
               columnHeadings={["Page", "Visits"]}
               onClick={(path) =>
                 setDrilldown((prevState) => ({
@@ -344,8 +387,19 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               <Table
                 showImages
                 columnHeadings={["Source", "Visits"]}
+                drilldownData={
+                  isDrilldown
+                    ? drilldownStats.data?.events.topSources.map(
+                        (source: any) => ({
+                          key: `${source.source}_${source.referrer}`,
+                          count: source.count,
+                        })
+                      )
+                    : null
+                }
                 data={stats.data?.events.topSources.map((source: any) => ({
-                  key: source.source || source.referrer,
+                  key: `${source.source}_${source.referrer}`,
+                  label: source.source || source.referrer || "none",
                   count: source.count,
                   image: source.referrer && (
                     <img
@@ -369,18 +423,30 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </div>
         </DashboardCard>
 
-        <MapCard stats={stats} setDrilldown={setDrilldown} />
-        <DevicesCard stats={stats} />
+        <MapCard
+          stats={stats}
+          setDrilldown={setDrilldown}
+          drilldownStats={isDrilldown ? drilldownStats : null}
+        />
+        <DevicesCard
+          stats={stats}
+          drilldownStats={isDrilldown ? drilldownStats : null}
+        />
 
         <DashboardCard position="left">
           <CardTitle>Operating Systems</CardTitle>
           <NonIdealState
-            isLoading={stats.fetching}
+            isLoading={stats.fetching || drilldownStats.fetching}
             isIdeal={stats.data?.events.topOperatingSystems.length > 0}
           >
             <Table
               columnHeadings={["OS", "Visits"]}
               data={stats.data?.events.topOperatingSystems}
+              drilldownData={
+                isDrilldown
+                  ? drilldownStats.data?.events.topOperatingSystems
+                  : null
+              }
             />
           </NonIdealState>
         </DashboardCard>
@@ -388,12 +454,15 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         <DashboardCard position="right">
           <CardTitle>User Agents</CardTitle>
           <NonIdealState
-            isLoading={stats.fetching}
+            isLoading={stats.fetching || drilldownStats.fetching}
             isIdeal={stats.data?.events.topAgents.length > 0}
           >
             <Table
               columnHeadings={["User Agent", "Visits"]}
               data={stats.data?.events.topAgents}
+              drilldownData={
+                isDrilldown ? drilldownStats.data?.events.topAgents : null
+              }
             />
           </NonIdealState>
         </DashboardCard>
@@ -407,6 +476,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           }}
         />
       </div>
+      <IfAnonymous>
+        <div className="pb-8">
+          <TakeBackControl />
+        </div>
+      </IfAnonymous>
     </div>
   );
 };
@@ -418,6 +492,10 @@ const DomainPage = () => {
     <AuthProvider>
       <Layout title={router.query.domain as string}>
         <Root domain={router.query.domain as string} />
+
+        <IfAnonymous>
+          <Footer />
+        </IfAnonymous>
       </Layout>
     </AuthProvider>
   );
