@@ -2,7 +2,7 @@ import { withUrql } from "../../utils/withUrql";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import { useState } from "react";
-import { Layout, IfUserLoggedIn } from "../../components/layout/Layout";
+import { Layout, IfUserLoggedIn, IfAnonymous } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
 import {
   timePeriodToBucket,
@@ -25,6 +25,7 @@ import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { TakeBackControl, Footer } from "..";
 
 const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   if (referrer.isDirect) {
@@ -455,6 +456,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           }}
         />
       </div>
+      <IfAnonymous>
+        <TakeBackControl />
+      </IfAnonymous>
     </div>
   );
 };
@@ -466,6 +470,10 @@ const DomainPage = () => {
     <AuthProvider>
       <Layout title={router.query.domain as string}>
         <Root domain={router.query.domain as string} />
+
+        <IfAnonymous>
+          <Footer />
+        </IfAnonymous>
       </Layout>
     </AuthProvider>
   );

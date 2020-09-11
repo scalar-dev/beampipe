@@ -203,7 +203,7 @@ const Why = () => (
   </div>
 );
 
-const Footer = () => (
+export const Footer = () => (
   <footer className="bg-green-600 text-white pt-8">
     <div className="container mx-auto  px-8">
       <div className="w-full flex flex-col md:flex-row pt-6">
@@ -312,6 +312,21 @@ const Footer = () => (
   </footer>
 );
 
+export const TakeBackControl = () => (
+  <div className="mx-auto container py-8 text-center">
+    <div className="font-black leading-tight text-5xl md:text-6xl text-gray-800">
+      Take back control of your analytics.
+    </div>
+    <div className="pt-8">
+      <Link href="/sign-up">
+        <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+          Get started.
+        </a>
+      </Link>
+    </div>
+  </div>
+);
+
 const Hero = () => (
   <div className="container mx-auto">
     <div className="px-2 pb-4 md:pt-4 md:w-full flex flex-col">
@@ -380,18 +395,8 @@ const IndexPage = () => {
         <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Why />
 
-          <div className="mx-auto container py-8 text-center">
-            <div className="font-black leading-tight text-6xl text-gray-800">
-              Take back control of your analytics.
-            </div>
-            <div className="pt-8">
-              <Link href="/sign-up">
-                <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
-                  Get started.
-                </a>
-              </Link>
-            </div>
-          </div>
+          <TakeBackControl />
+
           <Pricing />
 
           <div className="flex justify-center">
