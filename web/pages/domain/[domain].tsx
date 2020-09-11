@@ -457,7 +457,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         />
       </div>
       <IfAnonymous>
-        <TakeBackControl />
+        <div className="pb-8">
+          <TakeBackControl />
+        </div>
       </IfAnonymous>
     </div>
   );
