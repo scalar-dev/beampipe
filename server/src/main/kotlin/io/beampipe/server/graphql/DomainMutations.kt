@@ -8,6 +8,7 @@ import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
@@ -46,6 +47,17 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
                 }.value
             }
         }
+
+    suspend fun deleteGoal(context: Context, id: UUID) = context.withAccountId { accountId ->
+        newSuspendedTransaction {
+            val goal = Goals.select { Goals.id eq id }
+                .firstOrNull()!!
+
+            context.checkDomainAccess(goal[Goals.domain])
+
+            Goals.deleteWhere { Goals.id eq id }
+        }
+    }
 
     suspend fun createOrUpdateDomain(context: Context, id: UUID?, domain: String, public: Boolean) =
         context.withAccountId { accountId ->

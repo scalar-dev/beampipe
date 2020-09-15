@@ -58,7 +58,8 @@ data class EventStats(
     private val endTime: Instant,
     private val comparisonStartTime: Instant?,
     private val timeZone: ZoneId,
-    private val drilldowns: List<Drilldown>
+    private val drilldowns: List<Drilldown>,
+    private val isEditable: Boolean
 ) {
     private fun SqlExpressionBuilder.preselect(periodStartTime: Instant, periodEndTime: Instant) =
         Events.domain.eq(domain) and
@@ -171,6 +172,8 @@ data class EventStats(
 
     suspend fun topAgents(n: Int?) = topBy(n, Events.agentName)
 
+    suspend fun isEditable() = isEditable
+
     suspend fun countUnique() = newSuspendedTransaction {
         Events
             .slice(Events.userId)
@@ -218,12 +221,19 @@ data class EventStats(
                         eventTypePathCount[Events.path].eq(Goals.path) or Goals.path.eq("") or Goals.path.isNull()
                         )
             }
-            .slice(Goals.id, Goals.name, sum)
+            .slice(Goals.id, Goals.name, Goals.description, Goals.eventType, Goals.path, sum)
             .select { Domains.domain eq domain }
             .groupBy(Goals.id)
             .orderBy(sum, SortOrder.DESC)
             .map {
-                EventQuery.Count(it[Goals.name], it[sum] ?: 0, null)
+                EventQuery.GoalCount(
+                    it[Goals.id].value,
+                    it[Goals.name],
+                    it[Goals.description],
+                    it[Goals.eventType],
+                    it[Goals.path],
+                    it[sum] ?: 0
+                )
             }
     }
 

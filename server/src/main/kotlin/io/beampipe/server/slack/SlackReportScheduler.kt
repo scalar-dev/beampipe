@@ -74,12 +74,21 @@ class SlackReportScheduler() {
         }
     }
 
-
     private fun formatDouble(value: Double?): String {
         if (value == null) {
             return "-"
         } else {
             val df = DecimalFormat("#.#")
+            return df.format(value)
+        }
+    }
+
+
+    private fun formatPercentage(value: Double?): String {
+        if (value == null) {
+            return "-"
+        } else {
+            val df = DecimalFormat("##.#%")
             return df.format(value)
         }
     }
@@ -98,7 +107,8 @@ class SlackReportScheduler() {
             timePeriod.toEndTime(),
             timePeriod.toPreviousStartTime(),
             timeZone,
-            emptyList()
+            emptyList(),
+            false
         )
 
         val count = report.count()
@@ -142,7 +152,7 @@ class SlackReportScheduler() {
                                 .build(),
                             block("*Page views*: $count ${formatChange(countChange)}"),
                             block("*Unique visitors*: $countUnique ${formatChange(countUniqueChange)}"),
-                            block("*Bounce rate*: ${formatDouble(bounceRate)} ${formatChange(bounceRateChange)}")
+                            block("*Bounce rate*: ${formatPercentage(bounceRate)} ${formatChange(bounceRateChange)}")
                         )
                     )
                     .build()
