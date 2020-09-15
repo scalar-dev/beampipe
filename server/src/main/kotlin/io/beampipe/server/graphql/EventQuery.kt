@@ -34,6 +34,7 @@ class EventQuery {
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
     data class Count(val key: String?, val count: Long, val data: Map<String, String>? = null)
+    data class GoalCount(val id: UUID, val name: String, val description: String?, val eventType: String, val path: String?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
 
     data class Event(
@@ -111,13 +112,20 @@ class EventQuery {
                 else -> ZoneOffset.UTC
             }
 
+            val isEditable = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
+                .select {
+                    Domains.domain.eq(domain) and Accounts.id.eq(userId)
+                }
+                .firstOrNull() != null
+
             EventStats(
                 domain,
                 timePeriod.toStartTime(),
                 timePeriod.toEndTime(),
                 timePeriod.toPreviousStartTime(),
                 zoneId,
-                listOfNotNull(referrer, page, country)
+                listOfNotNull(referrer, page, country),
+                isEditable
             )
         }
 }

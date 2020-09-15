@@ -5,11 +5,19 @@ import { useState } from "react";
 import { Button } from "../Buttons";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
-import { IfUserLoggedIn } from "../layout/Layout";
 import { onApiError } from "../../utils/errors";
 import { Table } from "../Table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+interface Goal {
+  id: string;
+  name: string;
+  description?: string;
+  eventType: string;
+  path: string;
+  count: number;
+}
 
 const ModalBody: React.FunctionComponent = ({ children }) => (
   <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">{children}</div>
@@ -65,15 +73,16 @@ const Modal: React.FunctionComponent = ({ children, ...otherProps }) => {
   );
 };
 
-const CreateGoalModal: React.FunctionComponent<{
+const EditGoalModal: React.FunctionComponent<{
+  goal?: Goal;
   domain: string;
   onComplete: () => void;
   onCancel: () => void;
-}> = ({ domain, onCancel, onComplete }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [eventType, setEventType] = useState("");
-  const [path, setPath] = useState("");
+}> = ({ goal, domain, onCancel, onComplete }) => {
+  const [name, setName] = useState(goal ? goal.name : "");
+  const [description, setDescription] = useState(goal ? goal.description : "");
+  const [eventType, setEventType] = useState(goal ? goal.eventType : "");
+  const [path, setPath] = useState(goal ? goal.path : "");
   const [error, setError] = useState<string | null>(null);
 
   const [query] = useQuery({
@@ -108,6 +117,14 @@ const CreateGoalModal: React.FunctionComponent<{
     }
   `);
 
+  const [, deleteGoal] = useMutation(gql`
+    mutation deleteGoal($id: UUID!) {
+      deleteGoal(id: $id)
+    }
+  `);
+
+  const readOnly = goal != null;
+
   return (
     <>
       <Modal data-cy="modal-create-goal">
@@ -130,6 +147,7 @@ const CreateGoalModal: React.FunctionComponent<{
                   type="text"
                   placeholder="e.g. signup event"
                   value={name}
+                  readOnly={readOnly}
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
@@ -154,6 +172,7 @@ const CreateGoalModal: React.FunctionComponent<{
                   data-cy="input-goal-description"
                   placeholder="optional description"
                   value={description}
+                  readOnly={readOnly}
                   onChange={(e) => {
                     setDescription(e.target.value);
                   }}
@@ -184,6 +203,7 @@ const CreateGoalModal: React.FunctionComponent<{
                   data-cy="input-goal-event-type"
                   placeholder="e.g. signup"
                   value={eventType}
+                  readOnly={readOnly}
                   onChange={(e) => {
                     setEventType(e.target.value);
                   }}
@@ -207,6 +227,7 @@ const CreateGoalModal: React.FunctionComponent<{
                   type="text"
                   placeholder="e.g. /"
                   value={path}
+                  readOnly={readOnly}
                   data-cy="input-goal-path"
                   onChange={(e) => {
                     setPath(e.target.value);
@@ -219,31 +240,60 @@ const CreateGoalModal: React.FunctionComponent<{
         </ModalBody>
         <ModalFooter>
           <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-            <button
-              type="button"
-              className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-              onClick={async () => {
-                const result = await createGoal({
-                  domainId: query.data.domain.id,
-                  name,
-                  description,
-                  eventType,
-                  path,
-                });
+            {readOnly ? (
+              <button
+                type="button"
+                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-green-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                onClick={async () => {
+                  if (
+                    confirm(
+                      "Are you sure you want to remove this goal? You will be able to recreate it."
+                    )
+                  ) {
+                    const result = await deleteGoal({ id: goal!!.id });
 
-                if (
-                  !onApiError(
-                    result.error,
-                    "An unspecified error occurred",
-                    setError
-                  )
-                ) {
-                  onComplete();
+                    if (
+                      !onApiError(
+                        result.error,
+                        "An unspecified error occurred",
+                        setError
+                      )
+                    ) {
+                      onComplete();
+                    }
+                  }
                 }
-              }}
-            >
-              Create
-            </button>
+              }
+              >
+                Delete
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                onClick={async () => {
+                  const result = await createGoal({
+                    domainId: query.data.domain.id,
+                    name,
+                    description,
+                    eventType,
+                    path,
+                  });
+
+                  if (
+                    !onApiError(
+                      result.error,
+                      "An unspecified error occurred",
+                      setError
+                    )
+                  ) {
+                    onComplete();
+                  }
+                }}
+              >
+                Create
+              </button>
+            )}
           </span>
           <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
             <button
@@ -270,10 +320,15 @@ export const GoalsCard = ({
   refetch: () => void;
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [goal, setGoal] = useState<Goal|null>(null);
 
   const createGoal = () => {
     setModalVisible(true);
   };
+
+  const isEditable = stats.data?.events.isEditable || false;
+
+  console.log(isEditable);
 
   return (
     <DashboardCard position="full" data-cy="goals-card">
@@ -281,7 +336,7 @@ export const GoalsCard = ({
         <div className="flex">
           <div className="flex-auto overflow-auto">Goals</div>
 
-          <IfUserLoggedIn>
+          {isEditable ? (
             <div className="flex-none">
               <a
                 href="#"
@@ -298,17 +353,20 @@ export const GoalsCard = ({
                 />
               </a>
             </div>
-          </IfUserLoggedIn>
+          ) : null}
         </div>
       </CardTitle>
       {modalVisible && (
-        <CreateGoalModal
+        <EditGoalModal
+          goal={goal!!}
           domain={domain}
           onCancel={() => {
             setModalVisible(false);
+            setGoal(null);
           }}
           onComplete={() => {
             setModalVisible(false);
+            setGoal(null);
             refetch();
           }}
         />
@@ -319,19 +377,33 @@ export const GoalsCard = ({
         nonIdeal={
           <div className="text-md text-gray-600 text-center">
             You haven't configured any goals yet.
-            <IfUserLoggedIn>
+            {isEditable ? (
               <div className="pt-4">
                 <Button data-cy="button-create-goal" onClick={createGoal}>
                   Create a goal
                 </Button>
               </div>
-            </IfUserLoggedIn>
+            ) : null}
           </div>
         }
       >
         <Table
           columnHeadings={["Goals", "Count"]}
-          data={stats.data?.events.goals}
+          data={stats.data?.events.goals.map((goal: Goal) => ({
+            key: goal.id,
+            label: goal.name,
+            count: goal.count,
+          }))}
+          onClick={
+            isEditable
+              ? (id) => {
+                  setGoal(
+                    stats.data.events.goals.find((goal: Goal) => goal.id === id)
+                  );
+                  setModalVisible(true);
+                }
+              : undefined
+          }
           showPercentages="max"
         />
       </NonIdealState>
