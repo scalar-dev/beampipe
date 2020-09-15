@@ -22,6 +22,7 @@ import {
   faTwitter,
   faProductHunt,
   faMedium,
+  faGithub,
 } from "@fortawesome/free-brands-svg-icons";
 import { Screenshot } from "../components/marketing/Screenshot";
 import { ReactNode } from "react";
@@ -280,19 +281,6 @@ export const Footer = () => (
                 Twitter
               </a>
             </li>
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://www.producthunt.com/posts/beampipe"
-                target="_blank"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faProductHunt}
-                />
-                Product Hunt
-              </a>
-            </li>
 
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
@@ -307,12 +295,38 @@ export const Footer = () => (
                 Medium
               </a>
             </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://www.producthunt.com/posts/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faProductHunt}
+                />
+                Product Hunt
+              </a>
+            </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://github.com/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faGithub}
+                />
+                Github
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
       <div className="pb-6 text-center w-full text-sm">
-        Copright © Beampipe 2020.
+        Copyright © Beampipe 2020.
       </div>
     </div>
   </footer>
@@ -342,7 +356,7 @@ const Hero = () => (
         </div>
         <p className="leading-normal text-2xl text-gray-800 font-medium">
           beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
-          <b>free</b> for upto 10k monthly page views.
+          <b>free</b> for up to 10k monthly page views.
         </p>
       </div>
     </div>
@@ -377,8 +391,7 @@ const Hero = () => (
 const BigScreenshot = () => (
   <div className="flex py-8 px-2 md:px-32 justify-center">
     <Screenshot>
-      {/* <img src="/screenshot.png" alt="Beampipe screnshot" /> */}
-      <video loop autoPlay muted playsInline preload="1">
+      <video loop autoPlay muted playsInline preload="1" poster="/images/screenshot.png">
         <source type="video/mp4" src="/video.mp4" />
       </video>
     </Screenshot>

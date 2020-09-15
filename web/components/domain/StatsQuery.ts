@@ -11,6 +11,7 @@ export const StatsQuery = gql`
     $country: CountryInput
   ) {
     events(domain: $domain, timePeriod: $timePeriod, referrer: $referrer, page: $page, country: $country) {
+      isEditable
       bucketed(bucketDuration: $bucketDuration) {
         time
         count
@@ -64,7 +65,11 @@ export const StatsQuery = gql`
       }
 
       goals {
-        key
+        id
+        name
+        description
+        eventType
+        path
         count
       }
 
