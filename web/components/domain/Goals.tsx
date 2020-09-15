@@ -328,8 +328,6 @@ export const GoalsCard = ({
 
   const isEditable = stats.data?.events.isEditable || false;
 
-  console.log(isEditable);
-
   return (
     <DashboardCard position="full" data-cy="goals-card">
       <CardTitle>
