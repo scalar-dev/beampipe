@@ -306,7 +306,7 @@ export const Footer = () => (
       </div>
 
       <div className="pb-6 text-center w-full text-sm">
-        Copright © Beampipe 2020.
+        Copyright © Beampipe 2020.
       </div>
     </div>
   </footer>
