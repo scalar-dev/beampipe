@@ -76,9 +76,11 @@ const Features = () => (
       <FeatureCard
         title="Simple, powerful web analytics dashboard."
         image={
-          <Screenshot>
-            <img src="/images/screenshot2.png" />
-          </Screenshot>
+          <div className="flex justify-end">
+            <Screenshot>
+              <img src="/images/screenshot2.png" />
+            </Screenshot>
+          </div>
         }
       >
         <p>
@@ -96,9 +98,11 @@ const Features = () => (
       <FeatureCard
         title="Slack integration."
         image={
-          <Screenshot>
-            <img src="/images/slack2.png" className="w-full" />
-          </Screenshot>
+          <div className="flex justify-end">
+            <Screenshot>
+              <img src="/images/slack2.png" className="w-full" />
+            </Screenshot>
+          </div>
         }
       >
         <p>Receive daily or weekly summary reports straight to Slack.</p>
@@ -110,9 +114,11 @@ const Features = () => (
       <FeatureCard
         title="Track goals and conversions."
         image={
-          <Screenshot>
-            <img src="/images/goals.png" className="w-full m-auto" />
-          </Screenshot>
+          <div className="flex justify-end">
+            <Screenshot>
+              <img src="/images/goals.png" className="w-full m-auto" />
+            </Screenshot>
+          </div>
         }
       >
         <p>Use our javascript SDK to record user interactions and metadata.</p>
