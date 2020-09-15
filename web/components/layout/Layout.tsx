@@ -10,6 +10,7 @@ import {
   faGithub,
   faTwitter,
   faProductHunt,
+  faMedium,
 } from "@fortawesome/free-brands-svg-icons";
 
 interface LayoutProps {
@@ -43,6 +44,13 @@ const SocialButtons = () => (
       href="https://twitter.com/beampipe_io"
     >
       <FontAwesomeIcon size="lg" className="fill-current" icon={faTwitter} />
+    </a>
+
+    <a
+      className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
+      href="https://medium.com/beampipe"
+    >
+      <FontAwesomeIcon size="lg" className="fill-current" icon={faMedium} />
     </a>
 
     <a

@@ -22,6 +22,7 @@ import {
   faTwitter,
   faProductHunt,
   faMedium,
+  faGithub,
 } from "@fortawesome/free-brands-svg-icons";
 import { Screenshot } from "../components/marketing/Screenshot";
 import { ReactNode } from "react";
@@ -274,6 +275,20 @@ export const Footer = () => (
                 Twitter
               </a>
             </li>
+
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://medium.com/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faMedium}
+                />
+                Medium
+              </a>
+            </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
                 href="https://www.producthunt.com/posts/beampipe"
@@ -287,18 +302,17 @@ export const Footer = () => (
                 Product Hunt
               </a>
             </li>
-
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
-                href="https://medium.com/beampipe"
+                href="https://github.com/beampipe"
                 target="_blank"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
                   className="fill-current w-4 h-4 mr-2"
-                  icon={faMedium}
+                  icon={faGithub}
                 />
-                Medium
+                Github
               </a>
             </li>
           </ul>
@@ -336,7 +350,7 @@ const Hero = () => (
         </div>
         <p className="leading-normal text-2xl text-gray-800 font-medium">
           beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
-          <b>free</b> for upto 10k monthly page views.
+          <b>free</b> for up to 10k monthly page views.
         </p>
       </div>
     </div>
