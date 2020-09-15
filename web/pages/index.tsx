@@ -371,8 +371,7 @@ const Hero = () => (
 const BigScreenshot = () => (
   <div className="flex py-8 px-2 md:px-32 justify-center">
     <Screenshot>
-      {/* <img src="/screenshot.png" alt="Beampipe screnshot" /> */}
-      <video loop autoPlay muted playsInline preload="1">
+      <video loop autoPlay muted playsInline preload="1" poster="/images/screenshot.png">
         <source type="video/mp4" src="/video.mp4" />
       </video>
     </Screenshot>
