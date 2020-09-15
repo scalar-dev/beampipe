@@ -84,7 +84,7 @@ export const Pricing = () => {
         <p className="text-center pb-4 text-gray-600 font-bold">
           No credit card required. Cancel at any time.
         </p>
-        <div className="mx-auto md:grid md:grid-cols-3 md:gap-5">
+        <div className="mx-auto lg:grid lg:grid-cols-3 lg:gap-5">
           <PricingBox title="Free" price="$0 / month">
             <BasicBullets />
           </PricingBox>
