@@ -13,7 +13,7 @@ export const Avatar = ({ user }: { user: User }) => {
       "$1"
     )
     .toLocaleUpperCase()
-    .substring(0, 2) || "??";
+    .substring(0, 2) || "★";
 
   return (
     <BaseMenu

@@ -10,6 +10,10 @@ const validateEmail = (email: string) => {
   return re.test(String(email).toLowerCase());
 };
 
+const validatePassword = (password: string) => {
+  return password.length >= 8;
+}
+
 const login = async (email: string, password: string): Promise<boolean> => {
   const result = await fetch("/login", {
     method: "POST",
@@ -43,6 +47,11 @@ export const SignupForm = () => {
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Please enter a valid password (at least 8 characters)");
       return;
     }
 
@@ -103,14 +112,14 @@ export const SignupForm = () => {
       </div>
 
       <div className="md:flex md:items-center mb-6">
-        <label className="md:w-full block text-gray-500 font-bold">
+        <label className="md:w-full block text-sm font-bold text-gray-700">
           <input
             className="mr-2 leading-tight"
             type="checkbox"
             checked={emailOk}
             onChange={(e) => setEmailOk(e.target.checked)}
           />
-          <span className="text-md">
+          <span>
             It's ok to email me occasionally with updates on Beampipe
           </span>
         </label>
