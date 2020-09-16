@@ -103,14 +103,14 @@ export const SignupForm = () => {
       </div>
 
       <div className="md:flex md:items-center mb-6">
-        <label className="md:w-full block text-gray-500 font-bold">
+        <label className="md:w-full block text-sm font-bold text-gray-700">
           <input
             className="mr-2 leading-tight"
             type="checkbox"
             checked={emailOk}
             onChange={(e) => setEmailOk(e.target.checked)}
           />
-          <span className="text-md">
+          <span>
             It's ok to email me occasionally with updates on Beampipe
           </span>
         </label>
