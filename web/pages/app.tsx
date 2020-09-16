@@ -477,7 +477,7 @@ const DomainList = ({
             <Box>
               Visitors
               <div className="text-3xl font-extrabold whitespace-no-wrap">
-                {numeral(query.data?.settings.visitors.current).format(
+                {numeral(query.data?.settings.visitors).format(
                   "0.[0]a"
                 )}
               </div>
