@@ -1,5 +1,5 @@
 import { TimePeriod } from "../viz/TimePicker";
-import { timePeriodToFineBucket, LineChart } from "../viz/LineChart";
+import { timePeriodToBucketDuration, LineChart } from "../viz/LineChart";
 import { NonIdealState } from "../NonIdealState";
 import _ from "lodash";
 import { DashboardCard } from "./DashboardCard";
@@ -15,7 +15,7 @@ export const TimeChart = ({
   showDrilldown: boolean;
   timePeriod: TimePeriod;
 }) => {
-  const isDayMode = timePeriodToFineBucket(timePeriod) === "day";
+  const isDayMode = timePeriodToBucketDuration(timePeriod) === "day";
 
   const data: any[] = [
     {

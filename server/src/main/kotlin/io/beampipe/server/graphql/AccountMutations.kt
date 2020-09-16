@@ -154,6 +154,10 @@ class AccountMutations(
                 throw CustomException("Email address is invalid")
             }
 
+            if (password.length < 8) {
+                throw CustomException("Invalid password")
+            }
+
             val existingAccount = Accounts.slice(Accounts.id)
                 .select { Accounts.email.eq(email) }
                 .limit(1)

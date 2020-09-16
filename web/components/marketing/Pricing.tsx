@@ -52,7 +52,7 @@ export const BasicBullets = () => (
   <ul>
     <Bullet>5 domains</Bullet>
     <Bullet>10k page views per month</Bullet>
-    <Bullet>Powerful analytics tools</Bullet>
+    <Bullet>Full-featured analytics dashboard</Bullet>
   </ul>
 );
 
@@ -60,7 +60,7 @@ export const ProBullets = () => (
   <ul>
     <Bullet>20 domains</Bullet>
     <Bullet>100k page views per month</Bullet>
-    <Bullet>Powerful analytics tools</Bullet>
+    <Bullet>Full-featured analytics dashboard</Bullet>
     <Bullet>Slack integration</Bullet>
   </ul>
 );
@@ -69,7 +69,7 @@ export const EnterpriseBullets = () => (
   <ul>
     <Bullet>Unlimited domains</Bullet>
     <Bullet>Unlimited page views per month</Bullet>
-    <Bullet>Powerful analytics tools</Bullet>
+    <Bullet>Full-featured analytics dashboard</Bullet>
     <Bullet>Slack integration</Bullet>
   </ul>
 );
