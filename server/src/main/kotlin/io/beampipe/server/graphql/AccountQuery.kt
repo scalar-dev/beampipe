@@ -10,6 +10,8 @@ import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import javax.inject.Singleton
 
@@ -26,7 +28,8 @@ class AccountQuery {
         val timeZone: String,
         val subscription: String,
         val domains: Quota,
-        val pageViews: Quota
+        val pageViews: Quota,
+        val visitors: Long
     )
 
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
@@ -60,7 +63,19 @@ class AccountQuery {
                 .select { Domains.accountId eq accountId }
                 .map { it[Domains.domain] }
 
-            val pageViews = Events.select { Events.domain inList domains }
+            val pageViews = Events.select {
+                Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS))
+                Events.domain inList domains
+            }
+                .count()
+
+            val visitors = Events
+                .slice( Events.userId )
+                .select {
+                    Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS))
+                    Events.domain inList domains
+                }
+                .withDistinct(true)
                 .count()
 
             Accounts.select { Accounts.id.eq(accountId) }
@@ -74,7 +89,8 @@ class AccountQuery {
                         it[Accounts.timeZone],
                         it[Accounts.subscription],
                         Quota(domains.size.toLong(), maxDomains(subscription)),
-                        Quota(pageViews, maxPageViews(subscription))
+                        Quota(pageViews, maxPageViews(subscription)),
+                        visitors
                     )
                 }
                 .firstOrNull()
