@@ -10,7 +10,7 @@ const SignIn = () => {
   return (
     <AuthProvider>
       <Layout title="login">
-        <div className="m-auto w-full p-8 md:max-w-xl">
+        <div className="m-auto w-full p-4 md:max-w-xl">
           <Card>
             <Title>Sign in</Title>
 
