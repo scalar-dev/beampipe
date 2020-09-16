@@ -10,7 +10,7 @@ const SignUp = () => {
   return (
     <AuthProvider>
       <Layout title="sign up">
-        <div className="m-auto w-full p-8 md:max-w-4xl">
+        <div className="m-auto w-full p-4 md:max-w-4xl">
           <Card>
             <div className="px-2 md:px-8">
               <div className="text-4xl font-black leading-tight">
