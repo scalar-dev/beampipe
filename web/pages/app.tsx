@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Layout } from "../components/layout/Layout";
 import { withUrql } from "../utils/withUrql";
 import { useQuery, useMutation } from "urql";
+import numeral from "numeral";
 import gql from "graphql-tag";
 import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/viz/LineChart";
@@ -17,7 +18,6 @@ import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { secured } from "../utils/auth";
-import { Title } from "../components/Title";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
@@ -346,7 +346,7 @@ const DomainCard: React.FunctionComponent<{
               href="/domain/[domain]"
               as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a data-cy="a-domain" className="hover:text-gray-500 break-words">
+              <a data-cy="a-domain" className="text-gray-800 hover:text-gray-500 break-words">
                 {domain.domain}
               </a>
             </Link>
@@ -407,14 +407,100 @@ const DomainList = ({
 }) => {
   const [showAddDomain, setShowAddDomain] = useState(false);
 
+  const [query] = useQuery({
+    query: gql`
+      query settings {
+        settings {
+          subscription
+          visitors
+          domains {
+            current
+            max
+          }
+          pageViews {
+            current
+            max
+          }
+        }
+      }
+    `,
+  });
+
+  const Box: React.FunctionComponent = ({ children }) => (
+    <div className="text-gray-700 font-bold mr-8 mb-4 md:mb-0 flex-1">
+      {children}
+    </div>
+  );
+
+
+
   return (
     <>
-      <div className="flex flex-col md:flex-row">
-        <Title>Dashboard</Title>
-        <div className="py-2 flex flex-row items-center">
-          <div className="flex-1">
+      <div className="flex flex-col">
+        <div className="pb-4 flex-1 flex flex-col md:flex-row">
+          <div className="flex-1 flex flex-row flex-wrap p-2 text-center md:text-left">
+            <Box>
+              <div className="text-gray-600">Subscription</div>
+              <div className="text-3xl font-extrabold">
+                {query.data?.settings.subscription}
+              </div>
+              {query.data?.settings.subscription === "basic" ? (
+                <span className="text-sm text-purple-600 hover:text-purple-900">
+                  <Link href="/settings">Upgrade</Link>
+                </span>
+              ) : null}
+            </Box>
+            <Box>
+              <div className="text-gray-600">Domains</div>
+              <div className="text-3xl font-extrabold whitespace-no-wrap">
+                {query.data?.settings.domains.current}
+
+                <span className="text-sm text-gray-500">
+                  {" "}
+                  / {query.data?.settings.domains.max}
+                </span>
+              </div>
+            </Box>
+            <Box>
+              <div className="text-gray-600">Monthly Views</div>
+              <div className="text-3xl font-extrabold whitespace-no-wrap">
+                {numeral(query.data?.settings.pageViews.current).format(
+                  "0.[0]a"
+                )}
+                <span className="text-sm text-gray-500">
+                  {" "}
+                  /{" "}
+                  {numeral(query.data?.settings.pageViews.max).format("0.[0]a")}
+                </span>
+              </div>
+            </Box>
+            <Box>
+              <div className="text-gray-600">Monthly Visitors</div>
+              <div className="text-3xl font-extrabold whitespace-no-wrap">
+                {numeral(query.data?.settings.visitors).format("0.[0]a")}
+              </div>
+            </Box>
+          </div>
+
+          <div className="py-2 flex flex-row md:flex-col justify-start">
+            <div className="flex-1 md:flex-none">
+              <a
+                href="#"
+                className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowAddDomain(true);
+                }}
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faPlus}
+                />
+                Add domain
+              </a>
+            </div>
             <Link href="/settings">
-              <a className="text-sm text-gray-600 hover:text-gray-900 font-semibold mr-4">
+              <a className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4">
                 <FontAwesomeIcon
                   className="fill-current w-4 h-4 mr-2"
                   icon={faCog}
@@ -422,15 +508,6 @@ const DomainList = ({
                 Settings
               </a>
             </Link>
-          </div>
-          <div>
-            <Button onClick={() => setShowAddDomain(true)}>
-              <FontAwesomeIcon
-                className="fill-current w-4 h-4 mr-2"
-                icon={faPlus}
-              />
-              Add
-            </Button>
           </div>
         </div>
       </div>

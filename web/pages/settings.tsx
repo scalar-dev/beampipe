@@ -3,6 +3,7 @@ import { Layout } from "../components/layout/Layout";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Spinner } from "../components/Spinner";
+import numeral from "numeral";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Title } from "../components/Title";
@@ -186,12 +187,6 @@ const Settings = () => {
     }
   `);
 
-  // const [, cancel] = useMutation(gql`
-  //   mutation cancel {
-  //     cancelSubscription
-  //   }
-  // `);
-
   const [, updateName] = useMutation(gql`
     mutation updateName($name: String!) {
       updateName(name: $name)
@@ -236,7 +231,7 @@ const Settings = () => {
               <div className="text-2xl">Subscription</div>
 
               <div className="flex flex-row my-4 pb-4">
-                <div className="mx-auto flex flex-row space-x-8">
+                <div className="mx-auto flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
                   {settings.subscription !== "pro" && (
                     <div className="p-4 font-bold">
                       <div className="text-2xl">Basic</div>
@@ -284,9 +279,10 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="text-lg">Page views</div>
+                  <div className="text-lg">Monthly page views</div>
                   <div className="text-gray-800">
-                    {settings.pageViews.current} / {settings.pageViews.max}
+                    {numeral(settings.pageViews.current).format("0.[0]a")} /{" "}
+                    {numeral(settings.pageViews.max).format("0.[0]a")}
                   </div>
                 </div>
               </div>
