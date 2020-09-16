@@ -8,10 +8,7 @@ import {
   IfAnonymous,
 } from "../../components/layout/Layout";
 import { Card, CardTitle } from "../../components/Card";
-import {
-  timePeriodToBucket,
-  timePeriodToFineBucket,
-} from "../../components/viz/LineChart";
+import { timePeriodToBucketDuration } from "../../components/viz/LineChart";
 import { Table } from "../../components/Table";
 import { NonIdealState } from "../../components/NonIdealState";
 import _ from "lodash";
@@ -306,8 +303,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     query: StatsQuery,
     variables: {
       domain,
-      bucketDuration: timePeriodToBucket(timePeriod),
-      uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
+      bucketDuration: timePeriodToBucketDuration(timePeriod),
+      uniqueBucketDuration: timePeriodToBucketDuration(timePeriod),
       timePeriod: {
         type: timePeriod.type,
         startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
@@ -326,8 +323,8 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     query: StatsQuery,
     variables: {
       domain,
-      bucketDuration: timePeriodToBucket(timePeriod),
-      uniqueBucketDuration: timePeriodToFineBucket(timePeriod),
+      bucketDuration: timePeriodToBucketDuration(timePeriod),
+      uniqueBucketDuration: timePeriodToBucketDuration(timePeriod),
       timePeriod: {
         type: timePeriod.type,
         startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),

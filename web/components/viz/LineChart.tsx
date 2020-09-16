@@ -6,7 +6,7 @@ import numeral from "numeral";
 import { NICE_NUMBER_FORMAT } from "./Stats";
 import _ from "lodash";
 
-export const timePeriodToBucket = (timePeriod: TimePeriod) => {
+const timePeriodToTimeUnit = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
   else if (timePeriod.type === "hour") return "minute";
   else if (timePeriod.type === "week") return "day";
@@ -24,7 +24,13 @@ export const timePeriodToBucket = (timePeriod: TimePeriod) => {
   }
 };
 
-export const timePeriodToFineBucket = (timePeriod: TimePeriod) => {
+const timePeriodToStepSize = (timePeriod: TimePeriod) => {
+  if (timePeriod.type === "hour") return 10;
+  else if (timePeriod.type === "day") return 4;
+  else return 1;
+}
+
+export const timePeriodToBucketDuration = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
   else if (timePeriod.type === "hour") return "minute";
   else if (timePeriod.type === "custom") {
@@ -83,7 +89,8 @@ export const LineChart = ({
           {
             type: "time",
             time: {
-              unit: timePeriodToBucket(timePeriod),
+              unit: timePeriodToTimeUnit(timePeriod),
+              stepSize: timePeriodToStepSize(timePeriod),
             },
             stacked: true,
             offset: true,
