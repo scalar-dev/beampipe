@@ -440,7 +440,7 @@ const DomainList = ({
         <div className="pb-4 flex-1 flex flex-col md:flex-row">
           <div className="flex-1 flex flex-row flex-wrap p-2 text-center md:text-left">
             <Box>
-              Subscription
+              <div className="text-gray-600">Subscription</div>
               <div className="text-3xl font-extrabold">
                 {query.data?.settings.subscription}
               </div>
@@ -451,7 +451,7 @@ const DomainList = ({
               ) : null}
             </Box>
             <Box>
-              Domains
+              <div className="text-gray-600">Domains</div>
               <div className="text-3xl font-extrabold whitespace-no-wrap">
                 {query.data?.settings.domains.current}
 
@@ -462,7 +462,7 @@ const DomainList = ({
               </div>
             </Box>
             <Box>
-              Views
+              <div className="text-gray-600">Monthly Views</div>
               <div className="text-3xl font-extrabold whitespace-no-wrap">
                 {numeral(query.data?.settings.pageViews.current).format(
                   "0.[0]a"
@@ -475,11 +475,9 @@ const DomainList = ({
               </div>
             </Box>
             <Box>
-              Visitors
+              <div className="text-gray-600">Monthly Visitors</div>
               <div className="text-3xl font-extrabold whitespace-no-wrap">
-                {numeral(query.data?.settings.visitors).format(
-                  "0.[0]a"
-                )}
+                {numeral(query.data?.settings.visitors).format("0.[0]a")}
               </div>
             </Box>
           </div>
@@ -488,7 +486,7 @@ const DomainList = ({
             <div className="flex-1 md:flex-none">
               <a
                 href="#"
-                className="text-md text-gray-600 hover:text-gray-900 font-semibold mr-4"
+                className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4"
                 onClick={(e) => {
                   e.preventDefault();
                   setShowAddDomain(true);
@@ -502,7 +500,7 @@ const DomainList = ({
               </a>
             </div>
             <Link href="/settings">
-              <a className="text-md text-gray-600 hover:text-gray-900 font-semibold mr-4">
+              <a className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4">
                 <FontAwesomeIcon
                   className="fill-current w-4 h-4 mr-2"
                   icon={faCog}
