@@ -230,7 +230,7 @@ const Settings = () => {
               <div className="text-2xl">Subscription</div>
 
               <div className="flex flex-row my-4 pb-4">
-                <div className="mx-auto flex flex-col md:flex-row space-y-8 md:space-x-8">
+                <div className="mx-auto flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
                   {settings.subscription !== "pro" && (
                     <div className="p-4 font-bold">
                       <div className="text-2xl">Basic</div>
