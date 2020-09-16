@@ -3,6 +3,7 @@ import { Layout } from "../components/layout/Layout";
 import { useQuery, useMutation } from "urql";
 import gql from "graphql-tag";
 import { Spinner } from "../components/Spinner";
+import numeral from "numeral";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Title } from "../components/Title";
@@ -278,9 +279,10 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className="p-8">
-                  <div className="text-lg">Page views</div>
+                  <div className="text-lg">Monthly page views</div>
                   <div className="text-gray-800">
-                    {settings.pageViews.current} / {settings.pageViews.max}
+                    {numeral(settings.pageViews.current).format("0.[0]a")} /{" "}
+                    {numeral(settings.pageViews.max).format("0.[0]a")}
                   </div>
                 </div>
               </div>
