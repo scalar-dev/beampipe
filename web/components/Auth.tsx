@@ -10,6 +10,10 @@ const validateEmail = (email: string) => {
   return re.test(String(email).toLowerCase());
 };
 
+const validatePassword = (password: string) => {
+  return password.length >= 8;
+}
+
 const login = async (email: string, password: string): Promise<boolean> => {
   const result = await fetch("/login", {
     method: "POST",
@@ -43,6 +47,11 @@ export const SignupForm = () => {
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Please enter a valid password (at least 8 characters)");
       return;
     }
 
