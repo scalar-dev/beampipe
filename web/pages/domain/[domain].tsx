@@ -118,7 +118,7 @@ const TopBar = ({
                   }))
                 }
               >
-                time: {drilldown.time.start.format()} - {drilldown.time.end.format()}
+                time: {drilldown.time.start.format("YYYY-MM-DD HH:mm")} - {drilldown.time.end.format("YYYY-MM-DD HH:mm")}
               </DrilldownPill>
             )}
           </div>
