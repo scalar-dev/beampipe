@@ -120,7 +120,7 @@ export const LineChart = ({
               max: xMax,
             },
             stacked: true,
-            offset: true,
+            // offset: true,
             gridLines: {
               display: false,
             },
