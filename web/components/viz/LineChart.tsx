@@ -1,10 +1,11 @@
 import { useRef, useEffect } from "react";
 import Chart, { ChartYAxe, ChartPoint } from "chart.js";
 import { TimePeriod } from "./TimePicker";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import numeral from "numeral";
 import { NICE_NUMBER_FORMAT } from "./Stats";
 import _ from "lodash";
+import "chartjs-plugin-crosshair";
 
 const timePeriodToTimeUnit = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
@@ -47,9 +48,15 @@ export const timePeriodToBucketDuration = (timePeriod: TimePeriod) => {
 export const LineChart = ({
   data,
   timePeriod,
+  xMin,
+  xMax,
+  onSelect,
 }: {
   data: any[];
   timePeriod: TimePeriod;
+  xMin?: Moment;
+  xMax?: Moment;
+  onSelect?: (start: Moment, end: Moment) => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
@@ -69,6 +76,22 @@ export const LineChart = ({
                   .data?.[tooltipItem.index!!] as ChartPoint).x as Date;
                 return moment(date).format("ddd Do MMM");
               }),
+          },
+        },
+        plugins: {
+          crosshair: {
+            zoom: {
+              enabled: onSelect != null,
+            },
+            line: {
+              color: onSelect ? "red" : "rgba(0, 0, 0, 0)"
+            },
+            callbacks: {
+              beforeZoom: (start: Moment, end: Moment) => {
+                onSelect && onSelect(start, end);
+                return false;
+              },
+            },
           },
         },
       },
@@ -91,6 +114,10 @@ export const LineChart = ({
             time: {
               unit: timePeriodToTimeUnit(timePeriod),
               stepSize: timePeriodToStepSize(timePeriod),
+            },
+            ticks: {
+              min: xMin,
+              max: xMax,
             },
             stacked: true,
             offset: true,

@@ -101,7 +101,9 @@ class EventQuery {
         timeZone: String?,
         referrer: Drilldown.Referrer?,
         page: Drilldown.Page?,
-        country: Drilldown.Country?) : EventStats =
+        country: Drilldown.Country?,
+        time: Drilldown.Time?
+    ) : EventStats =
         newSuspendedTransaction {
             val userId = accountQuery.user(context)?.id
             val domainRow = matchingDomain(userId, domain)
@@ -124,7 +126,7 @@ class EventQuery {
                 timePeriod.toEndTime(),
                 timePeriod.toPreviousStartTime(),
                 zoneId,
-                listOfNotNull(referrer, page, country),
+                listOfNotNull(referrer, page, country, time),
                 isEditable
             )
         }

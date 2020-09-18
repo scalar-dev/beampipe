@@ -50,6 +50,10 @@ sealed class Drilldown {
     data class Page(val path: String) : Drilldown() {
         override fun SqlExpressionBuilder.select() = Events.path eq path
     }
+
+    data class Time(val start: Instant, val end: Instant): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = (Events.time greaterEq start) and (Events.time lessEq end)
+    }
 }
 
 data class EventStats(
@@ -173,6 +177,10 @@ data class EventStats(
     suspend fun topAgents(n: Int?) = topBy(n, Events.agentName)
 
     suspend fun isEditable() = isEditable
+
+    suspend fun startTime() = startTime
+
+    suspend fun endTime() = endTime
 
     suspend fun countUnique() = newSuspendedTransaction {
         Events

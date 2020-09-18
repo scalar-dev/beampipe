@@ -16,6 +16,7 @@
     "@stripe/stripe-js": "^1.8.0",
     "@tippyjs/react": "^4.1.0",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-crosshair": "^1.1.6",
     "d3": "^6.0.0",
     "fontsource-inter": "^2.2.6",
     "graphql": "^15.3.0",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.23",
+    "@types/chartjs-plugin-crosshair": "^1.1.0",
     "@types/d3": "^5.7.2",
     "@types/lodash": "^4.14.158",
     "@types/node": "^12.12.21",
