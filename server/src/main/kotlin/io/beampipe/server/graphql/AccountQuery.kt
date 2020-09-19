@@ -6,6 +6,7 @@ import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.util.Context
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -64,16 +65,14 @@ class AccountQuery {
                 .map { it[Domains.domain] }
 
             val pageViews = Events.select {
-                Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS))
-                Events.domain inList domains
+                Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS)) and (Events.domain inList domains)
             }
                 .count()
 
             val visitors = Events
                 .slice( Events.userId )
                 .select {
-                    Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS))
-                    Events.domain inList domains
+                    Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS)) and (Events.domain inList domains)
                 }
                 .withDistinct(true)
                 .count()

@@ -9,9 +9,12 @@ export const StatsQuery = gql`
     $referrer: ReferrerInput
     $page: PageInput
     $country: CountryInput
+    $time: TimeInput
   ) {
-    events(domain: $domain, timePeriod: $timePeriod, referrer: $referrer, page: $page, country: $country) {
+    events(domain: $domain, timePeriod: $timePeriod, referrer: $referrer, page: $page, country: $country, time: $time) {
       isEditable
+      startTime
+      endTime
       bucketed(bucketDuration: $bucketDuration) {
         time
         count

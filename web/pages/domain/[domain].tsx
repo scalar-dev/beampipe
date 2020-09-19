@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { TakeBackControl, Footer } from "..";
 import Link from "next/link";
+import { Moment } from "moment-timezone";
 
 const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   if (referrer.isDirect) {
@@ -105,6 +106,19 @@ const TopBar = ({
                 }
               >
                 country: {drilldown.country.isoCode}
+              </DrilldownPill>
+            )}
+
+            {drilldown.time && (
+              <DrilldownPill
+                onClick={() =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    time: undefined,
+                  }))
+                }
+              >
+                time: {drilldown.time.start.format("YYYY-MM-DD HH:mm")} - {drilldown.time.end.format("YYYY-MM-DD HH:mm")}
               </DrilldownPill>
             )}
           </div>
@@ -289,10 +303,16 @@ interface CountryDrilldown {
   isoCode: string;
 }
 
+interface TimeDrilldown {
+  start: Moment;
+  end: Moment;
+}
+
 interface DrilldownState {
   referrer?: ReferrerDrilldown;
   page?: PageDrilldown;
   country?: CountryDrilldown;
+  time?: TimeDrilldown;
 }
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
@@ -317,6 +337,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     drilldown.page,
     drilldown.referrer,
     drilldown.country,
+    drilldown.time,
   ]);
 
   const [drilldownStats, refetchDrilldownStats] = useQuery({
@@ -331,6 +352,12 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
       },
       ...drilldown,
+      time: drilldown.time
+        ? {
+            start: drilldown.time.start.toISOString(),
+            end: drilldown.time.end.toISOString(),
+          }
+        : null,
     },
     pause: !isDrilldown,
   });
@@ -350,6 +377,15 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           showDrilldown={isDrilldown}
           drilldownStats={drilldownStats}
           timePeriod={timePeriod}
+          onSelect={(start, end) => {
+            setDrilldown((prevState) => ({
+              ...prevState,
+              time: {
+                start,
+                end,
+              },
+            }));
+          }}
         />
 
         <DashboardCard position="left">

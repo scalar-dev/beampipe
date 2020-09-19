@@ -3,17 +3,20 @@ import { timePeriodToBucketDuration, LineChart } from "../viz/LineChart";
 import { NonIdealState } from "../NonIdealState";
 import _ from "lodash";
 import { DashboardCard } from "./DashboardCard";
+import { Moment } from "moment-timezone";
 
 export const TimeChart = ({
   stats,
   drilldownStats,
   timePeriod,
-  showDrilldown
+  showDrilldown,
+  onSelect
 }: {
   stats: any;
   drilldownStats: any | null;
   showDrilldown: boolean;
   timePeriod: TimePeriod;
+  onSelect?: (start: Moment, end: Moment) => void;
 }) => {
   const isDayMode = timePeriodToBucketDuration(timePeriod) === "day";
 
@@ -56,6 +59,7 @@ export const TimeChart = ({
         <LineChart
           data={data}
           timePeriod={timePeriod}
+          onSelect={onSelect}
         />
       </NonIdealState>
     </DashboardCard>

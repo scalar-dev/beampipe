@@ -1,10 +1,11 @@
 import { useRef, useEffect } from "react";
 import Chart, { ChartYAxe, ChartPoint } from "chart.js";
 import { TimePeriod } from "./TimePicker";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import numeral from "numeral";
 import { NICE_NUMBER_FORMAT } from "./Stats";
 import _ from "lodash";
+import { RangeSelectPlugin } from "./RangeSelect";
 
 const timePeriodToTimeUnit = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
@@ -47,9 +48,11 @@ export const timePeriodToBucketDuration = (timePeriod: TimePeriod) => {
 export const LineChart = ({
   data,
   timePeriod,
+  onSelect,
 }: {
   data: any[];
   timePeriod: TimePeriod;
+  onSelect?: (start: Moment, end: Moment) => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chart = useRef<Chart>();
@@ -57,6 +60,7 @@ export const LineChart = ({
   useEffect(() => {
     chart.current = new Chart(canvasRef.current!, {
       type: "line",
+      plugins: onSelect ? [RangeSelectPlugin]: [],
       options: {
         legend: undefined,
         maintainAspectRatio: false,
@@ -69,6 +73,25 @@ export const LineChart = ({
                   .data?.[tooltipItem.index!!] as ChartPoint).x as Date;
                 return moment(date).format("ddd Do MMM");
               }),
+          },
+        },
+        plugins: {
+          rangeSelect: {
+            onSelect
+          },
+          crosshair: {
+            zoom: {
+              enabled: onSelect != null,
+            },
+            line: {
+              color: onSelect ? "red" : "rgba(0, 0, 0, 0)"
+            },
+            callbacks: {
+              beforeZoom: (start: Moment, end: Moment) => {
+                onSelect && onSelect(start, end);
+                return false;
+              },
+            },
           },
         },
       },
