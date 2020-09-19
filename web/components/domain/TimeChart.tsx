@@ -4,7 +4,6 @@ import { NonIdealState } from "../NonIdealState";
 import _ from "lodash";
 import { DashboardCard } from "./DashboardCard";
 import { Moment } from "moment-timezone";
-import moment from "moment";
 
 export const TimeChart = ({
   stats,
@@ -61,8 +60,6 @@ export const TimeChart = ({
           data={data}
           timePeriod={timePeriod}
           onSelect={onSelect}
-          xMin={moment.parseZone(stats.data?.events.startTime)}
-          xMax={moment.parseZone(stats.data?.events.endTime)}
         />
       </NonIdealState>
     </DashboardCard>

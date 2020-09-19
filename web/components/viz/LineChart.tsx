@@ -5,7 +5,7 @@ import moment, { Moment } from "moment";
 import numeral from "numeral";
 import { NICE_NUMBER_FORMAT } from "./Stats";
 import _ from "lodash";
-import "chartjs-plugin-crosshair";
+import { RangeSelectPlugin } from "./RangeSelect";
 
 const timePeriodToTimeUnit = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
@@ -48,14 +48,10 @@ export const timePeriodToBucketDuration = (timePeriod: TimePeriod) => {
 export const LineChart = ({
   data,
   timePeriod,
-  xMin,
-  xMax,
   onSelect,
 }: {
   data: any[];
   timePeriod: TimePeriod;
-  xMin?: Moment;
-  xMax?: Moment;
   onSelect?: (start: Moment, end: Moment) => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,6 +60,7 @@ export const LineChart = ({
   useEffect(() => {
     chart.current = new Chart(canvasRef.current!, {
       type: "line",
+      plugins: onSelect ? [RangeSelectPlugin]: [],
       options: {
         legend: undefined,
         maintainAspectRatio: false,
@@ -79,6 +76,9 @@ export const LineChart = ({
           },
         },
         plugins: {
+          rangeSelect: {
+            onSelect
+          },
           crosshair: {
             zoom: {
               enabled: onSelect != null,
@@ -115,12 +115,8 @@ export const LineChart = ({
               unit: timePeriodToTimeUnit(timePeriod),
               stepSize: timePeriodToStepSize(timePeriod),
             },
-            ticks: {
-              min: xMin,
-              max: xMax,
-            },
             stacked: true,
-            // offset: true,
+            offset: true,
             gridLines: {
               display: false,
             },
