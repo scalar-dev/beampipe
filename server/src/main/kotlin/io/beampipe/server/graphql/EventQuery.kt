@@ -33,9 +33,33 @@ class EventQuery {
     lateinit var accountQuery: AccountQuery
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
-    data class Count(val key: String?, val count: Long, val data: Map<String, String>? = null)
+    data class Count(val key: String?, val count: Long, val display: String?)
     data class GoalCount(val id: UUID, val name: String, val description: String?, val eventType: String, val path: String?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
+
+    data class Drilldowns(
+        val referrer: Drilldown.Referrer?,
+        val page: Drilldown.Page?,
+        val country: Drilldown.Country?,
+        val time: Drilldown.Time?,
+        val device: Drilldown.Device?,
+        val deviceName: Drilldown.DeviceName?,
+        val deviceClass: Drilldown.DeviceClass?,
+        val operatingSystem: Drilldown.OperatingSystem?,
+        val userAgent: Drilldown.UserAgent?
+    ) {
+        fun list(): List<Drilldown> = listOfNotNull(
+            referrer,
+            page,
+            country,
+            time,
+            device,
+            deviceName,
+            deviceClass,
+            operatingSystem,
+            userAgent
+        )
+    }
 
     data class Event(
         val type: String,
@@ -99,10 +123,7 @@ class EventQuery {
         domain: String,
         timePeriod: TimePeriod,
         timeZone: String?,
-        referrer: Drilldown.Referrer?,
-        page: Drilldown.Page?,
-        country: Drilldown.Country?,
-        time: Drilldown.Time?
+        drilldowns: Drilldowns?
     ) : EventStats =
         newSuspendedTransaction {
             val userId = accountQuery.user(context)?.id
@@ -126,7 +147,7 @@ class EventQuery {
                 timePeriod.toEndTime(),
                 timePeriod.toPreviousStartTime(),
                 zoneId,
-                listOfNotNull(referrer, page, country, time),
+                drilldowns?.list() ?: emptyList(),
                 isEditable
             )
         }
