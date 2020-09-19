@@ -52,7 +52,7 @@ sealed class Drilldown {
     }
 
     data class Time(val start: Instant, val end: Instant): Drilldown() {
-        override fun SqlExpressionBuilder.select(): Op<Boolean> = (Events.time greaterEq start) and (Events.time lessEq end)
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = (Events.time greaterEq start) and (Events.time less end)
     }
 }
 
