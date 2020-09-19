@@ -24,34 +24,12 @@ import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { TakeBackControl, Footer } from "..";
 import Link from "next/link";
-import { Moment } from "moment-timezone";
-
-const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
-  if (referrer.isDirect) {
-    return "source: Direct/None";
-  } else if (referrer.source) {
-    return `source: ${referrer.source}`;
-  } else {
-    return `referrer: ${referrer.referrer}`;
-  }
-};
-
-const DrilldownPill: React.FunctionComponent<{ onClick: () => void }> = ({
-  onClick,
-  children,
-}) => (
-  <button
-    className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full mr-2"
-    onClick={onClick}
-  >
-    {children}
-    <FontAwesomeIcon className="fill-current w-4 h-4 ml-2" icon={faTimes} />
-  </button>
-);
+import {
+  DrilldownPills,
+  DrilldownState,
+} from "../../components/domain/Drilldown";
 
 const TopBar = ({
   domain,
@@ -70,57 +48,7 @@ const TopBar = ({
         <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
           {domain}
           <div>
-            {drilldown.referrer && (
-              <DrilldownPill
-                onClick={() =>
-                  setDrilldown((prevState) => ({
-                    ...prevState,
-                    referrer: undefined,
-                  }))
-                }
-              >
-                {sourceDrilldownText(drilldown.referrer)}
-              </DrilldownPill>
-            )}
-
-            {drilldown.page && (
-              <DrilldownPill
-                onClick={() =>
-                  setDrilldown((prevState) => ({
-                    ...prevState,
-                    page: undefined,
-                  }))
-                }
-              >
-                page: {drilldown.page.path}
-              </DrilldownPill>
-            )}
-
-            {drilldown.country && (
-              <DrilldownPill
-                onClick={() =>
-                  setDrilldown((prevState) => ({
-                    ...prevState,
-                    country: undefined,
-                  }))
-                }
-              >
-                country: {drilldown.country.isoCode}
-              </DrilldownPill>
-            )}
-
-            {drilldown.time && (
-              <DrilldownPill
-                onClick={() =>
-                  setDrilldown((prevState) => ({
-                    ...prevState,
-                    time: undefined,
-                  }))
-                }
-              >
-                time: {drilldown.time.start.format("YYYY-MM-DD HH:mm")} - {drilldown.time.end.format("YYYY-MM-DD HH:mm")}
-              </DrilldownPill>
-            )}
+            <DrilldownPills drilldown={drilldown} setDrilldown={setDrilldown} />
           </div>
         </div>
         <div className="flex flex-row flex-1 md:flex-none">
@@ -166,9 +94,11 @@ type DevicesTab = "Screen Size" | "Device" | "Class";
 
 const DevicesCard = ({
   stats,
+  setDrilldown,
   drilldownStats,
 }: {
   stats: any;
+  setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
   drilldownStats: any | null;
 }) => {
   const tabs: DevicesTab[] = ["Screen Size", "Device", "Class"];
@@ -184,6 +114,30 @@ const DevicesCard = ({
     "Screen Size": drilldownStats?.data?.events.topScreenSizes,
     Device: drilldownStats?.data?.events.topDevices,
     Class: drilldownStats?.data?.events.topDeviceClasses,
+  };
+
+  const setDrilldownFunctions = {
+    "Screen Size": (key: string | null) =>
+      setDrilldown((prevState) => ({
+        ...prevState,
+        device: {
+          device: key,
+        },
+      })),
+    Device: (key: string | null) =>
+      setDrilldown((prevState) => ({
+        ...prevState,
+        deviceName: {
+          deviceName: key,
+        },
+      })),
+    Class: (key: string | null) =>
+      setDrilldown((prevState) => ({
+        ...prevState,
+        deviceClass: {
+          deviceClass: key,
+        },
+      })),
   };
 
   return (
@@ -214,6 +168,7 @@ const DevicesCard = ({
         <Table
           columnHeadings={[selected, "Visits"]}
           data={data[selected]}
+          onClick={setDrilldownFunctions[selected]}
           drilldownData={drillDownData[selected]}
         />
       </NonIdealState>
@@ -267,15 +222,17 @@ const MapCard = ({
           <Table
             columnHeadings={["Country", "Visits"]}
             data={stats.data?.events.topCountries}
+            onClick={(isoCode) =>
+              setDrilldown((prevState) => ({
+                ...prevState,
+                country: { isoCode },
+              }))
+            }
             drilldownData={drilldownStats?.data?.events.topCountries}
           />
         ) : (
           <MapChart
-            data={stats.data?.events.topCountries.map((country: any) => ({
-              key: country.key,
-              count: country.count,
-              isoCode: country.data.iso_country_code,
-            }))}
+            data={stats.data?.events.topCountries}
             onClick={(isoCode) =>
               setDrilldown((prevState) => ({
                 ...prevState,
@@ -288,32 +245,6 @@ const MapCard = ({
     </DashboardCard>
   );
 };
-
-interface ReferrerDrilldown {
-  isDirect: boolean;
-  source: string | null;
-  referrer: string | null;
-}
-
-interface PageDrilldown {
-  path: string;
-}
-
-interface CountryDrilldown {
-  isoCode: string;
-}
-
-interface TimeDrilldown {
-  start: Moment;
-  end: Moment;
-}
-
-interface DrilldownState {
-  referrer?: ReferrerDrilldown;
-  page?: PageDrilldown;
-  country?: CountryDrilldown;
-  time?: TimeDrilldown;
-}
 
 const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   const [timePeriod, setTimePeriod] = useState<TimePeriod>({ type: "month" });
@@ -338,6 +269,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
     drilldown.referrer,
     drilldown.country,
     drilldown.time,
+    drilldown.device,
+    drilldown.deviceName,
+    drilldown.deviceClass,
+    drilldown.operatingSystem,
+    drilldown.userAgent,
   ]);
 
   const [drilldownStats, refetchDrilldownStats] = useQuery({
@@ -351,13 +287,15 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         startTime: timePeriod.startTime && timePeriod.startTime?.toISOString(),
         endTime: timePeriod.endTime && timePeriod.endTime?.toISOString(),
       },
-      ...drilldown,
-      time: drilldown.time
-        ? {
-            start: drilldown.time.start.toISOString(),
-            end: drilldown.time.end.toISOString(),
-          }
-        : null,
+      drilldowns: {
+        ...drilldown,
+        time: drilldown.time
+          ? {
+              start: drilldown.time.start.toISOString(),
+              end: drilldown.time.end.toISOString(),
+            }
+          : null,
+      },
     },
     pause: !isDrilldown,
   });
@@ -463,6 +401,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         />
         <DevicesCard
           stats={stats}
+          setDrilldown={setDrilldown}
           drilldownStats={isDrilldown ? drilldownStats : null}
         />
 
@@ -480,6 +419,14 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                   ? drilldownStats.data?.events.topOperatingSystems
                   : null
               }
+              onClick={(key) =>
+                setDrilldown((prevState) => ({
+                  ...prevState,
+                  operatingSystem: {
+                    operatingSystem: key,
+                  },
+                }))
+              }
             />
           </NonIdealState>
         </DashboardCard>
@@ -495,6 +442,14 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
               data={stats.data?.events.topAgents}
               drilldownData={
                 isDrilldown ? drilldownStats.data?.events.topAgents : null
+              }
+              onClick={(key) =>
+                setDrilldown((prevState) => ({
+                  ...prevState,
+                  userAgent: {
+                    userAgent: key,
+                  },
+                }))
               }
             />
           </NonIdealState>

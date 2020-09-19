@@ -15,7 +15,7 @@ import world from "./world-110m.json";
 interface MapChartProps {
   data: {
     key: string;
-    isoCode: string;
+    display: string;
     count: number;
   }[];
   onClick: (isoCode: string) => void;
@@ -45,7 +45,7 @@ const MapChart = ({ data, onClick }: MapChartProps) => {
                   {({ geographies }) =>
                     geographies.map((geo) => {
                       const d = data.find(
-                        (row) => row.isoCode === geo.properties.ISO_A2
+                        (row) => row.key === geo.properties.ISO_A2
                       );
 
                       return (

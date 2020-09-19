@@ -14,7 +14,6 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.`java-time`.timestampLiteral
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.booleanLiteral
 import org.jetbrains.exposed.sql.castTo
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.countDistinct
@@ -43,8 +42,12 @@ sealed class Drilldown {
         }
     }
 
-    data class Country(val isoCode: String) : Drilldown() {
-        override fun SqlExpressionBuilder.select() = Events.isoCountryCode eq isoCode
+    data class Country(val isoCode: String?) : Drilldown() {
+        override fun SqlExpressionBuilder.select() = if (isoCode != null) {
+            Events.isoCountryCode eq isoCode
+        } else {
+            Events.isoCountryCode.isNull()
+        }
     }
 
     data class Page(val path: String) : Drilldown() {
@@ -53,6 +56,26 @@ sealed class Drilldown {
 
     data class Time(val start: Instant, val end: Instant): Drilldown() {
         override fun SqlExpressionBuilder.select(): Op<Boolean> = (Events.time greaterEq start) and (Events.time less end)
+    }
+
+    data class Device(val device: String): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = Events.device eq device
+    }
+
+    data class DeviceName(val deviceName: String): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = Events.deviceName eq deviceName
+    }
+
+    data class DeviceClass(val deviceClass: String): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = Events.deviceClass eq deviceClass
+    }
+
+    data class OperatingSystem(val operatingSystem: String): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = Events.operationGystemName eq operatingSystem
+    }
+
+    data class UserAgent(val userAgent: String): Drilldown() {
+        override fun SqlExpressionBuilder.select(): Op<Boolean> = Events.agentName eq userAgent
     }
 }
 
@@ -123,21 +146,23 @@ data class EventStats(
         null
     }
 
-    private suspend fun topBy(n: Int?, primaryColumn: Column<*>, vararg otherColumns: Column<*>) =
+    private suspend fun topBy(n: Int?, key: Column<*>, display:Column<*>? = null) =
         newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
-            Events.slice(primaryColumn, *otherColumns, count)
+            val columns = listOfNotNull(key, display).toTypedArray()
+
+            Events.slice(count, *columns)
                 .select { preselect(startTime, endTime) }
-                .groupBy(primaryColumn, *otherColumns)
+                .groupBy(*columns)
                 .having { count.greaterEq(1L) }
                 .orderBy(count, SortOrder.DESC)
                 .limit(n ?: 100)
                 .map {
                     EventQuery.Count(
-                        it[primaryColumn]?.toString(),
+                        it[columns[0]]?.toString(),
                         it[count] ?: 0,
-                        if (otherColumns.isNotEmpty()) {
-                            otherColumns.map { col -> col.name to it[col].toString() }.toMap()
+                        if (display != null) {
+                            it[display].toString()
                         } else {
                             null
                         }
@@ -166,7 +191,7 @@ data class EventStats(
 
     suspend fun topScreenSizes(n: Int?) = topBy(n, Events.device)
 
-    suspend fun topCountries(n: Int?) = topBy(n, Events.country, Events.isoCountryCode)
+    suspend fun topCountries(n: Int?) = topBy(n, Events.isoCountryCode, Events.country)
 
     suspend fun topDevices(n: Int?) = topBy(n, Events.deviceName)
 
