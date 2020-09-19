@@ -41,7 +41,7 @@ export const StatsQuery = gql`
       topCountries {
         key
         count
-        display
+        label
       }
 
       topDevices {

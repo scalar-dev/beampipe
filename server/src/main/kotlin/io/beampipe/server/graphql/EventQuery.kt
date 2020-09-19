@@ -33,7 +33,7 @@ class EventQuery {
     lateinit var accountQuery: AccountQuery
 
     data class Bucket(val time: ZonedDateTime, val count: Long)
-    data class Count(val key: String?, val count: Long, val display: String?)
+    data class Count(val key: String?, val count: Long, val label: String?)
     data class GoalCount(val id: UUID, val name: String, val description: String?, val eventType: String, val path: String?, val count: Long)
     data class Source(val referrer: String?, val source: String?, val count: Long)
 
