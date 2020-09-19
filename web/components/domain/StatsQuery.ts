@@ -6,12 +6,9 @@ export const StatsQuery = gql`
     $bucketDuration: String!
     $uniqueBucketDuration: String!
     $timePeriod: TimePeriodInput!
-    $referrer: ReferrerInput
-    $page: PageInput
-    $country: CountryInput
-    $time: TimeInput
+    $drilldowns: DrilldownsInput
   ) {
-    events(domain: $domain, timePeriod: $timePeriod, referrer: $referrer, page: $page, country: $country, time: $time) {
+    events(domain: $domain, timePeriod: $timePeriod, drilldowns: $drilldowns) {
       isEditable
       startTime
       endTime
@@ -44,7 +41,7 @@ export const StatsQuery = gql`
       topCountries {
         key
         count
-        data
+        label
       }
 
       topDevices {
