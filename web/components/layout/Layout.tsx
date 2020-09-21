@@ -162,7 +162,10 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   <IfAnonymous>
                     <Link href="/#pricing" passHref>
                       <NavLink
-                        onClick={() => setMenuVisible((visible) => !visible)}
+                        onClick={() => {
+                          setMenuVisible((visible) => !visible);
+                          window.beampipe("view_pricing");
+                        }}
                       >
                         Pricing
                       </NavLink>
