@@ -416,7 +416,9 @@ const IndexPage = () => {
 
           <TakeBackControl />
 
-          <Pricing />
+          <div id="pricing">
+            <Pricing />
+          </div>
 
           <div className="flex justify-center">
             <ProductHuntButton />
