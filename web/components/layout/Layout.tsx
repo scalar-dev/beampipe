@@ -145,7 +145,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 menuVisible ? "block" : "hidden"
               } flex-grow bg-white lg:bg-gray-100 border lg:border-none lg:flex lg:items-center lg:w-auto`}
             >
-              <div className="lg:flex-grow flex">
+              <div className="lg:flex-grow flex flex-wrap">
                 <div>
                   <IfUserLoggedIn>
                     <Link href="/app" passHref>
@@ -156,6 +156,18 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                       </NavLink>
                     </Link>
                   </IfUserLoggedIn>
+                </div>
+
+                <div>
+                  <IfAnonymous>
+                    <Link href="/#pricing" passHref>
+                      <NavLink
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Pricing
+                      </NavLink>
+                    </Link>
+                  </IfAnonymous>
                 </div>
 
                 <div>
