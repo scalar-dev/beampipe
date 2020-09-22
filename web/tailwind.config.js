@@ -1,4 +1,7 @@
 module.exports = {
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
   purge: ["pages/**/*.[jt]sx", "components/**/*.[jt]sx", "utils/**/*.[jt]sx"],
   theme: {
     extend: {

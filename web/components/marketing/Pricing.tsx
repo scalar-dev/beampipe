@@ -50,27 +50,31 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
 
 export const BasicBullets = () => (
   <ul>
-    <Bullet>5 domains</Bullet>
-    <Bullet>10k page views per month</Bullet>
+    <Bullet><b>5</b> domains</Bullet>
+    <Bullet><b>10k</b> page views per month</Bullet>
     <Bullet>Full-featured analytics dashboard</Bullet>
   </ul>
 );
 
 export const ProBullets = () => (
   <ul>
-    <Bullet>20 domains</Bullet>
-    <Bullet>100k page views per month</Bullet>
+    <Bullet><b>10</b> domains</Bullet>
+    <Bullet><b>100k</b> page views per month</Bullet>
     <Bullet>Full-featured analytics dashboard</Bullet>
     <Bullet>Slack integration</Bullet>
+    <Bullet>API Access</Bullet>
+    <Bullet>Email support</Bullet>
   </ul>
 );
 
 export const EnterpriseBullets = () => (
   <ul>
-    <Bullet>Unlimited domains</Bullet>
-    <Bullet>Unlimited page views per month</Bullet>
+    <Bullet><b>Unlimited</b> domains</Bullet>
+    <Bullet><b>Unlimited</b> page views per month</Bullet>
     <Bullet>Full-featured analytics dashboard</Bullet>
     <Bullet>Slack integration</Bullet>
+    <Bullet>API Access</Bullet>
+    <Bullet>Priority support</Bullet>
   </ul>
 );
 
