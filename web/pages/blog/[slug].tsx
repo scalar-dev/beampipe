@@ -90,7 +90,11 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params: { slug } }) {
+export async function getStaticProps({
+  params: { slug },
+}: {
+  params: { slug: any };
+}) {
   const markdownWithMetadata = fs
     .readFileSync(path.join("content/posts", slug + ".md"))
     .toString();
