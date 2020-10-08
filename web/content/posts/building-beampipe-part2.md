@@ -31,7 +31,6 @@ Using NextJS means I do have to run another container, but since I'm already usi
 
 ## APIs
 Back in part one, I mentioned that we're using GraphQL for the API along with urql on the client. urql is great. Whenever I need a more advanced feature, I reach for it and it's there without having to dig deep into the internals (as I sometimes found I had to with apollo-client). React hooks make it a joy to use. It's also well supported in NextJS via next-urql. This will talk to your API server side and thus pass the page to the client fully formed and ready to go.
-Beampipe's primary dashboard view. Also check out the previous article to see the difference a week's work has made! 
 
 ## 😆CSS / Design
 As I said, frontend development generally hasn't been a strong point for me. However, the analytics space is filled with some very beautiful UIs (plausible, fathom among others). To compete at all with them, I'd need to make beampipe at least passable from a design perspective. In practice, this means having fairly tight control over the design and not (as I have done previously) just shoving in a framework.
