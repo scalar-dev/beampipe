@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { AuthProvider } from "../../utils/auth";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBackward } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
   return (
