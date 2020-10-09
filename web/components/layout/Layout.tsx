@@ -175,6 +175,15 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
                 <div>
                   <NavLink
+                    href="/blog"
+                    onClick={() => setMenuVisible((visible) => !visible)}
+                  >
+                    Blog
+                  </NavLink>
+                </div>
+
+                <div>
+                  <NavLink
                     href="https://docs.beampipe.io"
                     target="_new"
                     onClick={() => setMenuVisible((visible) => !visible)}
