@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { Button } from "./Buttons";
 import Link from "next/link";
 import { onApiError } from "../utils/errors";
+import { useRouter } from "next/router";
 
 const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -12,7 +13,7 @@ const validateEmail = (email: string) => {
 
 const validatePassword = (password: string) => {
   return password.length >= 8;
-}
+};
 
 const login = async (email: string, password: string): Promise<boolean> => {
   const result = await fetch("/login", {
@@ -119,9 +120,7 @@ export const SignupForm = () => {
             checked={emailOk}
             onChange={(e) => setEmailOk(e.target.checked)}
           />
-          <span>
-            It's ok to email me occasionally with updates on Beampipe
-          </span>
+          <span>It's ok to email me occasionally with updates on Beampipe</span>
         </label>
       </div>
 
@@ -138,6 +137,77 @@ export const SignupForm = () => {
             </a>
           </Link>
         </div>
+      </div>
+    </form>
+  );
+};
+
+export const ResetPasswordLinkForm = () => {
+  const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const [, executeMutation] = useMutation(gql`
+    mutation ResetPassword($token: String!, $password: String!) {
+      resetPassword(token: $token, password: $password)
+    }
+  `);
+
+  const resetPassword = async () => {
+    if (!router.query.token) {
+      setError(
+        "The token you have provided is invalid. Please request a new one."
+      );
+      return;
+    }
+
+    const result = await executeMutation({
+      token: router.query.token,
+      password,
+    });
+
+    if (!validatePassword(password)) {
+      setError("Please enter a valid password (at least 8 characters)");
+      return;
+    }
+
+    const error = onApiError(
+      result.error,
+      "There was an errror creating your account :-(. Please get in touch hello@beampipe.io",
+      setError
+    );
+
+    if (!error) {
+      window.location.assign("/sign-in");
+    }
+  };
+
+  return (
+    <form onSubmit={(e) => e.preventDefault()}>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="password"
+        >
+          Password
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+          name="password"
+          id="password"
+          type="password"
+          data-cy="password"
+          placeholder="******************"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+
+      {error && <p className="text-red-500 pb-4 italic">{error}</p>}
+      <div className="flex items-center justify-between">
+        <Button data-cy="submit" onClick={resetPassword}>
+          Reset
+        </Button>
       </div>
     </form>
   );
