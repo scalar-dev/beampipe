@@ -20,13 +20,13 @@ class DomainQuery {
         val eventType: String
     )
 
-    data class DomainQ(val domainId: UUID) {
+    data class DomainQ(val domainId: UUID, val domain: String) {
         fun id() = domainId
         suspend fun eventTypes(context: Context) = newSuspendedTransaction {
             context.checkDomainAccess(domainId)
 
             Events.slice(Events.type)
-                .selectAll()
+                .select { Domains.domain eq domain }
                 .withDistinct(true)
                 .map { it[Events.type] }
         }
@@ -59,7 +59,7 @@ class DomainQuery {
             context.checkDomainAccess(domainId)
         }
 
-        DomainQ(domainId)
+        DomainQ(domainId, domain!!)
     }
 
 }
