@@ -15,9 +15,15 @@ import io.beampipe.server.stripe.StripeClient
 import io.micronaut.context.annotation.Property
 import io.micronaut.security.authentication.UserDetails
 import io.micronaut.security.token.jwt.generator.JwtTokenGenerator
+import io.micronaut.security.token.jwt.validator.JwtTokenValidator
+import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.apache.commons.validator.routines.EmailValidator
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
@@ -33,7 +39,8 @@ class AccountMutations(
         name = "stripe.product",
         defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
     ) val stripeProduct: String,
-    @Inject val jwtTokenGenerator: JwtTokenGenerator
+    @Inject val jwtTokenGenerator: JwtTokenGenerator,
+    @Inject val jwtTokenValidator: JwtTokenValidator
 ) {
     @Inject
     lateinit var accountQuery: AccountQuery
@@ -205,11 +212,13 @@ class AccountMutations(
             throw CustomException("Invalid password")
         }
 
-        val accountId = ResetTokens.select { ResetTokens.token eq token }
+        val accountId = ResetTokens.select { ResetTokens.token eq token and (ResetTokens.isUsed.isNull() or ResetTokens.isUsed.eq(false))}
             .firstOrNull()
             ?.get(ResetTokens.accountId)
 
-        if (accountId != null) {
+        val auth = jwtTokenValidator.validateToken(token, null).awaitFirstOrNull()
+
+        if (accountId != null && auth != null) {
             val salt = ByteArray(16)
             SecureRandom().nextBytes(salt)
             val enc: Base64.Encoder = Base64.getEncoder()
@@ -218,6 +227,11 @@ class AccountMutations(
                 it[Accounts.salt] = enc.encodeToString(salt)
                 it[Accounts.password] = hashPassword(password, salt)
             }
+
+            ResetTokens.update({ ResetTokens.accountId eq accountId }) {
+                it[ResetTokens.isUsed] = true
+            }
+
         } else {
             throw CustomException("Invalid or expired token")
         }
