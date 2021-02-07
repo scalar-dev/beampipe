@@ -47,7 +47,7 @@ export const StatsCounter = ({
   delta: JSX.Element | null;
 }) => (
   <div className="flex flex-1 flex-col text-center md:pr-8">
-    <div className="text-gray-500 font-bold text-xs uppercase whitespace-nowrap">
+    <div className="text-gray-400 font-bold text-xs uppercase whitespace-nowrap">
       {title}
     </div>
     <div className="text-3xl font-black leading-tight text-gray-700">{value}</div>

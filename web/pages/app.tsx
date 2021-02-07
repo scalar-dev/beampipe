@@ -106,7 +106,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
     <NonIdealState
       nonIdeal={
         <div className="text-center">
-          <div className="text-xl text-gray-500 pb-4">
+          <div className="text-xl text-gray-400 pb-4">
             No events recorded in the past {timePeriod.type}
           </div>
         </div>
@@ -149,7 +149,7 @@ const DomainChart = ({ domain }: { domain: Domain }) => {
     <NonIdealState
       nonIdeal={
         <div className="text-center">
-          <div className="text-xl text-gray-500 pb-4">
+          <div className="text-xl text-gray-400 pb-4">
             This domain has not recorded any data
           </div>
           <ScriptSnippet domain={domain} />

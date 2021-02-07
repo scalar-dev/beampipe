@@ -351,7 +351,7 @@ const Hero = () => (
   <div className="container mx-auto">
     <div className="px-2 pb-4 md:pt-4 md:w-full flex flex-col">
       <div className="text-6xl text-purple-600 font-extrabold text-center">
-        <div className="font-black tracking-tight">
+        <div className="font-black tracking-tight leading-normal">
           Simple. Powerful. Private.
         </div>
         <p className="leading-normal text-2xl text-gray-700 font-medium">
