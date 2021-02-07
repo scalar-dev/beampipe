@@ -51,7 +51,7 @@ const FeatureCard: React.FunctionComponent<{
 }> = ({ title, image, children }) => (
   <div className="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-700">
     <div className="w-full md:w-1/2 md:pr-8 pb-8">
-      <div className="text-4xl font-black tracking-tight">{title}</div>
+      <div className="text-4xl font-black leading-normal tracking-tight">{title}</div>
       <div className="text-xl">{children}</div>
     </div>
     <div className="w-full md:w-1/2 flex justify-end">{image}</div>
