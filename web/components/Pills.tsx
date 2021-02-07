@@ -12,8 +12,8 @@ export const Pill = React.forwardRef<
       ref={ref}
       className={`transition duration-200 text-xs my-auto inline-block font-medium border-b-2 ${
         selected
-          ? "text-gray-600 border-gray-400"
-          : "text-gray-500 border-transparent hover:text-gray-600"
+          ? "text-gray-500 border-gray-300"
+          : "text-gray-400 border-transparent hover:text-gray-500"
       }`}
       href="#"
       {...otherProps}
