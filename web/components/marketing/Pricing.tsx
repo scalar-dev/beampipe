@@ -81,7 +81,7 @@ export const EnterpriseBullets = () => (
 export const Pricing = () => {
   return (
     <div className="pt-8">
-      <div className="container mx-auto text-gray-800">
+      <div className="container mx-auto text-gray-700">
         <div className="mx-auto text-6xl font-black tracking-tight py-4 text-center text-purple-600">
           Pricing
         </div>

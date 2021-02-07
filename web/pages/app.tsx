@@ -21,6 +21,7 @@ import { secured } from "../utils/auth";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
+import { useRouter } from "next/router";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -29,6 +30,7 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
 
   const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (ref.current) {
       const dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
@@ -48,7 +50,8 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
           <pre>
             <code
               ref={ref}
-              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-2 w-full"
+              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-2 w-full cursor-text"
+              onClick={(e) => e.stopPropagation()}
             >
               {html}
             </code>
@@ -312,6 +315,7 @@ const DomainCard: React.FunctionComponent<{
   refetchDomains: () => void;
 }> = ({ domain, refetchDomains }) => {
   const [state, setState] = useState<DomainCardState>("chart");
+  const router = useRouter();
 
   const renderInner = (state: DomainCardState) => {
     switch (state) {
@@ -338,7 +342,16 @@ const DomainCard: React.FunctionComponent<{
   };
 
   return (
-    <Card key={domain.id} style={{ minHeight: "15rem" }}>
+    <Card
+      interactive={state !== "editing"}
+      key={domain.id}
+      style={{ minHeight: "15rem" }}
+      onClick={
+        state !== "editing"
+          ? () => router.push(`/domain/${encodeURIComponent(domain.domain)}`)
+          : undefined
+      }
+    >
       <CardTitle>
         <div className="flex">
           <div className="flex-auto overflow-auto">
@@ -346,7 +359,10 @@ const DomainCard: React.FunctionComponent<{
               href="/domain/[domain]"
               as={`/domain/${encodeURIComponent(domain.domain)}`}
             >
-              <a data-cy="a-domain" className="text-gray-800 hover:text-gray-500 break-words">
+              <a
+                data-cy="a-domain"
+                className="text-gray-700 hover:text-gray-500 break-words"
+              >
                 {domain.domain}
               </a>
             </Link>
@@ -362,6 +378,7 @@ const DomainCard: React.FunctionComponent<{
                   onClick={(e) => {
                     setState("editing");
                     e.preventDefault();
+                    e.stopPropagation();
                   }}
                 >
                   <FontAwesomeIcon
@@ -380,6 +397,7 @@ const DomainCard: React.FunctionComponent<{
                   onClick={(e) => {
                     setState((state) => (state === "code" ? "chart" : "code"));
                     e.preventDefault();
+                    e.stopPropagation();
                   }}
                 >
                   <FontAwesomeIcon
@@ -432,8 +450,6 @@ const DomainList = ({
     </div>
   );
 
-
-
   return (
     <>
       <div className="flex flex-col">
@@ -452,7 +468,7 @@ const DomainList = ({
             </Box>
             <Box>
               <div className="text-gray-600">Domains</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
+              <div className="text-3xl font-extrabold whitespace-nowrap">
                 {query.data?.settings.domains.current}
 
                 <span className="text-sm text-gray-500">
@@ -463,7 +479,7 @@ const DomainList = ({
             </Box>
             <Box>
               <div className="text-gray-600">Monthly Views</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
+              <div className="text-3xl font-extrabold whitespace-nowrap">
                 {numeral(query.data?.settings.pageViews.current).format(
                   "0.[0]a"
                 )}
@@ -476,7 +492,7 @@ const DomainList = ({
             </Box>
             <Box>
               <div className="text-gray-600">Monthly Visitors</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
+              <div className="text-3xl font-extrabold whitespace-nowrap">
                 {numeral(query.data?.settings.visitors).format("0.[0]a")}
               </div>
             </Box>

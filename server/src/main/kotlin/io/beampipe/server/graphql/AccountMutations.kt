@@ -204,7 +204,7 @@ class AccountMutations(
             }
         }
 
-        "OK"
+        email
     }
 
     suspend fun resetPassword(token: String, password: String) = newSuspendedTransaction {

@@ -38,7 +38,7 @@ const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
                       return null;
                     }
                     return (
-                      <div className="text-2xl text-gray-800 font-black leading-tight">
+                      <div className="text-2xl text-gray-700 font-black leading-tight">
                         {children}
                       </div>
                     );

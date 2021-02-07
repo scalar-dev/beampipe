@@ -49,7 +49,7 @@ const FeatureCard: React.FunctionComponent<{
   title: ReactNode;
   image: ReactNode;
 }> = ({ title, image, children }) => (
-  <div className="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
+  <div className="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-700">
     <div className="w-full md:w-1/2 md:pr-8 pb-8">
       <div className="text-4xl font-black tracking-tight">{title}</div>
       <div className="text-xl">{children}</div>
@@ -334,7 +334,7 @@ export const Footer = () => (
 
 export const TakeBackControl = () => (
   <div className="mx-auto container py-8 text-center">
-    <div className="font-black leading-tight text-5xl md:text-6xl text-gray-800">
+    <div className="font-black leading-tight text-5xl md:text-6xl text-gray-700">
       Take back control of your analytics.
     </div>
     <div className="pt-8">
@@ -354,7 +354,7 @@ const Hero = () => (
         <div className="font-black tracking-tight">
           Simple. Powerful. Private.
         </div>
-        <p className="leading-normal text-2xl text-gray-800 font-medium">
+        <p className="leading-normal text-2xl text-gray-700 font-medium">
           beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics.{" "}
           <b>free</b> for up to 10k monthly page views.
         </p>

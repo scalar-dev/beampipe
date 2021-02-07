@@ -101,7 +101,7 @@ export const Table = ({
             }}
           >
             {showImages && <td className="w-6 p-1">{item.image}</td>}
-            <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">
+            <td className="px-2 text-xs text-gray-700 font-medium font-mono py-1 truncate">
               {item.label || item.key || "none"}
               <div style={{ height: "0.5rem" }} className="w-full relative">
                 <Bar

@@ -271,16 +271,16 @@ const Settings = () => {
 
               <div className="text-2xl border-t pt-4">Usage</div>
 
-              <div className="pb-4 flex flex-row text-2xl text-gray-800 font-bold justify-center space-x-8">
+              <div className="pb-4 flex flex-row text-2xl text-gray-700 font-bold justify-center space-x-8">
                 <div className="p-8">
                   <div className="text-lg">Domains</div>
-                  <div className="text-gray-800">
+                  <div className="text-gray-700">
                     {settings.domains.current} / {settings.domains.max}
                   </div>
                 </div>
                 <div className="p-8">
                   <div className="text-lg">Monthly page views</div>
-                  <div className="text-gray-800">
+                  <div className="text-gray-700">
                     {numeral(settings.pageViews.current).format("0.[0]a")} /{" "}
                     {numeral(settings.pageViews.max).format("0.[0]a")}
                   </div>

@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.1.11",
     "@stripe/stripe-js": "^1.8.0",
     "@tippyjs/react": "^4.1.0",
+    "autoprefixer": "^10.2.4",
     "chart.js": "^2.9.3",
     "chartjs-plugin-crosshair": "^1.1.6",
     "d3": "^6.0.0",
@@ -25,9 +26,10 @@
     "litepicker": "^1.5.7",
     "lodash": "^4.17.19",
     "moment-timezone": "^0.5.31",
-    "next": "9.5.2",
+    "next": "10.0.6",
     "next-urql": "1.1.0",
     "numeral": "^2.0.6",
+    "postcss": "^8.2.5",
     "react": "^16.13.1",
     "react-cool-onclickoutside": "^1.5.5",
     "react-dom": "16.13.1",
@@ -51,7 +53,7 @@
     "gray-matter": "^4.0.2",
     "http-proxy-middleware": "^1.0.5",
     "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "1.7.0",
+    "tailwindcss": "^2.0.2",
     "typescript": "3.9.7"
   },
   "license": "ISC"
