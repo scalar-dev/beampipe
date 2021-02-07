@@ -373,7 +373,7 @@ export const GoalsCard = ({
         isLoading={stats.fetching}
         isIdeal={stats.data?.events.goals.length > 0}
         nonIdeal={
-          <div className="text-md text-gray-600 text-center">
+          <div className="text-md text-gray-500 text-center">
             You haven't configured any goals yet.
             {isEditable ? (
               <div className="pt-4">
