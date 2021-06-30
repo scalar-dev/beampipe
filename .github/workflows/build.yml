@@ -24,7 +24,6 @@ jobs:
 
   ui:
     runs-on: ubuntu-latest
-    container: alexsparrow/wat-builder
     steps:
     - uses: actions/checkout@v2
     - name: Build
