@@ -19,9 +19,11 @@ export default ({
         element: ref.current,
         inlineMode: true,
         singleMode: false,
-        startDate: startTime,
-        endDate: endTime,
-        onSelect,
+        startDate: startTime?.toDate(),
+        endDate: endTime?.toDate(),
+        setup: (picker) => {
+          picker.on("selected", onSelect);
+        },
       });
 
       return () => {

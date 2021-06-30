@@ -22,6 +22,7 @@ export const Pill = React.forwardRef<
     </a>
   </li>
 ));
+Pill.displayName = "Pill";
 
 export const Pills: React.FunctionComponent = ({ children }) => (
   <ul className="flex items-center">{children}</ul>

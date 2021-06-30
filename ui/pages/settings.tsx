@@ -363,6 +363,7 @@ const Settings = () => {
                 <div className="mx-auto">
                   <Link href="/oauth/login/slack">
                     <a>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         alt="Add to Slack"
                         height="40"

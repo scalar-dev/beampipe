@@ -58,6 +58,7 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorProps>(
     </a>
   )
 );
+AnchorButton.displayName = "AnchorButton";
 
 interface ButtonProps
   extends React.DetailedHTMLProps<
@@ -80,3 +81,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     </button>
   )
 );
+Button.displayName = "Button";

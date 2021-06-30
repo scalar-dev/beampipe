@@ -36,6 +36,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     </a>
   )
 );
+NavLink.displayName = "NavLink";
 
 const SocialButtons = () => (
   <div className="flex flex-row p-4 lg:p-0">

@@ -15,8 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@stripe/stripe-js": "^1.15.1",
     "@tippyjs/react": "^4.2.5",
-    "@types/lodash": "^4.14.170",
-    "chart.js": "^3.4.0",
+    "chart.js": "^2.9.3",
     "chartjs-plugin-crosshair": "^1.1.6",
     "d3": "^7.0.0",
     "fontsource-inter": "^4.0.0",
@@ -36,9 +35,13 @@
     "urql": "^2.0.4"
   },
   "devDependencies": {
+    "@types/chart.js": "^2.9.23",
+    "@types/chartjs-plugin-crosshair": "^1.1.0",
+    "@types/lodash": "^4.14.170",
     "@types/d3": "^7.0.0",
     "@types/numeral": "^2.0.1",
     "@types/react": "17.0.11",
+    "@types/react-simple-maps": "^1.0.5",
     "autoprefixer": "^10.2.6",
     "eslint": "7.29.0",
     "eslint-config-next": "11.0.1",

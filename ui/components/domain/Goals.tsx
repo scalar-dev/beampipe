@@ -374,7 +374,7 @@ export const GoalsCard = ({
         isIdeal={stats.data?.events.goals.length > 0}
         nonIdeal={
           <div className="text-md text-gray-500 text-center">
-            You haven't configured any goals yet.
+            You haven&apos;t configured any goals yet.
             {isEditable ? (
               <div className="pt-4">
                 <Button data-cy="button-create-goal" onClick={createGoal}>

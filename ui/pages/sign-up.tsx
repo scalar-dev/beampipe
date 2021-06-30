@@ -18,7 +18,7 @@ const SignUp = () => {
               </div>
 
               <p className="text-sm pb-4 pt-2 text-gray-600 font-bold md:pb-8">
-                Registration is free and doesn't require a credit card. Cancel
+                Registration is free and doesn&apos;t require a credit card. Cancel
                 at any time.
               </p>
 

@@ -20,6 +20,7 @@ export const MenuItem = forwardRef<HTMLAnchorElement, MenutItemProps>(
     </a>
   )
 );
+MenuItem.displayName = "MenuItem";
 
 export const MenuText = forwardRef<HTMLSpanElement, MenutItemProps>(
   ({ children, ...otherProps }, ref) => (
@@ -33,6 +34,7 @@ export const MenuText = forwardRef<HTMLSpanElement, MenutItemProps>(
     </span>
   )
 );
+MenuText.displayName = "MenuText";
 
 export const MenuDivider = () => (
   <div className="border-t border-gray-100"></div>

@@ -221,6 +221,20 @@
   dependencies:
     tippy.js "^6.3.1"
 
+"@types/chart.js@*", "@types/chart.js@^2.9.23":
+  version "2.9.32"
+  resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.9.32.tgz#b17d9a8c41ad348183a2ce041ebdeef892998251"
+  integrity sha512-d45JiRQwEOlZiKwukjqmqpbqbYzUX2yrXdH9qVn6kXpPDsTYCo6YbfFOlnUaJ8S/DhJwbBJiLsMjKpW5oP8B2A==
+  dependencies:
+    moment "^2.10.2"
+
+"@types/chartjs-plugin-crosshair@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/chartjs-plugin-crosshair/-/chartjs-plugin-crosshair-1.1.0.tgz#d5fe4a4a649141019d189925b922e9951fb5b3be"
+  integrity sha512-8ixNaGyj8xnURFPKARj6bDLogPlQgyXPCDUQiavLCZvwpnFfpcAwPUVBGwbNq1Lr6qKNHbTELVIKAzXDsRS2zA==
+  dependencies:
+    "@types/chart.js" "*"
+
 "@types/d3-array@*":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-3.0.1.tgz#0ff28ee7052a2e504cb951d17df7437c33d442d6"
@@ -306,6 +320,13 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/d3-geo/-/d3-geo-3.0.0.tgz#8314d3f50337e05cbefd144085a7a397b2e55617"
   integrity sha512-oT2qpVrs76QlNw5IrlE2yVHheuN4xiY26tGFv6Rd9Jds8QpYynxo8bZFECJUk8gq4fop+LJxkrDsBAezvLE/1Q==
+  dependencies:
+    "@types/geojson" "*"
+
+"@types/d3-geo@^1":
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/@types/d3-geo/-/d3-geo-1.12.2.tgz#41b0acbe38b35c3c8d942dc4c4bb9ae6d693c119"
+  integrity sha512-5YClmekA33MMUXudsQ1RLq607PNKlH0q/nYXx6iIzeTEkCZbpXEwT5hyltssJThKKaB9o8UzCm2e4zQhDc+vpg==
   dependencies:
     "@types/geojson" "*"
 
@@ -466,7 +487,16 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
-"@types/react@17.0.11":
+"@types/react-simple-maps@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-simple-maps/-/react-simple-maps-1.0.5.tgz#f784358250e85032ffec98020fa692ed8317d79a"
+  integrity sha512-b5FZI6h5uUGtMxBvvQ1dVMtjitPBOGQ3rTe1ic2SbCM/L4dsxTtb+TgEVwZwCZgzyVAH0/r+ldsQYrwSF0RIgQ==
+  dependencies:
+    "@types/d3-geo" "^1"
+    "@types/geojson" "*"
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@17.0.11":
   version "17.0.11"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.11.tgz#67fcd0ddbf5a0b083a0f94e926c7d63f3b836451"
   integrity sha512-yFRQbD+whVonItSk7ZzP/L+gPTJVBkL/7shLEF+i9GC/1cV3JmUxEQz6+9ylhUpWSDuqo1N9qEvqS6vTj4USUA==
@@ -957,11 +987,6 @@ chart.js@^2.9.3:
   dependencies:
     chartjs-color "^2.1.0"
     moment "^2.10.2"
-
-chart.js@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.4.0.tgz#4fb2a750225fcc1b387221422f5d4260b55b4579"
-  integrity sha512-mJsRm2apQm5mwz2OgYqGNG4erZh/qljcRZkWSa0kLkFr3UC3e1wKRMgnIh6WdhUrNu0w/JT9PkjLyylqEqHXEQ==
 
 chartjs-color-string@^0.6.0:
   version "0.6.0"

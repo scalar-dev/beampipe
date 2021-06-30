@@ -87,8 +87,8 @@ export const LineChart = ({
               color: onSelect ? "red" : "rgba(0, 0, 0, 0)"
             },
             callbacks: {
-              beforeZoom: (start: Moment, end: Moment) => {
-                onSelect && onSelect(start, end);
+              beforeZoom: (start: number, end: number) => {
+                onSelect && onSelect(start as unknown as Moment, end as unknown as Moment);
                 return false;
               },
             },

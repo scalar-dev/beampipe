@@ -384,6 +384,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                   label: source.source || source.referrer || "none",
                   count: source.count,
                   image: source.referrer && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       className="inline h-4 w-4"
                       src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
@@ -520,6 +521,7 @@ const Footer = () => (
               <a
                 href="https://docs.beampipe.io/"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -531,7 +533,7 @@ const Footer = () => (
             </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <Link href="/privacy">
-                <a target="_blank" className="no-underline hover:underline">
+                <a target="_blank" rel="noreferrer" className="no-underline hover:underline">
                   <FontAwesomeIcon
                     className="fill-current w-4 h-4 mr-2"
                     icon={faClipboardCheck}
@@ -562,6 +564,7 @@ const Footer = () => (
               <a
                 href="https://twitter.com/beampipe_io"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -576,6 +579,7 @@ const Footer = () => (
               <a
                 href="https://medium.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -589,6 +593,7 @@ const Footer = () => (
               <a
                 href="https://www.producthunt.com/posts/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -602,6 +607,7 @@ const Footer = () => (
               <a
                 href="https://github.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
