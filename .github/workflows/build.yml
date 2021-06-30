@@ -22,7 +22,7 @@ jobs:
 
          ./gradlew server:jib --no-daemon --console=plain --image=$DOCKER_REPO/server:$GITHUB_RUN_NUMBER
 
-  web:
+  ui:
     runs-on: ubuntu-latest
     container: alexsparrow/wat-builder
     steps:
@@ -30,6 +30,16 @@ jobs:
     - name: Build
       run: |
          echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
-         cd ./web
+         cd ./ui
          docker build -t $DOCKER_REPO/web:$GITHUB_RUN_NUMBER .
          docker push $DOCKER_REPO/web:$GITHUB_RUN_NUMBER
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        cd web
+        yarn
+        yarn build

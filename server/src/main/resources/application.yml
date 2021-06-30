@@ -5,7 +5,7 @@ micronaut:
     enabled: true
     authentication: cookie
     redirect:
-      login-success: /app
+      login-success: /
       login-failure: /settings
     token:
       jwt:

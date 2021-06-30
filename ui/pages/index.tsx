@@ -640,5 +640,7 @@ const Page = () => {
   );
 };
 
+
+
 Page.getInitialProps = secured;
 export default withUrql(Page);

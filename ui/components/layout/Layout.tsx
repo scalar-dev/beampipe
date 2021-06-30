@@ -1,9 +1,11 @@
-import { FunctionComponent, useState, forwardRef } from "react";
+import { FunctionComponent, useContext, useState, forwardRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { UserContext } from "../../utils/auth";
 import { AnchorButton } from "../Buttons";
+import { Avatar } from "./Avatar";
 import {
   faGithub,
   faTwitter,
@@ -71,10 +73,21 @@ const SocialButtons = () => (
   </div>
 );
 
+export const IfUserLoggedIn: React.FunctionComponent = ({ children }) => {
+  const user = useContext(UserContext);
+  return user.user ? <>{children}</> : null;
+};
+
+export const IfAnonymous: React.FunctionComponent = ({ children }) => {
+  const user = useContext(UserContext);
+  return user.user ? null : <>{children}</>;
+};
+
 const metaDescription = `beampipe is a simple, privacy-focussed alternative to Google Analytics with a free tier for small sites.
 `;
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
+  const user = useContext(UserContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const fullTitle = `beampipe.io | ${title}`;
@@ -134,6 +147,19 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             >
               <div className="lg:flex-grow flex flex-wrap">
                 <div>
+                  <IfUserLoggedIn>
+                    <Link href="/" passHref>
+                      <NavLink
+                        onClick={() => setMenuVisible((visible) => !visible)}
+                      >
+                        Dashboard
+                      </NavLink>
+                    </Link>
+                  </IfUserLoggedIn>
+                </div>
+
+                <div>
+                  <IfAnonymous>
                     <Link href="/#pricing" passHref>
                       <NavLink
                         onClick={() => {
@@ -144,6 +170,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                         Pricing
                       </NavLink>
                     </Link>
+                  </IfAnonymous>
                 </div>
 
                 <div>
@@ -176,6 +203,12 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
+                <IfUserLoggedIn>
+                  <div className="p-4 lg:p-0">
+                    <Avatar user={user.user!!} />
+                  </div>
+                </IfUserLoggedIn>
+                <IfAnonymous>
                   <Link href="/sign-in" passHref>
                     <NavLink
                       onClick={() => setMenuVisible((visible) => !visible)}
@@ -193,6 +226,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                       </AnchorButton>
                     </Link>
                   </div>
+                </IfAnonymous>
               </div>
               <SocialButtons />
             </div>

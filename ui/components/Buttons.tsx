@@ -1,5 +1,28 @@
 import { forwardRef } from "react";
 
+interface SwitchButtonProps
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  selected: Boolean;
+}
+
+export const SwitchButton: React.FunctionComponent<SwitchButtonProps> = ({
+  selected,
+  children,
+  ...otherProps
+}) => (
+  <button
+    className={`border-gray-300 text-xs font-bold py-2 px-4 border rounded ${
+      selected ? "bg-gray-100 shadow-inner" : ""
+    }`}
+    {...otherProps}
+  >
+    {children}
+  </button>
+);
+
 type Intent = "primary" | "info" | "danger";
 
 const colorForIntent = (intent: Intent) => {

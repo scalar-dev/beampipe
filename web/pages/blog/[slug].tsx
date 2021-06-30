@@ -4,14 +4,12 @@ import path from "path";
 import matter from "gray-matter";
 import { Layout } from "../../components/layout/Layout";
 import ReactMarkdown from "react-markdown";
-import { AuthProvider } from "../../utils/auth";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
   return (
-    <AuthProvider>
       <Layout title={frontmatter.title}>
         <div className="bg-gradient-to-b from-gray-100 to-white">
           <div className="container mx-auto">
@@ -69,7 +67,6 @@ const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
           </div>
         </div>
       </Layout>
-    </AuthProvider>
   );
 };
 

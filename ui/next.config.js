@@ -1,0 +1,22 @@
+// https://stackoverflow.com/questions/65974337/import-es-module-in-next-js-err-require-esm
+const withTM = require('next-transpile-modules')(['d3', 'internmap']);
+
+module.exports = withTM({
+  reactStrictMode: true,
+   async rewrites() {
+    console.log("Rewrites called");
+    console.log(process.env.NODE_ENV);
+    return process.env.NODE_ENV === "development"
+      ? [
+          {
+            source: "/graphql",
+            destination: "http://localhost:8080/graphql",
+          },
+   {
+            source: "/login",
+            destination: "http://localhost:8080/login",
+          },
+        ]
+      : [];
+  },
+});

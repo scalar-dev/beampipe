@@ -24,7 +24,18 @@ import { TimeChart } from "../../components/domain/TimeChart";
 import MapChart from "../../components/domain/MapChart";
 import { Pills, Pill } from "../../components/Pills";
 import { StatsQuery } from "../../components/domain/StatsQuery";
-import { TakeBackControl, Footer } from "..";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAt,
+  faClipboardCheck,
+  faBook,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faTwitter,
+  faProductHunt,
+  faMedium,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
 import Link from "next/link";
 import {
   DrilldownPills,
@@ -488,5 +499,142 @@ const DomainPage = () => {
     </AuthProvider>
   );
 };
+
+const Footer = () => (
+  <footer className="bg-green-600 text-white pt-8">
+    <div className="container mx-auto  px-8">
+      <div className="w-full flex flex-col md:flex-row pt-6">
+        <div className="flex-1 mb-6">
+          <a
+            className="no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
+            href="#"
+          >
+            beampipe
+          </a>
+        </div>
+
+        <div className="flex-1">
+          <p className="uppercase font-extrabold md:mb-6">Links</p>
+          <ul className="list-reset mb-6">
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://docs.beampipe.io/"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faBook}
+                />
+                Docs
+              </a>
+            </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <Link href="/privacy">
+                <a target="_blank" className="no-underline hover:underline">
+                  <FontAwesomeIcon
+                    className="fill-current w-4 h-4 mr-2"
+                    icon={faClipboardCheck}
+                  />
+                  Privacy policy
+                </a>
+              </Link>
+            </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="mailto:hello@beampipe.io"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faAt}
+                />
+                Contact us
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div className="flex-1">
+          <p className="uppercase font-extrabold md:mb-6">Social</p>
+          <ul className="list-reset mb-6">
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://twitter.com/beampipe_io"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faTwitter}
+                />
+                Twitter
+              </a>
+            </li>
+
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://medium.com/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faMedium}
+                />
+                Medium
+              </a>
+            </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://www.producthunt.com/posts/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faProductHunt}
+                />
+                Product Hunt
+              </a>
+            </li>
+            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
+              <a
+                href="https://github.com/beampipe"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faGithub}
+                />
+                Github
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="pb-6 text-center w-full text-sm">
+        Copyright © Beampipe 2020.
+      </div>
+    </div>
+  </footer>
+);
+
+const TakeBackControl = () => (
+  <div className="mx-auto container py-8 text-center">
+    <div className="font-black leading-tight text-5xl md:text-6xl text-gray-700">
+      Take back control of your analytics.
+    </div>
+    <div className="pt-8">
+      <Link href="/sign-up">
+        <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+          Get started.
+        </a>
+      </Link>
+    </div>
+  </div>
+);
 
 export default withUrql(DomainPage);

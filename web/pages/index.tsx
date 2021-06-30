@@ -1,12 +1,8 @@
 import Link from "next/link";
 import {
   Layout,
-  IfUserLoggedIn,
-  IfAnonymous,
 } from "../components/layout/Layout";
-import { withUrql } from "../utils/withUrql";
 import _ from "lodash";
-import { AuthProvider } from "../utils/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAt,
@@ -363,14 +359,6 @@ const Hero = () => (
 
     <div className="flex flex-col py-4">
       <div className="m-auto flex items-center justify-center">
-        <IfUserLoggedIn>
-          <Link href="/app">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md md:mr-4">
-              Go to app
-            </a>
-          </Link>
-        </IfUserLoggedIn>
-        <IfAnonymous>
           <Link href="/sign-up">
             <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
               Sign up free
@@ -382,7 +370,6 @@ const Hero = () => (
               Live demo
             </a>
           </Link>
-        </IfAnonymous>
       </div>
     </div>
   </div>
@@ -400,7 +387,6 @@ const BigScreenshot = () => (
 
 const IndexPage = () => {
   return (
-    <AuthProvider>
       <Layout title="dead simple web analytics">
         <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
           <Hero />
@@ -427,8 +413,7 @@ const IndexPage = () => {
 
         <Footer />
       </Layout>
-    </AuthProvider>
   );
 };
 
-export default withUrql(IndexPage);
+export default IndexPage;

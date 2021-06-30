@@ -45,8 +45,8 @@ class AccountMutations(
     @Inject
     lateinit var accountQuery: AccountQuery
 
-    @Inject
-    lateinit var stripeClient: StripeClient
+//    @Inject
+//    lateinit var stripeClient: StripeClient
 
     suspend fun updateName(context: Context, name: String): String = context.withAccountId { accountId ->
         newSuspendedTransaction {

@@ -1,13 +1,11 @@
 import React from "react";
 import { Layout } from "../../components/layout/Layout";
-import { AuthProvider } from "../../utils/auth";
 import fs from "fs";
 import matter from "gray-matter";
 import Link from "next/link";
 import { Footer, TakeBackControl } from "..";
 
 const Blog = ({ posts }: { posts: any }) => (
-  <AuthProvider>
     <Layout title="Blog">
       <div className="container mx-auto max-w-screen-sm mt-8">
         {posts.map(
@@ -37,7 +35,6 @@ const Blog = ({ posts }: { posts: any }) => (
 
       <Footer />
     </Layout>
-  </AuthProvider>
 );
 
 export async function getStaticProps() {

@@ -4,7 +4,7 @@ import {
   Geography,
   ZoomableGroup,
 } from "react-simple-maps";
-import { scaleLinear } from "d3";
+import { scaleLinear } from "d3-scale";
 import _ from "lodash";
 import { useState, ReactNode } from "react";
 import Tippy from "@tippyjs/react";
