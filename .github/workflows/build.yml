@@ -42,6 +42,7 @@ jobs:
         cd web
         yarn
         yarn build
+        ls web/out
         touch web/out/.nojekyll
         echo "www2.beampipe.io" > web/out/CNAME
     - name: Archive production artifacts
