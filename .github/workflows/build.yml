@@ -58,6 +58,11 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: website
+    - name: Test
+      run: |
+        ls .
+        ls web
+        ls web/out
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@4.1.4
