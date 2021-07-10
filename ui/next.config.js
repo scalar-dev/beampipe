@@ -4,8 +4,6 @@ const withTM = require('next-transpile-modules')(['d3', 'internmap']);
 module.exports = withTM({
   reactStrictMode: true,
    async rewrites() {
-    console.log("Rewrites called");
-    console.log(process.env.NODE_ENV);
     return process.env.NODE_ENV === "development"
       ? [
           {
