@@ -1,5 +1,6 @@
 import { Tick } from "./Tick";
 import Link from "next/link";
+import { SIGN_UP_LINK } from "../../routes";
 
 const Bullet: React.FunctionComponent = ({ children }) => (
   <li className="flex py-2">
@@ -37,7 +38,7 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
         <div className="flex-1">{children}</div>
 
         <div className="pt-4 w-full flex justify-center">
-          <Link href="/sign-up">
+          <Link href={SIGN_UP_LINK}>
             <a className="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md">
               Sign up
             </a>

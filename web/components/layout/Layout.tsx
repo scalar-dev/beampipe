@@ -10,6 +10,7 @@ import {
   faProductHunt,
   faMedium,
 } from "@fortawesome/free-brands-svg-icons";
+import { SIGN_IN_LINK, SIGN_UP_LINK } from "../../routes";
 
 interface LayoutProps {
   title: string;
@@ -134,16 +135,16 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             >
               <div className="lg:flex-grow flex flex-wrap">
                 <div>
-                    <Link href="/#pricing" passHref>
-                      <NavLink
-                        onClick={() => {
-                          setMenuVisible((visible) => !visible);
-                          window.beampipe("view_pricing");
-                        }}
-                      >
-                        Pricing
-                      </NavLink>
-                    </Link>
+                  <Link href="/#pricing" passHref>
+                    <NavLink
+                      onClick={() => {
+                        setMenuVisible((visible) => !visible);
+                        window.beampipe("view_pricing");
+                      }}
+                    >
+                      Pricing
+                    </NavLink>
+                  </Link>
                 </div>
 
                 <div>
@@ -176,23 +177,23 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                  <Link href="/sign-in" passHref>
-                    <NavLink
+                <Link href={SIGN_IN_LINK} passHref>
+                  <NavLink
+                    onClick={() => setMenuVisible((visible) => !visible)}
+                  >
+                    Login
+                  </NavLink>
+                </Link>
+                <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                  <Link href={SIGN_UP_LINK} passHref>
+                    <AnchorButton
+                      className="mr-2"
                       onClick={() => setMenuVisible((visible) => !visible)}
                     >
-                      Login
-                    </NavLink>
+                      Sign up
+                    </AnchorButton>
                   </Link>
-                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                    <Link href="/sign-up" passHref>
-                      <AnchorButton
-                        className="mr-2"
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Sign up
-                      </AnchorButton>
-                    </Link>
-                  </div>
+                </div>
               </div>
               <SocialButtons />
             </div>

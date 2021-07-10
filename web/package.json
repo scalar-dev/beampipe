@@ -2,7 +2,7 @@
   "name": "with-typescript",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build && next export",
     "buildTracker": "tsc --outDir public tracker/tracker.ts",
     "start": "next start",
@@ -15,7 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.1.11",
     "@stripe/stripe-js": "^1.8.0",
     "autoprefixer": "^10.2.4",
-    "fontsource-inter": "^2.2.6",
+    "fontsource-inter": "^4.0.0",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.10.4",
     "isomorphic-unfetch": "^3.0.0",
@@ -39,9 +39,9 @@
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
     "@types/react-simple-maps": "^1.0.3",
+    "autoprefixer": "^10.2.6",
     "express": "^4.17.1",
     "gray-matter": "^4.0.2",
-    "autoprefixer": "^10.2.6",
     "tailwindcss": "^2.2.4",
     "typescript": "4.3.4"
   },

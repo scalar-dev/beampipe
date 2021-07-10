@@ -23,6 +23,7 @@ import {
 import { Screenshot } from "../components/marketing/Screenshot";
 import { ReactNode } from "react";
 import { Pricing } from "../components/marketing/Pricing";
+import { SIGN_UP_LINK } from "../routes";
 
 const ProductHuntButton = () => (
   <div className="m-auto py-8">
@@ -334,7 +335,7 @@ export const TakeBackControl = () => (
       Take back control of your analytics.
     </div>
     <div className="pt-8">
-      <Link href="/sign-up">
+      <Link href={SIGN_UP_LINK}>
         <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
           Get started.
         </a>
@@ -359,17 +360,17 @@ const Hero = () => (
 
     <div className="flex flex-col py-4">
       <div className="m-auto flex items-center justify-center">
-          <Link href="/sign-up">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
-              Sign up free
-            </a>
-          </Link>
+        <Link href={SIGN_UP_LINK}>
+          <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+            Sign up free
+          </a>
+        </Link>
 
-          <Link href="/domain/beampipe.io">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
-              Live demo
-            </a>
-          </Link>
+        <Link href="/domain/beampipe.io">
+          <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
+            Live demo
+          </a>
+        </Link>
       </div>
     </div>
   </div>
