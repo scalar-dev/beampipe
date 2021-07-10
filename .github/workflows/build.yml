@@ -42,9 +42,8 @@ jobs:
         cd web
         yarn
         yarn build
-        ls web/out
-        touch web/out/.nojekyll
-        echo "www2.beampipe.io" > web/out/CNAME
+        touch out/.nojekyll
+        echo "www2.beampipe.io" > out/CNAME
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
