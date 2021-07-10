@@ -52,10 +52,10 @@ jobs:
 
   web-deploy:
     runs-on: ubuntu-latest
+    needs: web
     steps:
     - uses: actions/checkout@v2
-    - name: Download math result for job 2
-      uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v2
       with:
         name: website
 
