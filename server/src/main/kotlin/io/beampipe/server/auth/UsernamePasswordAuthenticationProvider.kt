@@ -1,44 +1,42 @@
 package io.beampipe.server.auth
 
 import io.beampipe.server.db.Accounts
-import io.micronaut.http.HttpRequest
-import io.micronaut.security.authentication.AuthenticationFailed
-import io.micronaut.security.authentication.AuthenticationProvider
-import io.micronaut.security.authentication.AuthenticationRequest
-import io.micronaut.security.authentication.AuthenticationResponse
-import io.micronaut.security.authentication.UserDetails
-import io.reactivex.Flowable
+import io.vertx.core.AsyncResult
+import io.vertx.core.Future
+import io.vertx.core.Handler
+import io.vertx.core.Vertx
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.auth.User
+import io.vertx.ext.auth.authentication.AuthenticationProvider
+import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.future.future
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
-import org.reactivestreams.Publisher
 import java.time.Instant
-import java.util.Base64
-import javax.inject.Singleton
+import java.util.*
 
-fun canonicaliseEmail(email: String) = email.trim().toLowerCase()
+fun canonicaliseEmail(email: String) = email.trim().lowercase()
 
-@Singleton
-class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
-    override fun authenticate(
-        httpRequest: HttpRequest<*>?,
-        authenticationRequest: AuthenticationRequest<*, *>?
-    ): Publisher<AuthenticationResponse> {
-        return Flowable.fromFuture(
-            GlobalScope.future {
-                val email = canonicaliseEmail(authenticationRequest!!.identity as String)
-                val account = newSuspendedTransaction {
-                    Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
+class UsernamePasswordAuthenticationProvider(private val vertx: Vertx) : AuthenticationProvider {
+    override fun authenticate(credentials: JsonObject, resultHandler: Handler<AsyncResult<User>>) {
+        val username = credentials.getString("username")
+        val password = credentials.getString("password")
+
+        val email = canonicaliseEmail(username)
+
+        GlobalScope.launch(vertx.dispatcher()) {
+            val account = newSuspendedTransaction {
+                Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
                         .select { Accounts.email.eq(email) }
                         .firstOrNull()
-                }
+            }
 
-                if (account == null) {
-                    AuthenticationFailed()
-                } else {
-                    newSuspendedTransaction {
+            if (account == null) {
+                resultHandler.handle(Future.failedFuture("Invalid username or password"))
+            } else {
+                newSuspendedTransaction {
                         Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
                             it[lastLoginAt] = Instant.now()
                         }
@@ -46,24 +44,21 @@ class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
 
                     val dec: Base64.Decoder = Base64.getDecoder()
                     val salt = dec.decode(account[Accounts.salt])
-                    val hash = hashPassword(authenticationRequest.secret as String, salt)
+                    val hash = hashPassword(password, salt)
 
                     if (hash == account[Accounts.password]) {
-                        UserDetails(
-                            account[Accounts.id].value.toString(),
-                            emptyList(),
-                            mapOf(
-                                "accountId" to account[Accounts.id].value.toString(),
-                                "name" to account[Accounts.name],
-                                "email" to account[Accounts.email]
-                            )
-                        )
+                        resultHandler.handle(Future.succeededFuture(User.create(
+                            JsonObject()
+                                .put("accountId", account[Accounts.id].value.toString())
+                                .put("name", account[Accounts.name])
+                                .put("email", account[Accounts.email])
+                        )))
                     } else {
-                        AuthenticationFailed()
+                        resultHandler.handle(Future.failedFuture("Invalid username or password"))
                     }
-                }
             }
-        )
-    }
 
+        }
+
+    }
 }

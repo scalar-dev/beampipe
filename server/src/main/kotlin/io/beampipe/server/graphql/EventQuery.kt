@@ -16,8 +16,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = when (timePeriodStart ?: "day") {
     "day" -> origin.minus(1, ChronoUnit.DAYS)
@@ -27,11 +25,7 @@ fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = 
     else -> throw Exception("Invalid time period")
 }
 
-@Singleton
-class EventQuery {
-    @Inject
-    lateinit var accountQuery: AccountQuery
-
+class EventQuery(private val accountQuery: AccountQuery) {
     data class Bucket(val time: ZonedDateTime, val count: Long)
     data class Count(val key: String?, val count: Long, val label: String?)
     data class GoalCount(val id: UUID, val name: String, val description: String?, val eventType: String, val path: String?, val count: Long)

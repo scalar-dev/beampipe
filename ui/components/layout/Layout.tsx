@@ -161,13 +161,14 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
                 <div>
                   <IfAnonymous>
-                    <Link href="https://beampipe.io" passHref>
+                    <Link href="https://heampipe.io/#pricing" passHref>
                       <NavLink
                         onClick={() => {
                           setMenuVisible((visible) => !visible);
+                          window.beampipe("view_pricing");
                         }}
                       >
-                        Web site
+                        Pricing
                       </NavLink>
                     </Link>
                   </IfAnonymous>

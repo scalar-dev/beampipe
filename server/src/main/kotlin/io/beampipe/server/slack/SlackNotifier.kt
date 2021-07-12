@@ -7,25 +7,21 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
-import kotlinx.coroutines.GlobalScope
+import io.vertx.kotlin.coroutines.CoroutineVerticle
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.annotation.PostConstruct
-import javax.inject.Singleton
 
 inline fun <reified T> T.logger(): Logger {
     return LoggerFactory.getLogger(T::class.java)
 }
 
-@Singleton
-class SlackNotifier {
+class SlackNotifier: CoroutineVerticle() {
     val LOG = logger()
 
     data class Event(val domain: String, val event: String)
@@ -35,13 +31,13 @@ class SlackNotifier {
     val events: Channel<Event> = Channel(1024)
     val isDirty = AtomicBoolean(true)
 
-    @PostConstruct
-    fun start() = GlobalScope.launch {
-        run()
-    }
-
-    suspend fun run() {
+    override suspend fun start() {
         LOG.info("Starting event loop")
+
+        vertx.eventBus().consumer<Boolean>("slack_is_dirty") {
+            isDirty.set(it.body())
+        }
+
         for (event in events) {
             val key = "${event.domain}_${event.event}"
 

@@ -1,28 +1,28 @@
 package io.beampipe.server.github
 
-import io.micronaut.http.HttpHeaders
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Header
-import io.micronaut.http.annotation.Headers
-import io.micronaut.http.client.annotation.Client
-import io.reactivex.Flowable
+import io.vertx.core.Vertx
+import io.vertx.ext.web.client.WebClient
+import io.vertx.kotlin.coroutines.await
 
-@Headers(
-    Header(name = "User-Agent", value = "https://micronautguides.com"),
-    Header(name = "Accept", value = "application/vnd.github.v3+json, application/json")
-)
-@Client(id = "githubv3")
-interface GithubApiClient {
+class GithubApiClient(private val vertx: Vertx) {
     data class GithubUser(val id: Long, val name: String?, val email: String?)
     data class GithubUserEmail(val email: String, val primary: Boolean)
 
-    @Get("/user")
-    fun getUser(
-        @Header(HttpHeaders.AUTHORIZATION) authorization: String?
-    ): Flowable<GithubUser?>?
+    private val client = WebClient.create(vertx)
 
-    @Get("/user/emails")
-    fun getUserEmails(
-        @Header(HttpHeaders.AUTHORIZATION) authorization: String?
-    ): Flowable<List<GithubUserEmail>>?
+    suspend fun getUser(
+        authorization: String?
+    ): GithubUser? {
+      val response = client
+          .get("/user")
+          .putHeader("Authorization", authorization)
+          .putHeader("User-Agent", "https://www.beampipe.io")
+          .putHeader("Accept", "application/vnd.github.v3+json, application/json")
+          .send()
+          .await()
+
+        return response.bodyAsJsonObject().mapTo(GithubUser::class.java)
+    }
+
+
 }

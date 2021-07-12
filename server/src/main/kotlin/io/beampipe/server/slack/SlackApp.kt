@@ -14,8 +14,7 @@ import com.slack.api.model.block.element.ButtonElement
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
-import io.micronaut.context.annotation.Factory
-import io.micronaut.context.annotation.Property
+import io.vertx.core.Vertx
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -23,16 +22,9 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
-import javax.inject.Inject
 
-import javax.inject.Singleton
-
-@Factory
-class AppFactory(@Inject val slackNotifier: SlackNotifier) {
-    @Singleton
-    fun createAppConfig(): AppConfig {
-        return AppConfig() // loads the env variables
-    }
+class SlackApp(config: AppConfig, private val vertx: Vertx) {
+    val app = App(config)
 
     private fun getDomainId(domain: String, teamId: String) = Domains
         .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
@@ -66,7 +58,7 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
                     it[teamId] = req.payload.teamId
                 }
 
-                slackNotifier.isDirty.set(true)
+                vertx.eventBus().publish("slack_subscription_dirty", true)
                 ctx.ack("Created subscription with id: $subscriptionId")
             } else {
                 ctx.ack("Domain not found")
@@ -161,11 +153,9 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
         )
     )
 
-    @Singleton
-    fun createApp(config: AppConfig?, @Property(name="slack.command.name", defaultValue = "/beampipe") commandName: String): App {
-        val app = App(config)
 
-        app.command(commandName) { req, ctx ->
+    init {
+        app.command("/beampipe") { req, ctx ->
             val parts = req.payload.text.split("\\s+".toRegex())
 
             when (parts[0]) {
@@ -196,7 +186,5 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
 
             context.ack()
         }
-
-        return app
     }
 }

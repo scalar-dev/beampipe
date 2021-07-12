@@ -1,22 +1,21 @@
 package io.beampipe.server.graphql
 
+import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.util.Context
+import io.beampipe.server.graphql.util.LoginRequired
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import javax.inject.Singleton
 
-@Singleton
 class AccountQuery {
     data class User(val id: UUID, val email: String?, val name: String?)
 
@@ -35,28 +34,31 @@ class AccountQuery {
 
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
-    fun user(context: Context) = if (context.authentication != null) {
+    @LoginRequired
+    @GraphQLDescription("Get details for the current user")
+    fun user(context: Context) = if (context.user != null) {
         User(
-            UUID.fromString(context.authentication.attributes["accountId"] as String),
-            context.authentication.attributes["email"] as String?,
-            context.authentication.attributes["name"] as String?
+            context.accountId,
+            context.user.principal().getString("email"),
+            context.user.principal().getString("name")
         )
     } else {
         null
     }
 
-    fun maxPageViews(subscription: String): Long = when (subscription) {
+    private fun maxPageViews(subscription: String): Long = when (subscription) {
         "basic" -> 10_000
         "pro" -> 100_000
         else -> 10_000
     }
 
-    fun maxDomains(subscription: String): Long = when (subscription) {
+    private fun maxDomains(subscription: String): Long = when (subscription) {
         "basic" -> 5
         "pro" -> 20
         else -> 5
     }
 
+    @LoginRequired
     suspend fun settings(context: Context) = context.withAccountId { accountId ->
         newSuspendedTransaction {
             val domains = Domains
@@ -96,6 +98,7 @@ class AccountQuery {
         }
     }
 
+    @LoginRequired
     suspend fun domains(context: Context): List<Domain> = newSuspendedTransaction {
         val user = user(context)
 

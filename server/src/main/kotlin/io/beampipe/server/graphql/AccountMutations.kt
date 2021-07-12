@@ -11,43 +11,22 @@ import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.ResetTokens
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
-import io.beampipe.server.stripe.StripeClient
-import io.micronaut.context.annotation.Property
-import io.micronaut.security.authentication.UserDetails
-import io.micronaut.security.token.jwt.generator.JwtTokenGenerator
-import io.micronaut.security.token.jwt.validator.JwtTokenValidator
-import kotlinx.coroutines.reactive.awaitFirst
-import kotlinx.coroutines.reactive.awaitFirstOrNull
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.auth.JWTOptions
+import io.vertx.ext.auth.jwt.JWTAuth
+import io.vertx.kotlin.coroutines.await
 import org.apache.commons.validator.routines.EmailValidator
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
 import java.security.SecureRandom
 import java.time.ZoneId
-import java.util.Base64
-import java.util.UUID
-import javax.inject.Inject
+import java.util.*
 
 
 class AccountMutations(
-    @Property(
-        name = "stripe.product",
-        defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
-    ) val stripeProduct: String,
-    @Inject val jwtTokenGenerator: JwtTokenGenerator,
-    @Inject val jwtTokenValidator: JwtTokenValidator
+    private val stripeProduct: String,
+    private val jwtAuth: JWTAuth
 ) {
-    @Inject
-    lateinit var accountQuery: AccountQuery
-
-//    @Inject
-//    lateinit var stripeClient: StripeClient
-
     suspend fun updateName(context: Context, name: String): String = context.withAccountId { accountId ->
         newSuspendedTransaction {
             Accounts.update({
@@ -99,7 +78,7 @@ class AccountMutations(
         val stripeId = newSuspendedTransaction {
             val existingStripeId = Accounts
                 .slice(Accounts.stripeId)
-                .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
+                .select { Accounts.id.eq(context.accountId) }
                 .first()[Accounts.stripeId]
 
             if (existingStripeId == null) {
@@ -109,9 +88,7 @@ class AccountMutations(
                 )
 
                 Accounts.update({
-                    Accounts.id.eq(
-                        UUID.fromString(context.authentication!!.attributes["accountId"] as String)
-                    )
+                    Accounts.id.eq(context.accountId)
                 }) {
                     it[Accounts.stripeId] = customer.id
                 }
@@ -152,7 +129,7 @@ class AccountMutations(
 
             val subscription = Subscription.retrieve(subscriptionId).cancel()
 
-            Accounts.update({ Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }) {
+            Accounts.update({ Accounts.id.eq(context.accountId) }) {
                 it[Accounts.subscription] = "cancelled"
             }
 
@@ -195,8 +172,7 @@ class AccountMutations(
         val accountId = Accounts.select { Accounts.email eq email }.firstOrNull()?.get(Accounts.id)?.value
 
         if (accountId != null) {
-            val userDetails = UserDetails(accountId.toString(), emptyList())
-            val token = jwtTokenGenerator.generateToken(userDetails, 7 * 24 * 60 * 60).orElseThrow()
+            val token = jwtAuth.generateToken(JsonObject().put("sub", accountId.toString()), JWTOptions().setExpiresInSeconds(7 * 24 * 60 * 60))
 
             ResetTokens.insert {
                 it[ResetTokens.accountId] = accountId
@@ -216,7 +192,7 @@ class AccountMutations(
             .firstOrNull()
             ?.get(ResetTokens.accountId)
 
-        val auth = jwtTokenValidator.validateToken(token, null).awaitFirstOrNull()
+        val auth = jwtAuth.authenticate(JsonObject().put("token", token)).await()
 
         if (accountId != null && auth != null) {
             val salt = ByteArray(16)

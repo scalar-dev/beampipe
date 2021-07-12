@@ -5,12 +5,9 @@ import io.beampipe.server.db.Events
 import io.beampipe.server.db.Goals
 import io.beampipe.server.graphql.util.Context
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.UUID
-import javax.inject.Singleton
 
-@Singleton
 class DomainQuery {
     data class Goal(
         val id: UUID,

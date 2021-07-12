@@ -5,17 +5,6 @@ import com.snowplowanalytics.refererparser.Parser
 import io.beampipe.server.db.Events
 import io.beampipe.server.slack.SlackNotifier
 import io.beampipe.server.slack.logger
-import io.micronaut.context.annotation.Property
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.MutableHttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Options
-import io.micronaut.http.annotation.Post
-import io.micronaut.http.server.util.HttpClientAddressResolver
-import io.micronaut.security.annotation.Secured
-import io.micronaut.security.rules.SecurityRule
 import io.whitfin.siphash.SipHasher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -27,19 +16,13 @@ import java.io.File
 import java.net.InetAddress
 import java.net.URI
 import java.time.Instant
-import javax.inject.Inject
+import java.util.*
 
-
-@Controller("/event")
-@Secured(SecurityRule.IS_ANONYMOUS)
-class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) {
+class EventEndpoint(private val geoLite2DbPath: String?, private val slackNotifier: SlackNotifier) {
     val LOG = logger()
 
-    @Inject
-    lateinit var clientAddressResolver: HttpClientAddressResolver
-
-    @Inject
-    lateinit var slackNotifier: SlackNotifier
+//    @Inject
+//    lateinit var clientAddressResolver: HttpClientAddressResolver
 
     val uaa = UserAgentAnalyzer
         .newBuilder()
@@ -52,8 +35,8 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     var key: ByteArray = "0123456789ABCDEF".toByteArray()
     var container = SipHasher.container(key)
 
-    var database = File(geoLite2DbPath)
-    var reader = DatabaseReader.Builder(database).build()
+    private val database = if (geoLite2DbPath != null) File(geoLite2DbPath) else null
+    private val reader = if (database != null) DatabaseReader.Builder(database).build() else null
 
     data class Event(
         val type: String,
@@ -74,8 +57,10 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
 
     suspend fun storeEvent(clientIp: String?, event: Event) {
         val ipCity = GlobalScope.async {
-            val ipAddress = InetAddress.getByName(clientIp)
-            reader.tryCity(ipAddress)
+            if (reader != null) {
+                val ipAddress = InetAddress.getByName(clientIp)
+                reader.tryCity(ipAddress)
+            } else Optional.empty()
         }.await()
 
         val uri = URI.create(event.url)
@@ -117,22 +102,5 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
                 it[data] = emptyMap<String, Any>()
             }
         }
-    }
-
-    @Options
-    fun options(): MutableHttpResponse<String>? = corsPreflight()
-
-    @Post
-    suspend fun post(request: HttpRequest<*>, @Body event: Event): MutableHttpResponse<String>? {
-        val clientIp = clientAddressResolver.resolve(request)
-
-        try {
-            storeEvent(clientIp, event)
-        } catch (e: Exception) {
-            LOG.error("Exception while storing event", e)
-            return HttpResponse.serverError<String>()
-        }
-
-        return corsOk()
     }
 }
