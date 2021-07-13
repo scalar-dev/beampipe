@@ -13,6 +13,7 @@ import io.vertx.ext.auth.jwt.JWTAuth
 import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.apache.logging.log4j.LogManager
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.stringLiteral
@@ -20,20 +21,21 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.update
 import java.time.Instant
 
-class GithubOAuth(private val vertx: Vertx, private val jwtAuth: JWTAuth) {
-    private val router = Router.router(vertx)
+class GithubOAuth(private val vertx: Vertx, private val jwtAuth: JWTAuth, private val clientId: String, private val clientSecret: String) {
+    val router = Router.router(vertx)
+    val log = LogManager.getLogger()
 
     init {
         val oauth2 = OAuth2Auth.create(vertx, OAuth2Options()
         .setFlow(OAuth2FlowType.AUTH_CODE)
-            .setClientId("YOUR_CLIENT_ID")
-            .setClientSecret("YOUR_CLIENT_SECRET")
+            .setClientID(clientId)
+            .setClientSecret(clientSecret)
             .setSite("https://github.com/login")
             .setTokenPath("/oauth/access_token")
             .setAuthorizationPath("/oauth/authorize")
         )
 
-        router.route("/oauth/github/login")
+        router.route("/github/login")
             .handler { rc ->
                 val uri = oauth2.authorizeURL(JsonObject()
                     .put("redirect_uri", "http://localhost:8080/callback")
@@ -41,10 +43,10 @@ class GithubOAuth(private val vertx: Vertx, private val jwtAuth: JWTAuth) {
                     .put("state", "3(#0/!~"));
                 rc.response().putHeader("location", uri)
                     .setStatusCode(302)
-                    .end()
+                    .send()
             }
 
-        router.route("/oauth/github/callback")
+        router.route("/github/callback")
             .handler { rc ->
                 oauth2.authenticate(
                     JsonObject()

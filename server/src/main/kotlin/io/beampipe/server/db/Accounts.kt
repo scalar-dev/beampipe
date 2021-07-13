@@ -1,6 +1,8 @@
 package io.beampipe.server.db
 
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.`java-time`.CurrentDateTime
+import org.jetbrains.exposed.sql.`java-time`.CurrentTimestamp
 import org.jetbrains.exposed.sql.`java-time`.timestamp
 
 object Accounts : UUIDTable("account") {
@@ -16,8 +18,8 @@ object Accounts : UUIDTable("account") {
     val password = text("password").nullable()
     val salt = text("salt").nullable()
 
-    val emailOk = bool("email_ok")
-    val createdAt = timestamp("created_at")
+    val emailOk = bool("email_ok").default(false)
+    val createdAt = timestamp("created_at").defaultExpression(CurrentTimestamp())
     val timeZone = text("timezone")
     val lastLoginAt = timestamp("last_login_at")
 }

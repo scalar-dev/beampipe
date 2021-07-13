@@ -1,42 +1,32 @@
-package server
+package io.beampipe.server
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import io.beampipe.server.api.EventEndpoint
+import io.beampipe.server.api.Event
+import io.beampipe.server.db.Accounts
+import io.beampipe.server.db.Domains
 import io.beampipe.server.graphql.EventQuery
-import io.micronaut.configuration.graphql.GraphQLRequestBody
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.MediaType
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
-import io.micronaut.test.support.TestPropertyProvider
+import io.vertx.core.DeploymentOptions
+import io.vertx.core.Vertx
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.web.client.WebClient
+import io.vertx.junit5.VertxExtension
+import io.vertx.kotlin.coroutines.await
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.extension.ExtendWith
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import javax.inject.Inject
+import server.KPostgreSQLContainer
 
 @Testcontainers
-@MicronautTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class EventEndpointShould : TestPropertyProvider {
-    companion object {
-        @Container
-        @JvmStatic
-        private val postgresContainer = KPostgreSQLContainer()
-    }
+@ExtendWith(VertxExtension::class)
+class EventEndpointShould {
+    @Container
+    private val postgresContainer = KPostgreSQLContainer()
 
-    @Inject
-    @field:Client("/")
-    lateinit var client: RxHttpClient
-
-    private fun event() = EventEndpoint.Event(
+    private fun event() = Event(
         "event",
         "http://www.hello.com",
         "foo.com",
@@ -50,39 +40,51 @@ class EventEndpointShould : TestPropertyProvider {
     data class Events(val events: List<EventQuery.Event>)
 
     @Test
-    fun insert_events() {
-        (0..2).forEach {
-            val request = HttpRequest.POST("/event", event()).header("X-Forwarded-For", "4.4.4.4")
-            client.toBlocking()
-                .exchange<EventEndpoint.Event, Void>(request)
+    fun insert_events(vertx: Vertx) = runBlocking {
+        vertx.deployVerticle(Application::class.java, DeploymentOptions().setConfig(JsonObject(mapOf(
+            "JWT_KEY" to "what",
+            "PGHOST" to postgresContainer.host,
+            "PGPORT" to postgresContainer.firstMappedPort,
+            "PGUSER" to postgresContainer.username,
+            "PGPASSWORD" to postgresContainer.password
+        )))).await()
+        val client = WebClient.create(vertx)
+
+        val domainId = newSuspendedTransaction {
+            val accountId = Accounts.insertAndGetId {
+                it[Accounts.email] = "test@foo.com"
+            }
+
+            Domains.insertAndGetId {
+                it[Domains.accountId] = accountId.value
+                it[Domains.domain] = "foo.com"
+                it[Domains.public] = true
+            }
         }
 
-        val body = GraphQLRequestBody()
-        body.query = """
+        repeat((0..2).count()) {
+            val response = client.post(8081, "localhost", "/event")
+                .putHeader("X-Forwarded-For", "4.4.4.4")
+                .sendJson(event())
+                .await()
+            assertEquals(response.statusCode(), 200)
+        }
+
+        val body = JsonObject()
+            .put("query", """
             {
-              events(domain: "hello.com") {
-                type
-                time
-                source
-                city
-                country
-              } 
+              events(domain: "foo.com", timePeriod: { type: "day" }) {
+                count 
+              }
             }
-        """.trimIndent()
+        """.trimIndent())
 
-        val response = client.toBlocking().retrieve(
-            HttpRequest.POST("/graphql", body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-        val objectMapper = jacksonObjectMapper()
-        objectMapper.registerModule(JavaTimeModule())
-        val events = objectMapper.readValue<Response<Events>>(response)
+        val response = client.post(8080, "localhost", "/graphql")
+            .putHeader("Content-Type", "application/json")
+            .sendJson(body)
+            .await()
 
-        assertEquals("Nashville", events.data.events[0].city)
-        assertEquals("United States", events.data.events[0].country)
-    }
-
-    override fun getProperties(): MutableMap<String, String> {
-        return mutableMapOf("postgres.port" to postgresContainer.firstMappedPort.toString())
+        val events = response.bodyAsJsonObject()
+        assertEquals(3, events.getJsonObject("data").getJsonObject("events").getInteger("count"))
     }
 }

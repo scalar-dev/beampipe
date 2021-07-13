@@ -13,6 +13,7 @@ version = "0.1"
 group = "io.beampipe"
 
 val exposedVersion = "0.31.1"
+val junitVersion = "5.3.2"
 
 dependencies {
     implementation("io.vertx:vertx-core")
@@ -39,52 +40,35 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
 
-//    runtimeOnly("ch.qos.logback:logback-classic")
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-//
-//    implementation 'io.micronaut.flyway:micronaut-flyway'
-//    runtimeOnly 'io.micronaut.sql:micronaut-jdbc-hikari'
-//    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.14'
-//
-//    implementation "org.jetbrains.exposed:exposed-core:$exposedVersion"
-//    implementation "org.jetbrains.exposed:exposed-dao:$exposedVersion"
-//    implementation "org.jetbrains.exposed:exposed-jdbc:$exposedVersion"
-//    implementation "org.jetbrains.exposed:exposed-java-time:$exposedVersion"
-//
-//    implementation 'io.micronaut.graphql:micronaut-graphql'
-//    implementation 'com.expediagroup:graphql-kotlin-schema-generator:3.4.1'
-//
+
     implementation("com.maxmind.geoip2:geoip2:2.14.0")
     implementation("io.whitfin:siphash:2.0.0")
     implementation("com.stripe:stripe-java:19.35.0")
-//
     implementation("nl.basjes.parse.useragent:yauaa:5.19")
-//
 
-    implementation("io.vertx:vertx-web-client:4.1.1")
-    implementation("io.vertx:vertx-auth-oauth2:4.1.1")
+    implementation("io.vertx:vertx-web-client")
+    implementation("io.vertx:vertx-auth-oauth2")
+    implementation("io.vertx:vertx-config")
 
     implementation("com.slack.api:bolt:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.8")
-//
     implementation("commons-validator:commons-validator:1.7")
     implementation("com.snowplowanalytics:java-referer-parser:0.4.0-rc4")
     implementation("com.neovisionaries:nv-i18n:1.27")
 
-//
-//    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-//    kaptTest("io.micronaut:micronaut-inject-java")
-//    testImplementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-//    testImplementation("org.junit.jupiter:junit-jupiter-api")
-//    testImplementation("io.micronaut.test:micronaut-test-junit5")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("io.vertx:vertx-junit5")
+    testImplementation("io.vertx:vertx-web-client")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+
+    testImplementation("org.testcontainers:testcontainers:1.15.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.15.3")
+    testImplementation("org.testcontainers:postgresql:1.15.3")
+
 //
 //    testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
 //
-//    testImplementation "org.testcontainers:testcontainers:1.12.3"
-//    testImplementation "org.testcontainers:postgresql:1.12.3"
-//    testImplementation "org.testcontainers:junit-jupiter:1.12.3"
 }
 
 //mainClassName = "io.beampipe.server.ApplicationKt"
@@ -107,6 +91,10 @@ jib {
 //            }
 //        }
 //    }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 

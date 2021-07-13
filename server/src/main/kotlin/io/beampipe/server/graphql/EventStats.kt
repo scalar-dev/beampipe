@@ -103,7 +103,7 @@ data class EventStats(
         timestampLiteral(endTime)
     ).alias("time_bucket")
 
-    suspend fun bucketed(bucketDuration: String?) = newSuspendedTransaction {
+    suspend fun bucketed(bucketDuration: String? = null) = newSuspendedTransaction {
         val timeBucket = timeBucket(bucketDuration)
         val count = Events.time.count().castTo<Long?>(LongColumnType())
 
@@ -146,7 +146,7 @@ data class EventStats(
         null
     }
 
-    private suspend fun topBy(n: Int?, key: Column<*>, display:Column<*>? = null) =
+    private suspend fun topBy(n: Int? = null, key: Column<*>, display:Column<*>? = null) =
         newSuspendedTransaction {
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
             val columns = listOfNotNull(key, display).toTypedArray()
@@ -170,9 +170,9 @@ data class EventStats(
                 }
         }
 
-    suspend fun topPages(n: Int?) = topBy(n, Events.path)
+    suspend fun topPages(n: Int? = null) = topBy(n, Events.path)
 
-    suspend fun topSources(n: Int?) = newSuspendedTransaction {
+    suspend fun topSources(n: Int? = null) = newSuspendedTransaction {
         val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
         Events.slice(Events.referrerClean, Events.sourceClean, count)
             .select {
@@ -189,17 +189,17 @@ data class EventStats(
             .map { EventQuery.Source(it[Events.referrerClean], it[Events.sourceClean], it[count] ?: 0) }
     }
 
-    suspend fun topScreenSizes(n: Int?) = topBy(n, Events.device)
+    suspend fun topScreenSizes(n: Int? = null) = topBy(n, Events.device)
 
-    suspend fun topCountries(n: Int?) = topBy(n, Events.isoCountryCode, Events.country)
+    suspend fun topCountries(n: Int? = null) = topBy(n, Events.isoCountryCode, Events.country)
 
-    suspend fun topDevices(n: Int?) = topBy(n, Events.deviceName)
+    suspend fun topDevices(n: Int? = null) = topBy(n, Events.deviceName)
 
-    suspend fun topDeviceClasses(n: Int?) = topBy(n, Events.deviceClass)
+    suspend fun topDeviceClasses(n: Int? = null) = topBy(n, Events.deviceClass)
 
-    suspend fun topOperatingSystems(n: Int?) = topBy(n, Events.operationGystemName)
+    suspend fun topOperatingSystems(n: Int? = null) = topBy(n, Events.operationGystemName)
 
-    suspend fun topAgents(n: Int?) = topBy(n, Events.agentName)
+    suspend fun topAgents(n: Int? = null) = topBy(n, Events.agentName)
 
     suspend fun isEditable() = isEditable
 

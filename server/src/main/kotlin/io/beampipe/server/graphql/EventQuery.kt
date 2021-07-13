@@ -116,8 +116,8 @@ class EventQuery(private val accountQuery: AccountQuery) {
         context: Context,
         domain: String,
         timePeriod: TimePeriod,
-        timeZone: String?,
-        drilldowns: Drilldowns?
+        timeZone: String? = null,
+        drilldowns: Drilldowns? = null
     ) : EventStats =
         newSuspendedTransaction {
             val userId = accountQuery.user(context)?.id

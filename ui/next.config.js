@@ -10,9 +10,13 @@ module.exports = withTM({
             source: "/graphql",
             destination: "http://localhost:8080/graphql",
           },
-   {
+          {
             source: "/login",
             destination: "http://localhost:8080/login",
+          },
+          {
+            source: "/oauth/:path*",
+            destination: "http://localhost:8080/oauth/:path*",
           },
         ]
       : [];

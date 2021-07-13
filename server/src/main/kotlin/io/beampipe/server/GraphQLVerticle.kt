@@ -13,6 +13,7 @@ import graphql.schema.GraphQLType
 import io.beampipe.server.auth.CookieToBearerTokenHandler
 import io.beampipe.server.auth.PermissiveJWTAuthHandler
 import io.beampipe.server.auth.UsernamePasswordAuthenticationProvider
+import io.beampipe.server.github.GithubOAuth
 import io.beampipe.server.graphql.*
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.LoginRequiredSchemaDirectiveWiring
@@ -95,7 +96,7 @@ class GraphQLVerticle : CoroutineVerticle() {
     override suspend fun start() {
         val router = Router.router(vertx)
         router.route().handler(BodyHandler.create())
-
+        val config = config.mapTo(Config::class.java)
 
         val auth = UsernamePasswordAuthenticationProvider(vertx)
 
@@ -104,7 +105,7 @@ class GraphQLVerticle : CoroutineVerticle() {
                 .addPubSecKey(
                     PubSecKeyOptions()
                         .setAlgorithm("HS256")
-                        .setBuffer("keyboard cat")
+                        .setBuffer(config.JWT_KEY)
                 )
         )
 
@@ -125,9 +126,18 @@ class GraphQLVerticle : CoroutineVerticle() {
                     }
             }
 
-        // TODO: Fix
-//        router.route("/stripe")
-//            .handler(StripeHandler())
+        if (config.GITHUB_CLIENT_ID != null && config.GITHUB_CLIENT_SECRET != null) {
+            router.mountSubRouter("/oauth", GithubOAuth(vertx, jwtAuth, config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET).router)
+        } else {
+            log.info("skipping github oauth configuration")
+        }
+
+        if (config.STRIPE_API_KEY != null) {
+            router.route("/stripe")
+                .handler(StripeHandler(config.STRIPE_API_KEY))
+        } else {
+            log.warn("skipping stripe configuration")
+        }
 
         if (WebEnvironment.development()) {
             log.info("Development mode!!")
