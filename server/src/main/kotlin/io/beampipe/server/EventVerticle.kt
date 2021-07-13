@@ -9,13 +9,14 @@ import io.beampipe.server.db.Events
 import io.beampipe.server.slack.SlackNotifier
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
+import io.vertx.ext.web.handler.CorsHandler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.dispatcher
 import io.whitfin.siphash.SipHasher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.basjes.parse.useragent.UserAgent
 import nl.basjes.parse.useragent.UserAgentAnalyzer
 import org.apache.logging.log4j.LogManager
@@ -29,17 +30,13 @@ import java.util.*
 
 class EventVerticle : CoroutineVerticle() {
     val log = LogManager.getLogger()
-
     val slackNotifier = SlackNotifier()
-
     val uaa = UserAgentAnalyzer
         .newBuilder()
         .hideMatcherLoadStats()
         .withCache(10000)
         .build()
-
     val referrerParser = Parser()
-
     val key: ByteArray = "0123456789ABCDEF".toByteArray()
     val container = SipHasher.container(key)
 
@@ -51,13 +48,13 @@ class EventVerticle : CoroutineVerticle() {
         else -> "desktop"
     }
 
-    suspend fun storeEvent(reader: DatabaseReader?, clientIp: String?, event: Event) {
-        val ipCity = GlobalScope.async(Dispatchers.IO) {
+    private suspend fun storeEvent(reader: DatabaseReader?, clientIp: String?, event: Event) {
+        val ipCity = withContext(Dispatchers.IO) {
             if (reader != null) {
                 val ipAddress = InetAddress.getByName(clientIp)
                 reader.tryCity(ipAddress)
             } else Optional.empty()
-        }.await()
+        }
 
         val uri = URI.create(event.url)
         val userId: Long = container.hash("${event.domain}_${clientIp}_${event.userAgent}".toByteArray())
@@ -66,7 +63,7 @@ class EventVerticle : CoroutineVerticle() {
         val domain = event.domain?.removePrefix("www.") ?: uri.host.removePrefix("www.")
 
         // Drop notification if we're full
-        if (!slackNotifier.events.offer(SlackNotifier.Event(domain, event.type))) {
+        if (!slackNotifier.events.trySend(SlackNotifier.Event(domain, event.type)).isSuccess) {
             log.warn("Slack notification channel is full. Dropping.")
         }
 
@@ -102,13 +99,15 @@ class EventVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
         val router = Router.router(vertx)
+        router.route().handler(CorsHandler.create("*"))
         router.route().handler(BodyHandler.create())
 
         val config = config.mapTo(Config::class.java)
         val database = if (config.GEOLITE2_DB_PATH != null) File(config.GEOLITE2_DB_PATH) else null
         val reader = if (database != null) DatabaseReader.Builder(database).build() else null
 
-        router.post("/event")
+        router
+            .post("/event")
             .handler { rc ->
                 var ipAddress: String? = rc.request().getHeader("X-FORWARDED-FOR")
                 if (ipAddress == null) {

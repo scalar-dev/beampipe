@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.cli.jvm.compiler.findMainClass
-
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.5.0"
     id("io.vertx.vertx-plugin") version "1.2.0"
@@ -109,6 +107,3 @@ java {
 tasks.test {
     useJUnitPlatform()
 }
-
-
-
