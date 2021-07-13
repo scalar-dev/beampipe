@@ -19,27 +19,28 @@ class Application : CoroutineVerticle() {
 
     override suspend fun start() {
         DatabindCodec.mapper().registerModule(KotlinModule())
-        val config = config.mapTo(Config::class.java)
-        val connectOptions = JDBCConnectOptions()
-            .setJdbcUrl("jdbc:postgresql://${config.PGHOST}:${config.PGPORT}/${config.PGDATABASE}")
-            .setUser(config.PGUSER)
-            .setPassword(config.PGPASSWORD)
-
-        val poolOptions = PoolOptions()
-            .setMaxSize(16)
-
-        val dataSource = AgroalCPDataSourceProvider(connectOptions, poolOptions).getDataSource(null)
-
-        Flyway.configure().dataSource(dataSource).locations("classpath:databasemigrations")
-            .load()
-            .migrate()
-
-        log.info("Connecting to database: ${connectOptions}")
-        Database.connect(dataSource)
 
         ConfigRetriever.create(vertx)
             .getConfig { retrievedConfig ->
                 val mergedConfig = retrievedConfig.result().mergeIn(super.config)
+                val config = mergedConfig.mapTo(Config::class.java)
+
+                val connectOptions = JDBCConnectOptions()
+                    .setJdbcUrl("jdbc:postgresql://${config.PGHOST}:${config.PGPORT}/${config.PGDATABASE}")
+                    .setUser(config.PGUSER)
+                    .setPassword(config.PGPASSWORD)
+
+                val poolOptions = PoolOptions()
+                    .setMaxSize(16)
+
+                val dataSource = AgroalCPDataSourceProvider(connectOptions, poolOptions).getDataSource(null)
+
+                log.info("Connecting to database: ${connectOptions.jdbcUrl}")
+                Database.connect(dataSource)
+
+                Flyway.configure().dataSource(dataSource).locations("classpath:databasemigrations")
+                    .load()
+                    .migrate()
                 val deploymentOptions = DeploymentOptions().setConfig(mergedConfig)
 
                 vertx.deployVerticle(GraphQLVerticle::class.java, deploymentOptions)
