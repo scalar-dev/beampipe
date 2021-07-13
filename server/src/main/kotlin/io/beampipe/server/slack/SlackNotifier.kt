@@ -8,21 +8,19 @@ import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
 import io.vertx.kotlin.coroutines.CoroutineVerticle
+import io.vertx.kotlin.coroutines.dispatcher
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.launch
+import org.apache.logging.log4j.LogManager
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 
-inline fun <reified T> T.logger(): Logger {
-    return LoggerFactory.getLogger(T::class.java)
-}
-
 class SlackNotifier: CoroutineVerticle() {
-    val LOG = logger()
+    val LOG = LogManager.getLogger()
 
     data class Event(val domain: String, val event: String)
     data class Subscription(val channelId: String, val teamId: String, val token: String)
@@ -33,6 +31,12 @@ class SlackNotifier: CoroutineVerticle() {
 
     override suspend fun start() {
         LOG.info("Starting event loop")
+
+        vertx.setPeriodic(10 * 60 * 1000) {
+            GlobalScope.launch(vertx.dispatcher()) {
+                SlackReportScheduler().run()
+            }
+        }
 
         vertx.eventBus().consumer<Boolean>("slack_is_dirty") {
             isDirty.set(it.body())

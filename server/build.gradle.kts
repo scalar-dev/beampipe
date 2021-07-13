@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.cli.jvm.compiler.findMainClass
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.5.0"
     id("io.vertx.vertx-plugin") version "1.2.0"
-    id("com.google.cloud.tools.jib") version "2.7.1"
+    id("com.google.cloud.tools.jib") version "3.1.2"
 }
 
 repositories {
@@ -39,7 +41,6 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
-
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation("com.maxmind.geoip2:geoip2:2.14.0")
@@ -52,10 +53,13 @@ dependencies {
     implementation("io.vertx:vertx-config")
 
     implementation("com.slack.api:bolt:1.8.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.1")
     implementation("commons-validator:commons-validator:1.7")
     implementation("com.snowplowanalytics:java-referer-parser:0.4.0-rc4")
     implementation("com.neovisionaries:nv-i18n:1.27")
+    implementation("com.cronutils:cron-utils:9.1.5")
 
     testImplementation("io.vertx:vertx-junit5")
     testImplementation("io.vertx:vertx-web-client")
@@ -65,17 +69,11 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:1.15.3")
     testImplementation("org.testcontainers:junit-jupiter:1.15.3")
     testImplementation("org.testcontainers:postgresql:1.15.3")
-
-//
-//    testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
-//
 }
-
-//mainClassName = "io.beampipe.server.ApplicationKt"
 
 vertx {
     mainVerticle = "io.beampipe.server.Application"
-    vertxVersion = "4.0.3"
+    vertxVersion = "4.1.1"
 }
 
 jib {
@@ -83,14 +81,29 @@ jib {
         image = "gcr.io/distroless/java:11"
     }
 
-//    extraDirectories {
-//        paths {
-//            path {
-//                from = file("../geolite2/")
-//                into = "/data"
-//            }
-//        }
-//    }
+    to {
+        image = "beampipe-server"
+    }
+
+    container {
+        mainClass = "io.vertx.core.Launcher"
+        args = listOf("run", "io.beampipe.server.Application")
+    }
+
+    extraDirectories {
+        paths {
+            path {
+                setFrom(file("../geolite2/"))
+                into = "/data"
+            }
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
 }
 
 tasks.test {

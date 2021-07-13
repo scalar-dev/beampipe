@@ -1,13 +1,12 @@
 package databasemigrations
 
 import com.neovisionaries.i18n.CountryCode
-import io.beampipe.server.slack.logger
-import nl.basjes.parse.useragent.UserAgentAnalyzer
+import org.apache.logging.log4j.LogManager
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
 class V18__Set_ISO_country_code : BaseJavaMigration() {
-    val LOG = logger()
+    val LOG = LogManager.getLogger()
 
     override fun migrate(context: Context?) {
         val countryNameToCode: Map<String, String> = CountryCode.values()

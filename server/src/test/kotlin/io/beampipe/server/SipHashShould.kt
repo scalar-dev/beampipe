@@ -14,6 +14,5 @@ class SipHashShould {
         val bar = container.hash(("x".repeat(1024) + "b").toByteArray())
 
         Assertions.assertNotEquals(foo, bar)
-
     }
 }
