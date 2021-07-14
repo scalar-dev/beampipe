@@ -14,6 +14,7 @@ group = "io.beampipe"
 
 val exposedVersion = "0.31.1"
 val junitVersion = "5.3.2"
+val testContainers = "1.15.3"
 
 dependencies {
     implementation("io.vertx:vertx-core")
@@ -22,13 +23,16 @@ dependencies {
     implementation("io.vertx:vertx-web-graphql")
     implementation("io.vertx:vertx-auth-jwt")
     implementation("io.vertx:vertx-grpc")
+    implementation("io.vertx:vertx-web-client")
+    implementation("io.vertx:vertx-auth-oauth2")
+    implementation("io.vertx:vertx-config")
 
     implementation("org.apache.logging.log4j:log4j-core:2.14.1")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.1")
 
     implementation("com.expediagroup:graphql-kotlin-schema-generator:4.1.1")
 
-    implementation("io.vertx:vertx-jdbc-client:4.0.3")
+    implementation("io.vertx:vertx-jdbc-client")
     implementation("org.flywaydb:flyway-core:7.9.1")
     implementation("io.agroal:agroal-pool:1.11")
     implementation("org.postgresql:postgresql:42.2.20")
@@ -37,18 +41,14 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.3")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation("com.maxmind.geoip2:geoip2:2.14.0")
     implementation("io.whitfin:siphash:2.0.0")
     implementation("com.stripe:stripe-java:19.35.0")
     implementation("nl.basjes.parse.useragent:yauaa:5.19")
-
-    implementation("io.vertx:vertx-web-client")
-    implementation("io.vertx:vertx-auth-oauth2")
-    implementation("io.vertx:vertx-config")
 
     implementation("com.slack.api:bolt:1.8.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
@@ -64,9 +64,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 
-    testImplementation("org.testcontainers:testcontainers:1.15.3")
-    testImplementation("org.testcontainers:junit-jupiter:1.15.3")
-    testImplementation("org.testcontainers:postgresql:1.15.3")
+    testImplementation("org.testcontainers:testcontainers:$testContainers")
+    testImplementation("org.testcontainers:junit-jupiter:$testContainers")
+    testImplementation("org.testcontainers:postgresql:$testContainers")
 }
 
 vertx {

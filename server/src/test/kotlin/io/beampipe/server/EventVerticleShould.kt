@@ -22,7 +22,7 @@ import server.KPostgreSQLContainer
 
 @Testcontainers
 @ExtendWith(VertxExtension::class)
-class EventEndpointShould {
+class EventVerticleShould {
     @Container
     private val postgresContainer = KPostgreSQLContainer()
 
