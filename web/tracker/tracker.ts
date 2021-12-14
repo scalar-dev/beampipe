@@ -1,3 +1,11 @@
+export {};
+
+declare global {
+  interface Window {
+    beampipe: (event: string) => void;
+  }
+}
+
 (function (window: Window, apiHost: string) {
   if ((window as any).beampipe) {
     return;
@@ -12,12 +20,13 @@
       location.hostname
     ) || location.protocol === "file:";
 
-  const ele = document.querySelector("[data-beampipe-domain]") 
-      || document.querySelector("[data-alysis-domain]");
+  const ele =
+    document.querySelector("[data-beampipe-domain]") ||
+    document.querySelector("[data-alysis-domain]");
 
   const domain =
-    ele.getAttribute("data-beampipe-domain") ||
-    ele.getAttribute("data-alysis-domain") ||
+    ele?.getAttribute("data-beampipe-domain") ||
+    ele?.getAttribute("data-alysis-domain") ||
     (isLocal ? "localhost" : location.host);
 
   const track = (event: string) => {
@@ -56,7 +65,7 @@
   if (history.pushState) {
     const pushState_ = history["pushState"];
     history.pushState = function () {
-      pushState_.apply(this, arguments);
+      pushState_.apply(this, arguments as any);
       log();
     };
 

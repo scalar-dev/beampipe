@@ -12,7 +12,7 @@ export const MenuItem = forwardRef<HTMLAnchorElement, MenutItemProps>(
     <a
       href={href}
       ref={ref}
-      className="flex block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+      className="flex px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
       role="menuitem"
       {...otherProps}
     >
@@ -25,7 +25,7 @@ export const MenuText = forwardRef<HTMLSpanElement, MenutItemProps>(
   ({ children, ...otherProps }, ref) => (
     <span
       ref={ref}
-      className="flex block px-4 py-2 text-sm leading-5 text-gray-700"
+      className="flex px-4 py-2 text-sm leading-5 text-gray-700"
       role="menuitem"
       {...otherProps}
     >

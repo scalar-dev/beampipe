@@ -1,21 +1,8 @@
-import "../styles/index.css";
-import { AppProps } from "next/app";
+import { AppProps } from 'next/app';
+import "../styles/globals.css";
 
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { UserContext } from "../utils/auth";
-config.autoAddCss = false;
+function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
+}
 
-import "tippy.js/dist/tippy.css";
-
-const App = ({ Component, pageProps }: AppProps) => {
-  const { user, ...otherProps } = pageProps;
-
-  return (
-    <UserContext.Provider value={user}>
-      <Component {...otherProps} />
-    </UserContext.Provider>
-  );
-};
-
-export default App;
+export default MyApp

@@ -1,9 +1,9 @@
-export default () => {
+const PrivacyPolicy = () => {
   return (
     <div className="p-12">
       <h2 className="text-2xl">Privacy Policy</h2>
       <p>
-        Your privacy is important to us. It is beampipe's policy to respect your
+        Your privacy is important to us. It is beampipe&apos;s policy to respect your
         privacy regarding any information we may collect from you across our
         website, <a href="https://beampipe.io">https://beampipe.co</a>, and
         other sites we own and operate.
@@ -50,3 +50,5 @@ export default () => {
     </div>
   );
 };
+
+export default PrivacyPolicy;

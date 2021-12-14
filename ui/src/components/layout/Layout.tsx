@@ -82,14 +82,9 @@ export const IfAnonymous: React.FunctionComponent = ({ children }) => {
   return user.user ? null : <>{children}</>;
 };
 
-const metaDescription = `
-`;
-
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
   const user = useContext(UserContext);
   const [menuVisible, setMenuVisible] = useState(false);
-
-  const fullTitle = `beampipe.io | ${title}`;
 
   return (
     <>

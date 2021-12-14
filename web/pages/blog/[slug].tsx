@@ -4,72 +4,69 @@ import path from "path";
 import matter from "gray-matter";
 import { Layout } from "../../components/layout/Layout";
 import ReactMarkdown from "react-markdown";
-import { AuthProvider } from "../../utils/auth";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
   return (
-    <AuthProvider>
-      <Layout title={frontmatter.title}>
-        <div className="bg-gradient-to-b from-gray-100 to-white">
-          <div className="container mx-auto">
-            <article className="max-w-screen-sm mx-auto text-gray-700 leading-7 mt-8">
-              <div className="text-purple-600 font-bold text-sm hover:text-purple-500">
-                <FontAwesomeIcon
-                  icon={faArrowLeft}
-                  className="fill-current mr-2"
-                />
-                <Link href="/blog">Back to posts</Link>
-              </div>
-              <div className="text-5xl text-purple-600 font-black leading-tight">
-                {frontmatter.title}
-              </div>
-              <div className="text-lg font-bold font-gray-600">
-                {frontmatter.date} - By {frontmatter.author}
-              </div>
-              <ReactMarkdown
-                escapeHtml={false}
-                source={content}
-                renderers={{
-                  heading: ({ children, level }) => {
-                    if (level === 1) {
-                      return null;
-                    }
-                    return (
-                      <div className="text-2xl text-gray-800 font-black leading-tight">
-                        {children}
-                      </div>
-                    );
-                  },
-                  list: ({ children }) => (
-                    <div className="list-disc">{children}</div>
-                  ),
-                  paragraph: ({ children }) => (
-                    <div className="my-4">{children}</div>
-                  ),
-                  link: ({ children, href }) => (
-                    <a href={href} className="font-bold hover:text-purple-600">
-                      {children}
-                    </a>
-                  ),
-                  image: ({ src, alt, ...other }) => {
-                    console.log(other);
-                    return (
-                      <div className="my-8">
-                        <img src={src} className="mx-auto" />
-                        <div className="mt-2 text-center font-bold">{alt}</div>
-                      </div>
-                    );
-                  },
-                }}
+    <Layout title={frontmatter.title}>
+      <div className="bg-gradient-to-b from-gray-100 to-white">
+        <div className="container mx-auto">
+          <article className="max-w-screen-sm mx-auto text-gray-700 leading-7 mt-8">
+            <div className="text-purple-600 font-bold text-sm hover:text-purple-500">
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                className="fill-current mr-2"
               />
-            </article>
-          </div>
+              <Link href="/blog">Back to posts</Link>
+            </div>
+            <div className="text-5xl text-purple-600 font-black leading-tight">
+              {frontmatter.title}
+            </div>
+            <div className="text-lg font-bold font-gray-600">
+              {frontmatter.date} - By {frontmatter.author}
+            </div>
+            <ReactMarkdown
+              components={{
+                h1: ({ children, level }) => {
+                  if (level === 1) {
+                    return null;
+                  }
+                  return (
+                    <div className="text-2xl text-gray-800 font-black leading-tight">
+                      {children}
+                    </div>
+                  );
+                },
+                ol: ({ children }) => (
+                  <div className="list-disc">{children}</div>
+                ),
+                ul: ({ children }) => (
+                  <div className="list-disc">{children}</div>
+                ),
+                p: ({ children }) => <div className="my-4">{children}</div>,
+                link: ({ children, href }) => (
+                  <a href={href} className="font-bold hover:text-purple-600">
+                    {children}
+                  </a>
+                ),
+                img: ({ src, alt, ...other }) => {
+                  return (
+                    <div className="my-8">
+                      <img src={src} className="mx-auto" />
+                      <div className="mt-2 text-center font-bold">{alt}</div>
+                    </div>
+                  );
+                },
+              }}
+            >
+              {content}
+            </ReactMarkdown>
+          </article>
         </div>
-      </Layout>
-    </AuthProvider>
+      </div>
+    </Layout>
   );
 };
 

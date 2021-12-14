@@ -1,11 +1,9 @@
-import { FunctionComponent, useContext, useState, forwardRef } from "react";
+import { FunctionComponent, useState, forwardRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserContext } from "../../utils/auth";
 import { AnchorButton } from "../Buttons";
-import { Avatar } from "./Avatar";
 import {
   faGithub,
   faTwitter,
@@ -36,6 +34,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
     </a>
   )
 );
+NavLink.displayName = "NavLink";
 
 const SocialButtons = () => (
   <div className="flex flex-row p-4 lg:p-0">
@@ -73,21 +72,10 @@ const SocialButtons = () => (
   </div>
 );
 
-export const IfUserLoggedIn: React.FunctionComponent = ({ children }) => {
-  const user = useContext(UserContext);
-  return user.user ? <>{children}</> : null;
-};
-
-export const IfAnonymous: React.FunctionComponent = ({ children }) => {
-  const user = useContext(UserContext);
-  return user.user ? null : <>{children}</>;
-};
-
 const metaDescription = `beampipe is a simple, privacy-focussed alternative to Google Analytics with a free tier for small sites.
 `;
 
 export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
-  const user = useContext(UserContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const fullTitle = `beampipe.io | ${title}`;
@@ -115,7 +103,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   <a>
                     <FontAwesomeIcon
                       size="sm"
-                      className="fill-current w-4 h-4 mr-2"
+                      className="fill-current mr-2"
                       icon={faAsterisk}
                     />
                     beampipe
@@ -147,30 +135,16 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             >
               <div className="lg:flex-grow flex flex-wrap">
                 <div>
-                  <IfUserLoggedIn>
-                    <Link href="/app" passHref>
-                      <NavLink
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Dashboard
-                      </NavLink>
-                    </Link>
-                  </IfUserLoggedIn>
-                </div>
-
-                <div>
-                  <IfAnonymous>
-                    <Link href="/#pricing" passHref>
-                      <NavLink
-                        onClick={() => {
-                          setMenuVisible((visible) => !visible);
-                          window.beampipe("view_pricing");
-                        }}
-                      >
-                        Pricing
-                      </NavLink>
-                    </Link>
-                  </IfAnonymous>
+                  <Link href="/#pricing" passHref>
+                    <NavLink
+                      onClick={() => {
+                        setMenuVisible((visible) => !visible);
+                        window.beampipe("view_pricing");
+                      }}
+                    >
+                      Pricing
+                    </NavLink>
+                  </Link>
                 </div>
 
                 <div>
@@ -203,30 +177,23 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                <IfUserLoggedIn>
-                  <div className="p-4 lg:p-0">
-                    <Avatar user={user.user!!} />
-                  </div>
-                </IfUserLoggedIn>
-                <IfAnonymous>
-                  <Link href="/sign-in" passHref>
-                    <NavLink
+                <Link href="/sign-in" passHref>
+                  <NavLink
+                    onClick={() => setMenuVisible((visible) => !visible)}
+                  >
+                    Login
+                  </NavLink>
+                </Link>
+                <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                  <Link href="/sign-up" passHref>
+                    <AnchorButton
+                      className="mr-2"
                       onClick={() => setMenuVisible((visible) => !visible)}
                     >
-                      Login
-                    </NavLink>
+                      Sign up
+                    </AnchorButton>
                   </Link>
-                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                    <Link href="/sign-up" passHref>
-                      <AnchorButton
-                        className="mr-2"
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Sign up
-                      </AnchorButton>
-                    </Link>
-                  </div>
-                </IfAnonymous>
+                </div>
               </div>
               <SocialButtons />
             </div>

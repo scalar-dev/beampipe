@@ -1,12 +1,6 @@
 import Link from "next/link";
-import {
-  Layout,
-  IfUserLoggedIn,
-  IfAnonymous,
-} from "../components/layout/Layout";
-import { withUrql } from "../utils/withUrql";
+import { Layout } from "../components/layout/Layout";
 import _ from "lodash";
-import { AuthProvider } from "../utils/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAt,
@@ -33,6 +27,7 @@ const ProductHuntButton = () => (
     <a
       href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
       target="_blank"
+      rel="noreferrer"
     >
       <img
         src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=dark"
@@ -202,7 +197,7 @@ const Why = () => (
           </p>
           <p className="mt-4">
             If you are lucky enough to see a spike in traffic putting you over
-            the limit, we won't cut you off.
+            the limit, we won&apos;t cut you off.
           </p>
         </div>
       </BulletCard>
@@ -230,6 +225,7 @@ export const Footer = () => (
               <a
                 href="https://docs.beampipe.io/"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -241,7 +237,11 @@ export const Footer = () => (
             </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <Link href="/privacy">
-                <a target="_blank" className="no-underline hover:underline">
+                <a
+                  target="_blank"
+                  className="no-underline hover:underline"
+                  rel="noreferrer"
+                >
                   <FontAwesomeIcon
                     className="fill-current w-4 h-4 mr-2"
                     icon={faClipboardCheck}
@@ -272,6 +272,7 @@ export const Footer = () => (
               <a
                 href="https://twitter.com/beampipe_io"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -286,6 +287,7 @@ export const Footer = () => (
               <a
                 href="https://medium.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -299,6 +301,7 @@ export const Footer = () => (
               <a
                 href="https://www.producthunt.com/posts/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -312,6 +315,7 @@ export const Footer = () => (
               <a
                 href="https://github.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -363,26 +367,17 @@ const Hero = () => (
 
     <div className="flex flex-col py-4">
       <div className="m-auto flex items-center justify-center">
-        <IfUserLoggedIn>
-          <Link href="/app">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md md:mr-4">
-              Go to app
-            </a>
-          </Link>
-        </IfUserLoggedIn>
-        <IfAnonymous>
-          <Link href="/sign-up">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
-              Sign up free
-            </a>
-          </Link>
+        <Link href="/sign-up">
+          <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
+            Sign up free
+          </a>
+        </Link>
 
-          <Link href="/domain/beampipe.io">
-            <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
-              Live demo
-            </a>
-          </Link>
-        </IfAnonymous>
+        <Link href="/domain/beampipe.io">
+          <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
+            Live demo
+          </a>
+        </Link>
       </div>
     </div>
   </div>
@@ -391,7 +386,14 @@ const Hero = () => (
 const BigScreenshot = () => (
   <div className="flex py-8 px-2 md:px-32 justify-center">
     <Screenshot>
-      <video loop autoPlay muted playsInline preload="1" poster="/images/screenshot.png">
+      <video
+        loop
+        autoPlay
+        muted
+        playsInline
+        preload="1"
+        poster="/images/screenshot.png"
+      >
         <source type="video/mp4" src="/video.mp4" />
       </video>
     </Screenshot>
@@ -400,35 +402,33 @@ const BigScreenshot = () => (
 
 const IndexPage = () => {
   return (
-    <AuthProvider>
-      <Layout title="dead simple web analytics">
-        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
-          <Hero />
-          <BigScreenshot />
+    <Layout title="dead simple web analytics">
+      <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+        <Hero />
+        <BigScreenshot />
+      </div>
+
+      <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+        <Features />
+      </div>
+
+      <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+        <Why />
+
+        <TakeBackControl />
+
+        <div id="pricing">
+          <Pricing />
         </div>
 
-        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
-          <Features />
+        <div className="flex justify-center">
+          <ProductHuntButton />
         </div>
+      </div>
 
-        <div className="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
-          <Why />
-
-          <TakeBackControl />
-
-          <div id="pricing">
-            <Pricing />
-          </div>
-
-          <div className="flex justify-center">
-            <ProductHuntButton />
-          </div>
-        </div>
-
-        <Footer />
-      </Layout>
-    </AuthProvider>
+      <Footer />
+    </Layout>
   );
 };
 
-export default withUrql(IndexPage);
+export default IndexPage;
