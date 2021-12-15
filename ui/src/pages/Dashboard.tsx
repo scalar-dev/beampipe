@@ -12,12 +12,14 @@ import {
   faCog,
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEventHandler } from "react";
+import { useState, useRef, MouseEventHandler, useContext } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
+import { UserContext } from "../utils/auth";
+import { Secure } from "../components/Secure";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -158,7 +160,8 @@ const DomainChart = ({ domain }: { domain: Domain }) => {
 
 const isValidDomain = (v?: string) => {
   if (!v) return false;
-  var re = /^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?$/gi;
+  var re =
+    /^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?$/gi;
   return re.test(v);
 };
 
@@ -261,7 +264,8 @@ const AddOrEditDomain = ({
                 onComplete();
               } else {
                 setError(
-                  result.error.graphQLErrors[0]?.extensions?.userMessage as string
+                  result.error.graphQLErrors[0]?.extensions
+                    ?.userMessage as string
                 );
               }
             }}
@@ -284,7 +288,9 @@ const AddOrEditDomain = ({
               intent="danger"
               data-cy="button-domain-delete"
               onClick={async () => {
-                if (window.confirm("Are you sure you want to delete this domain?")) {
+                if (
+                  window.confirm("Are you sure you want to delete this domain?")
+                ) {
                   const result = await executeDelete({ id: domain.id });
 
                   if (!result.error) {
@@ -429,8 +435,6 @@ const DomainList = ({
     </div>
   );
 
-
-
   return (
     <>
       <div className="flex flex-col">
@@ -565,18 +569,20 @@ const Page = () => {
 
   return (
     <Layout title="domains">
-      <div className="container mx-auto">
-        {!query.fetching ? (
-          <DomainList
-            domains={query.data?.domains}
-            refetchDomains={() =>
-              reexecuteQuery({ requestPolicy: "network-only" })
-            }
-          />
-        ) : (
-          <Spinner />
-        )}
-      </div>
+      <Secure>
+        <div className="container mx-auto">
+          {!query.fetching ? (
+            <DomainList
+              domains={query.data?.domains}
+              refetchDomains={() =>
+                reexecuteQuery({ requestPolicy: "network-only" })
+              }
+            />
+          ) : (
+            <Spinner />
+          )}
+        </div>
+      </Secure>
     </Layout>
   );
 };

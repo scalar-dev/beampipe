@@ -1,11 +1,3 @@
-export {};
-
-declare global {
-  interface Window {
-    beampipe: (event: string) => void;
-  }
-}
-
 (function (window: Window, apiHost: string) {
   if ((window as any).beampipe) {
     return;
