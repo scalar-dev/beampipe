@@ -1,5 +1,4 @@
 import { Chart, Plugin } from "chart.js";
-import _ from "lodash";
 
 type RangeSelectState = {
   enabled: boolean;

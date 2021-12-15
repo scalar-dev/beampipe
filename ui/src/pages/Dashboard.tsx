@@ -18,7 +18,6 @@ import _ from "lodash";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
-import { UserContext } from "../utils/auth";
 import { Secure } from "../components/Secure";
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
