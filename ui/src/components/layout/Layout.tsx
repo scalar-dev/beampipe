@@ -22,15 +22,18 @@ interface NavLinkProps
     HTMLAnchorElement
   > {}
 
+const NAV_LINK_CLASS =
+  "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4";
+
 const NavLink: React.FC<LinkProps> = ({
   children,
   className,
   ...otherProps
 }) => (
   <Link
-    className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${
-      className || ""
-    }`}
+    className={`${NAV_LINK_CLASS}
+      ${className || ""}
+    `}
     {...otherProps}
   >
     {children}
@@ -40,21 +43,21 @@ const NavLink: React.FC<LinkProps> = ({
 const SocialButtons = () => (
   <div className="flex flex-row p-4 lg:p-0">
     <a
-      className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
+      className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://twitter.com/beampipe_io"
     >
       <FontAwesomeIcon size="lg" className="fill-current" icon={faTwitter} />
     </a>
 
     <a
-      className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
+      className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://medium.com/beampipe"
     >
       <FontAwesomeIcon size="lg" className="fill-current" icon={faMedium} />
     </a>
 
     <a
-      className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
+      className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://www.producthunt.com/posts/beampipe"
     >
       <FontAwesomeIcon
@@ -65,7 +68,7 @@ const SocialButtons = () => (
     </a>
 
     <a
-      className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
+      className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://github.com/beampipe"
     >
       <FontAwesomeIcon size="lg" className="fill-current" icon={faGithub} />
@@ -94,14 +97,14 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
           <nav className="flex items-center justify-between flex-wrap py-4">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle">
-                <Link to="/">
+                <a href={process.env.REACT_APP_WEBSITE_URL}>
                   <FontAwesomeIcon
                     size="sm"
                     className="fill-current mr-2"
                     icon={faAsterisk}
                   />
                   beampipe
-                </Link>
+                </a>
               </span>
             </div>
 
@@ -130,7 +133,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 <div>
                   <IfUserLoggedIn>
                     <NavLink
-                      to="/app"
+                      to="/"
                       onClick={() => setMenuVisible((visible) => !visible)}
                     >
                       Dashboard
@@ -140,44 +143,48 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
                 <div>
                   <IfAnonymous>
-                    <NavLink
-                      to="/#pricing"
+                    <a
+                      href={`${process.env.REACT_APP_WEBSITE_URL}/#pricing`}
+                      className={NAV_LINK_CLASS}
                       onClick={() => {
                         setMenuVisible((visible) => !visible);
                         window.beampipe("view_pricing");
                       }}
                     >
                       Pricing
-                    </NavLink>
+                    </a>
                   </IfAnonymous>
                 </div>
 
                 <div>
-                  <NavLink
-                    to="/blog"
+                  <a
+                    className={NAV_LINK_CLASS}
+                    href={`${process.env.REACT_APP_WEBSITE_URL}/blog`}
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Blog
-                  </NavLink>
+                  </a>
                 </div>
 
                 <div>
-                  <NavLink
-                    to="https://docs.beampipe.io"
+                  <a
+                    href="https://docs.beampipe.io"
+                    className={NAV_LINK_CLASS}
                     target="_new"
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Docs
-                  </NavLink>
+                  </a>
                 </div>
 
                 <div>
-                  <NavLink
-                    to="mailto:hello@beampipe.io"
+                  <a
+                    href="mailto:hello@beampipe.io"
+                    className={NAV_LINK_CLASS}
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Contact us
-                  </NavLink>
+                  </a>
                 </div>
               </div>
 

@@ -373,7 +373,7 @@ const Hero = () => (
           </a>
         </Link>
 
-        <Link href="/domain/beampipe.io">
+        <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/domain/beampipe.io`}>
           <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md">
             Live demo
           </a>

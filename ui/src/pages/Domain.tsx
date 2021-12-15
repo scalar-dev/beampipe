@@ -44,7 +44,7 @@ export const Footer = () => (
         <div className="flex-1 mb-6">
           <a
             className="no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
-            href="#"
+            href="https://beampipe.io"
           >
             beampipe
           </a>
@@ -67,14 +67,16 @@ export const Footer = () => (
               </a>
             </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <Link to="/privacy">
-                <a target="_blank" className="no-underline hover:underline">
-                  <FontAwesomeIcon
-                    className="fill-current w-4 h-4 mr-2"
-                    icon={faClipboardCheck}
-                  />
-                  Privacy policy
-                </a>
+              <Link
+                to="/privacy"
+                target="_blank"
+                className="no-underline hover:underline"
+              >
+                <FontAwesomeIcon
+                  className="fill-current w-4 h-4 mr-2"
+                  icon={faClipboardCheck}
+                />
+                Privacy policy
               </Link>
             </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
@@ -165,10 +167,11 @@ export const TakeBackControl = () => (
       Take back control of your analytics.
     </div>
     <div className="pt-8">
-      <Link to="/sign-up">
-        <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
-          Get started.
-        </a>
+      <Link
+        to="/sign-up"
+        className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4"
+      >
+        Get started.
       </Link>
     </div>
   </div>
@@ -218,10 +221,11 @@ const Toolbar = ({
         </IfUserLoggedIn>
         <IfAnonymous>
           <div className="align-middle">
-            <Link to="/sign-up">
-              <a className="hover:text-purple-600 text-gray-600 text-lg font-bold leading-tight">
-                Get beampipe for your site.
-              </a>
+            <Link
+              to="/sign-up"
+              className="hover:text-purple-600 text-gray-600 text-lg font-bold leading-tight"
+            >
+              Get beampipe for your site.
             </Link>
           </div>
         </IfAnonymous>

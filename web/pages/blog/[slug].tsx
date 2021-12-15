@@ -8,6 +8,14 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
+const Heading: React.FC = ({ children }) => {
+  return (
+    <div className="text-2xl text-gray-800 font-black leading-tight">
+      {children}
+    </div>
+  );
+};
+
 const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
   return (
     <Layout title={frontmatter.title}>
@@ -29,16 +37,12 @@ const Post = ({ content, frontmatter }: { content: any; frontmatter: any }) => {
             </div>
             <ReactMarkdown
               components={{
-                h1: ({ children, level }) => {
-                  if (level === 1) {
-                    return null;
-                  }
-                  return (
-                    <div className="text-2xl text-gray-800 font-black leading-tight">
-                      {children}
-                    </div>
-                  );
-                },
+                h1: () => null,
+                h2: Heading,
+                h3: Heading,
+                h4: Heading,
+                h5: Heading,
+                h6: Heading,
                 ol: ({ children }) => (
                   <div className="list-disc">{children}</div>
                 ),
