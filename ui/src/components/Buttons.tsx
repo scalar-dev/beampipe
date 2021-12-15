@@ -25,7 +25,7 @@ export const SwitchButton: React.FunctionComponent<SwitchButtonProps> = ({
 
 type Intent = "primary" | "info" | "danger";
 
-const colorForIntent = (intent: Intent) => {
+export const colorForIntent = (intent: Intent) => {
   switch (intent) {
     case "primary":
       return "bg-green-600 hover:bg-green-500";
@@ -35,29 +35,6 @@ const colorForIntent = (intent: Intent) => {
       return "bg-red-600 hover:bg-red-500";
   }
 };
-
-interface AnchorProps
-  extends React.DetailedHTMLProps<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
-  > {
-  intent?: Intent;
-}
-
-export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorProps>(
-  ({ className, children, intent, href = "#", ...otherProps }, ref) => (
-    <a
-      {...otherProps}
-      ref={ref}
-      href={href}
-      className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
-        intent || "primary"
-      )} text-base text-white font-semibold leading-tight shadow-md ${className || ""}`}
-    >
-      {children}
-    </a>
-  )
-);
 
 interface ButtonProps
   extends React.DetailedHTMLProps<

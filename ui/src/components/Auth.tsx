@@ -2,11 +2,12 @@ import { useState } from "react";
 import { gql, useMutation } from "urql";
 import { Button } from "./Buttons";
 import { onApiError } from "../utils/errors";
-import { Link }  from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 
 const validateEmail = (email: string) => {
-  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 };
 
@@ -130,10 +131,11 @@ export const SignupForm = () => {
         </Button>
         <div className="font-bold text-sm text-gray-600 inline-block align-baseline">
           Already signed up?{" "}
-          <Link to="/sign-in">
-            <a className="font-bold text-sm text-blue-600 hover:text-blue-800 underline">
-              Login
-            </a>
+          <Link
+            to="/sign-in"
+            className="font-bold text-sm text-blue-600 hover:text-blue-800 underline"
+          >
+            Login
           </Link>
         </div>
       </div>

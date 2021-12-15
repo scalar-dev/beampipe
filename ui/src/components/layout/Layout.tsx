@@ -1,8 +1,8 @@
 import { FunctionComponent, useContext, useState, forwardRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, LinkProps } from "react-router-dom";
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AnchorButton } from "../Buttons";
+import { colorForIntent } from "../Buttons";
 import { Avatar } from "./Avatar";
 import {
   faGithub,
@@ -22,18 +22,19 @@ interface NavLinkProps
     HTMLAnchorElement
   > {}
 
-const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
-  ({ children, className, ...otherProps }, ref) => (
-    <a
-      ref={ref}
-      className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${
-        className || ""
-      }`}
-      {...otherProps}
-    >
-      {children}
-    </a>
-  )
+const NavLink: React.FC<LinkProps> = ({
+  children,
+  className,
+  ...otherProps
+}) => (
+  <Link
+    className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${
+      className || ""
+    }`}
+    {...otherProps}
+  >
+    {children}
+  </Link>
 );
 
 const SocialButtons = () => (
@@ -94,14 +95,12 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle">
                 <Link to="/">
-                  <a>
-                    <FontAwesomeIcon
-                      size="sm"
-                      className="fill-current mr-2"
-                      icon={faAsterisk}
-                    />
-                    beampipe
-                  </a>
+                  <FontAwesomeIcon
+                    size="sm"
+                    className="fill-current mr-2"
+                    icon={faAsterisk}
+                  />
+                  beampipe
                 </Link>
               </span>
             </div>
@@ -130,34 +129,32 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               <div className="lg:flex-grow flex flex-wrap">
                 <div>
                   <IfUserLoggedIn>
-                    <Link to="/app">
-                      <NavLink
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Dashboard
-                      </NavLink>
-                    </Link>
+                    <NavLink
+                      to="/app"
+                      onClick={() => setMenuVisible((visible) => !visible)}
+                    >
+                      Dashboard
+                    </NavLink>
                   </IfUserLoggedIn>
                 </div>
 
                 <div>
                   <IfAnonymous>
-                    <Link to="/#pricing">
-                      <NavLink
-                        onClick={() => {
-                          setMenuVisible((visible) => !visible);
-                          window.beampipe("view_pricing");
-                        }}
-                      >
-                        Pricing
-                      </NavLink>
-                    </Link>
+                    <NavLink
+                      to="/#pricing"
+                      onClick={() => {
+                        setMenuVisible((visible) => !visible);
+                        window.beampipe("view_pricing");
+                      }}
+                    >
+                      Pricing
+                    </NavLink>
                   </IfAnonymous>
                 </div>
 
                 <div>
                   <NavLink
-                    href="/blog"
+                    to="/blog"
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Blog
@@ -166,7 +163,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
                 <div>
                   <NavLink
-                    href="https://docs.beampipe.io"
+                    to="https://docs.beampipe.io"
                     target="_new"
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
@@ -176,7 +173,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
 
                 <div>
                   <NavLink
-                    href="mailto:hello@beampipe.io"
+                    to="mailto:hello@beampipe.io"
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Contact us
@@ -191,21 +188,21 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   </div>
                 </IfUserLoggedIn>
                 <IfAnonymous>
-                  <Link to="/sign-in">
-                    <NavLink
+                  <NavLink
+                    to="/sign-in"
+                    onClick={() => setMenuVisible((visible) => !visible)}
+                  >
+                    Login
+                  </NavLink>
+                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                    <Link
+                      to="/sign-up"
+                      className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
+                        "primary"
+                      )} text-base text-white font-semibold leading-tight shadow-md mr-2`}
                       onClick={() => setMenuVisible((visible) => !visible)}
                     >
-                      Login
-                    </NavLink>
-                  </Link>
-                  <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                    <Link to="/sign-up">
-                      <AnchorButton
-                        className="mr-2"
-                        onClick={() => setMenuVisible((visible) => !visible)}
-                      >
-                        Sign up
-                      </AnchorButton>
+                      Sign up
                     </Link>
                   </div>
                 </IfAnonymous>

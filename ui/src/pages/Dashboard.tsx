@@ -344,13 +344,12 @@ const DomainCard: React.FunctionComponent<{
       <CardTitle>
         <div className="flex">
           <div className="flex-auto overflow-auto">
-            <Link to={`/domain/${encodeURIComponent(domain.domain)}`}>
-              <a
-                data-cy="a-domain"
-                className="text-gray-800 hover:text-gray-500 break-words"
-              >
-                {domain.domain}
-              </a>
+            <Link
+              to={`/domain/${encodeURIComponent(domain.domain)}`}
+              data-cy="a-domain"
+              className="text-gray-800 hover:text-gray-500 break-words"
+            >
+              {domain.domain}
             </Link>
           </div>
 
@@ -499,14 +498,15 @@ const DomainList = ({
                 Add domain
               </a>
             </div>
-            <Link to="/settings">
-              <a className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4">
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faCog}
-                />
-                Settings
-              </a>
+            <Link
+              to="/settings"
+              className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4"
+            >
+              <FontAwesomeIcon
+                className="fill-current w-4 h-4 mr-2"
+                icon={faCog}
+              />
+              Settings
             </Link>
           </div>
         </div>
