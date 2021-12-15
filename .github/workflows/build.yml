@@ -29,6 +29,7 @@ jobs:
     - name: Build
       run: |
          cd ./web
+         yarn
          yarn build
 
   ui:
