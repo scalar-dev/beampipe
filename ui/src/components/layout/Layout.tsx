@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, useState, forwardRef } from "react";
+import { FunctionComponent, useContext, useState } from "react";
 import { Link, LinkProps } from "react-router-dom";
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,12 +15,6 @@ import { UserContext } from "../../utils/auth";
 interface LayoutProps {
   title: string;
 }
-
-interface NavLinkProps
-  extends React.DetailedHTMLProps<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
-  > {}
 
 const NAV_LINK_CLASS =
   "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4";

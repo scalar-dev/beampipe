@@ -98,7 +98,7 @@ export const LineChart = ({
         },
       },
     });
-  }, []);
+  }, [onSelect]);
 
   useEffect(() => {
     if (chart.current && data) {
@@ -166,7 +166,7 @@ export const LineChart = ({
       }));
       chart.current.update();
     }
-  }, [data, chart]);
+  }, [data, chart, timePeriod]);
 
   return <canvas ref={canvasRef} />;
 };

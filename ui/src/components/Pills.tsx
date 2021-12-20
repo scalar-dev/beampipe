@@ -1,25 +1,24 @@
 import React from "react";
 
 export const Pill = React.forwardRef<
-  HTMLAnchorElement,
+  HTMLButtonElement,
   { selected?: boolean } & React.DetailedHTMLProps<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
   >
 >(({ selected = false, children, ...otherProps }, ref) => (
   <li className="ml-3 flex">
-    <a
+    <button
       ref={ref}
-      className={`transition duration-200 text-xs my-auto inline-block font-medium border-b-2 ${
+      className={`transition duration-200 text-xs my-auto inline-block font-medium border-b-2 outline-none focus:outline-none ${
         selected
           ? "text-gray-600 border-gray-400"
           : "text-gray-500 border-transparent hover:text-gray-600"
       }`}
-      href="#"
       {...otherProps}
     >
       {children}
-    </a>
+    </button>
   </li>
 ));
 

@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { gql, useQuery } from "urql";
 
-interface UserContext {
+interface IUserContext {
   loading: boolean;
   user: User | null;
 }
@@ -34,7 +34,7 @@ const getUser = (data: any, loading: boolean = false) =>
       }
     : { user: null, loading };
 
-export const UserContext = createContext<UserContext>({
+export const UserContext = createContext<IUserContext>({
   user: null,
   loading: true,
 });

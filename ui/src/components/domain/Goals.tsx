@@ -335,9 +335,8 @@ export const GoalsCard = ({
 
           {isEditable ? (
             <div className="flex-none">
-              <a
-                href="#"
-                className="text-gray-600 hover:text-gray-500"
+              <button
+                className="text-gray-600 hover:text-gray-500 outline-none focus:outline-none"
                 onClick={(e) => {
                   createGoal();
                   e.preventDefault();
@@ -348,7 +347,7 @@ export const GoalsCard = ({
                   className="fill-current w-4 h-4 mr-2"
                   icon={faPlus}
                 />
-              </a>
+              </button>
             </div>
           ) : null}
         </div>

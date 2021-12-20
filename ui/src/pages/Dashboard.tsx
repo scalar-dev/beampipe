@@ -12,7 +12,7 @@ import {
   faCog,
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEventHandler, useContext } from "react";
+import { useState, useRef, MouseEventHandler } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { Domain } from "../interfaces";
@@ -25,7 +25,7 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
   const html = `<script async defer src="https://beampipe.io/js/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
   const [hasCopied, setHasCopied] = useState(false);
 
-  const onCopy: MouseEventHandler<HTMLAnchorElement> = (e) => {
+  const onCopy: MouseEventHandler<HTMLElement> = (e) => {
     e.preventDefault();
     if (ref.current) {
       const dummy = document.createElement("textarea");
@@ -54,12 +54,15 @@ const ScriptSnippet = ({ domain }: { domain: Domain }) => {
         </div>
         <div className="overflow-auto flex">
           <div className="m-auto px-2 text-gray-600">
-            <a href="#" onClick={onCopy}>
+            <button
+              className="outline-none focus:outline-none"
+              onClick={onCopy}
+            >
               <FontAwesomeIcon
                 className="ml-2 hover:text-gray-300 fill-current w-4 h-4 mr-2"
                 icon={faCopy}
               />
-            </a>
+            </button>
             {hasCopied ? (
               <div className="text-sm font-extrabold">Copied!</div>
             ) : null}
@@ -107,7 +110,7 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
         </div>
       }
       isIdeal={
-        !_.every(query.data?.events?.bucketedUnique, (x) => x.count == 0)
+        !_.every(query.data?.events?.bucketedUnique, (x) => x.count === 0)
       }
       isLoading={query.fetching}
     >
@@ -356,10 +359,9 @@ const DomainCard: React.FunctionComponent<{
           <div className="flex-none">
             {state !== "editing" && (
               <>
-                <a
-                  href="#"
+                <button
                   data-cy="button-domain-settings"
-                  className="text-gray-600 hover:text-gray-500"
+                  className="text-gray-600 hover:text-gray-500 outline-none focus:outline-none"
                   onClick={(e) => {
                     setState("editing");
                     e.preventDefault();
@@ -370,10 +372,9 @@ const DomainCard: React.FunctionComponent<{
                     className="fill-current w-4 h-4 mr-2"
                     icon={faCog}
                   />
-                </a>
-                <a
-                  href="#"
-                  className={`${
+                </button>
+                <button
+                  className={` outline-none focus:outline-none ${
                     state === "code"
                       ? "text-green-600 hover:text-green-500"
                       : "hover:text-gray-500 text-gray-600"
@@ -388,7 +389,7 @@ const DomainCard: React.FunctionComponent<{
                     className="fill-current w-4 h-4 mr-2"
                     icon={faQuestionCircle}
                   />
-                </a>
+                </button>
               </>
             )}
           </div>
@@ -483,9 +484,8 @@ const DomainList = ({
 
           <div className="py-2 flex flex-row md:flex-col justify-start">
             <div className="flex-1 md:flex-none">
-              <a
-                href="#"
-                className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4"
+              <button
+                className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4 outline-none focus:outline-none"
                 onClick={(e) => {
                   e.preventDefault();
                   setShowAddDomain(true);
@@ -496,7 +496,7 @@ const DomainList = ({
                   icon={faPlus}
                 />
                 Add domain
-              </a>
+              </button>
             </div>
             <Link
               to="/settings"
@@ -516,13 +516,13 @@ const DomainList = ({
         <div className="py-12 text-xl text-gray-600 text-center font-extrabold">
           You haven't setup any domains yet.
           <div className="text-green-600 hover:text-green-500 pt-4 underline">
-            <a
-              href="#"
+            <button
+              className="outline-none focus:outline-none"
               data-cy="add-domain"
               onClick={() => setShowAddDomain(true)}
             >
               Add a domain to get started
-            </a>
+            </button>
           </div>
         </div>
       )}

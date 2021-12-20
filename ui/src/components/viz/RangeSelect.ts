@@ -14,7 +14,7 @@ type ChartWithRangeSelect = Chart & { rangeSelect: RangeSelectState };
 const isEnabled = (chart: Chart) => {
   if (
     Object.keys(chart.scales).filter((k) => chart.scales[k].axis === "x")
-      .length == 0
+      .length === 0
   ) {
     return false;
   }

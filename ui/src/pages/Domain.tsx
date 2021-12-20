@@ -57,6 +57,7 @@ export const Footer = () => (
               <a
                 href="https://docs.beampipe.io/"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -101,6 +102,7 @@ export const Footer = () => (
               <a
                 href="https://twitter.com/beampipe_io"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -115,6 +117,7 @@ export const Footer = () => (
               <a
                 href="https://medium.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -128,6 +131,7 @@ export const Footer = () => (
               <a
                 href="https://www.producthunt.com/posts/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -141,6 +145,7 @@ export const Footer = () => (
               <a
                 href="https://github.com/beampipe"
                 target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 <FontAwesomeIcon
@@ -522,6 +527,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
                   image: source.referrer && (
                     <img
                       className="inline h-4 w-4"
+                      alt={source.referrer}
                       src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
                     />
                   ),

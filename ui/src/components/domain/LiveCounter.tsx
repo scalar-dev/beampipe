@@ -22,7 +22,7 @@ export const LiveCounter = ({ domain }: { domain: string }) => {
       executeQuery();
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [executeQuery]);
 
   return (
     <StatsCounter

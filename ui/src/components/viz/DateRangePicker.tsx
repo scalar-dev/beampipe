@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Litepicker from "litepicker";
 
-export default ({
+export const DateRangePicker = ({
   startTime,
   endTime,
   onSelect,
@@ -32,7 +32,7 @@ export default ({
         }
       };
     }
-  }, [ref]);
+  }, [ref, startTime, endTime, onSelect]);
 
   return <div ref={ref}></div>;
 };

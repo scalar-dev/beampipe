@@ -5,7 +5,7 @@ import { Tick } from "../marketing/Tick";
 import { Domain } from "../../interfaces";
 import { useParams, useNavigate } from "react-router-dom";
 
-export const DomainPicker = ({}) => {
+export const DomainPicker = () => {
   const params = useParams();
   const navigate = useNavigate();
 

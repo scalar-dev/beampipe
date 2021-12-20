@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, MenuSection, MenuItem, MenuDivider } from "../Menu";
 import { Tick } from "../marketing/Tick";
 import moment from "moment";
-import DateRangePicker from "./DateRangePicker";
+import { DateRangePicker } from "./DateRangePicker";
 
 type TimePeriodType = "hour" | "day" | "week" | "month" | "custom";
 
