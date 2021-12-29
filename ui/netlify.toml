@@ -8,7 +8,6 @@
   from = "/oauth/*"
   to = "https://api.beampipe.io/oauth/:splat"
   status = 200
-  headers = {X-Forwarded-Host = "app.beampipe.io"}
 
 [[redirects]]
   from = "/logout"
