@@ -5,6 +5,21 @@
   status = 200
 
 [[redirects]]
+  from = "/oauth"
+  to = "https://api.beampipe.io/oauth"
+  status = 200
+
+[[redirects]]
+  from = "/logout"
+  to = "https://api.beampipe.io/logout"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "https://api.beampipe.io/login"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
