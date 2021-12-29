@@ -263,7 +263,7 @@ export const LoginForm = () => {
               // For some reason this is needed to trigger a full page refresh
               // or logging out and then logging in causes the redirect not to happen
               // at all. Also see above.
-              window.location.assign("/app");
+              window.location.assign("/");
             } else {
               setError("Invalid username or password");
             }

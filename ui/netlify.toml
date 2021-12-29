@@ -5,8 +5,8 @@
   status = 200
 
 [[redirects]]
-  from = "/oauth"
-  to = "https://api.beampipe.io/oauth"
+  from = "/oauth/*"
+  to = "https://api.beampipe.io/oauth/:splat"
   status = 200
 
 [[redirects]]

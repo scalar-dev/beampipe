@@ -70,5 +70,5 @@
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.2"
   },
-  "proxy": "https://beampipe.io"
+  "proxy": "https://api.beampipe.io"
 }
