@@ -177,22 +177,20 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
               </div>
 
               <div className="pr-2">
-                <Link href="/sign-in" passHref>
-                  <NavLink
+                <NavLink
+                  href="https://app.beampipe.io/"
+                  onClick={() => setMenuVisible((visible) => !visible)}
+                >
+                  Login
+                </NavLink>
+                <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
+                  <AnchorButton
+                    href="https://app.beampipe.io/sign-up"
+                    className="mr-2"
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
-                    Login
-                  </NavLink>
-                </Link>
-                <div className="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0">
-                  <Link href="/sign-up" passHref>
-                    <AnchorButton
-                      className="mr-2"
-                      onClick={() => setMenuVisible((visible) => !visible)}
-                    >
-                      Sign up
-                    </AnchorButton>
-                  </Link>
+                    Sign up
+                  </AnchorButton>
                 </div>
               </div>
               <SocialButtons />
