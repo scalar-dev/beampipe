@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { UserContext } from "../utils/auth";
 
@@ -6,9 +6,11 @@ export const Secure: React.FC = ({ children }) => {
   const { user, loading } = useContext(UserContext);
   const navigate = useNavigate();
 
-  if (!loading && !user) {
-    navigate(`/sign-up`);
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/sign-up");
+    }
+  }, [loading, user]);
 
-  return <>{children}</>;
+  return !loading && user ? <>{children}</> : null;
 };

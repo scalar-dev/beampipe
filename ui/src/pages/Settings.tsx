@@ -16,7 +16,7 @@ import { useState, ReactNode } from "react";
 import { getTimezones, renderTimeZone } from "../utils/timezones";
 import { BasicBullets, ProBullets } from "../components/marketing/Pricing";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
+ const stripePromise = process.env.REACT_APP_STRIPE_KEY ? loadStripe(process.env.REACT_APP_STRIPE_KEY) : null;
 
 interface EditableFieldProps {
   initialValue: string;
