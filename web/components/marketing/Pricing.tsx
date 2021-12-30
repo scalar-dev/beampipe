@@ -37,7 +37,7 @@ const PricingBox: React.FunctionComponent<PricingBoxProps> = ({
         <div className="flex-1">{children}</div>
 
         <div className="pt-4 w-full flex justify-center">
-          <Link href="/sign-up">
+          <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
             <a className="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md">
               Sign up
             </a>
