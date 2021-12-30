@@ -10,6 +10,12 @@ import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/***
+ * This is a hack to workaround the fact that we are currently using netlify to redirect to the oauth endpoints.
+ * Internally these routes use the http resolver to figure out the host URL.
+ * These end up getting set to api.beampipe.io instead of app.beampipe.io causing cookies to be set on the wrong domain.
+ */
+
 @Singleton
 @Replaces(DefaultOauthRouteUrlBuilder::class)
 class OAuthRouteUrlBuilder(@Inject val defaultOauthRouteUrlBuilder: DefaultOauthRouteUrlBuilder) : OauthRouteUrlBuilder {
