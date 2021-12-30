@@ -52,12 +52,15 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorProps>(
       href={href}
       className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} text-base text-white font-semibold leading-tight shadow-md ${className || ""}`}
+      )} text-base text-white font-semibold leading-tight shadow-md ${
+        className || ""
+      }`}
     >
       {children}
     </a>
   )
 );
+AnchorButton.displayName = "AnchorButton";
 
 interface ButtonProps
   extends React.DetailedHTMLProps<
@@ -74,9 +77,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       className={`rounded-lg px-4 xl:px-4 py-3 xl:py-3 ${colorForIntent(
         intent || "primary"
-      )} text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${className || ""}`}
+      )} text-base text-white font-semibold leading-tight shadow-md disabled:cursor-not-allowed disabled:opacity-75 ${
+        className || ""
+      }`}
     >
       {children}
     </button>
   )
 );
+Button.displayName = "Button";

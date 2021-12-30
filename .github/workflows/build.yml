@@ -24,12 +24,19 @@ jobs:
 
   web:
     runs-on: ubuntu-latest
-    container: alexsparrow/wat-builder
     steps:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
          cd ./web
-         docker build -t $DOCKER_REPO/web:$GITHUB_RUN_NUMBER .
-         docker push $DOCKER_REPO/web:$GITHUB_RUN_NUMBER
+         yarn
+         yarn build
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        cd ui
+        docker build -t scalar-dev/beampipe-ui:$GITHUB_SHA .

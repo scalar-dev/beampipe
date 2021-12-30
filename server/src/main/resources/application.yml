@@ -5,8 +5,8 @@ micronaut:
     enabled: true
     authentication: cookie
     redirect:
-      login-success: /app
-      login-failure: /settings
+      login-success: https://app.beampipe.io/
+      login-failure: https://app.beampipe.io/settings
     token:
       jwt:
         enabled: true
