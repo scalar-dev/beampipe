@@ -8,6 +8,7 @@ import { ResetPassword } from "./pages/ResetPassword";
 import DomainPage from "./pages/Domain";
 import { AuthProvider } from "./utils/auth";
 import SignUp from "./pages/SignUp";
+import { SignOut } from "./pages/SignOut";
 
 export const App = () => (
   <Provider value={client}>
@@ -20,6 +21,7 @@ export const App = () => (
           <Route path="/" element={<Dashboard />} />
           <Route path="/domain/:domain" element={<DomainPage />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/sign-out" element={<SignOut />} />
         </Routes>
       </Router>
     </AuthProvider>

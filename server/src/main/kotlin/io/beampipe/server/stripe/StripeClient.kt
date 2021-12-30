@@ -6,6 +6,7 @@ import com.stripe.model.Product
 import com.stripe.model.checkout.Session
 import io.beampipe.server.db.Accounts
 import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Requires
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Controller
@@ -21,6 +22,7 @@ import javax.inject.Singleton
 @Singleton
 @Controller("/stripe")
 @Secured(SecurityRule.IS_ANONYMOUS)
+@Requires(property = "stripe.key")
 class StripeClient(@Property(name = "stripe.key") val apiKey: String) {
     init {
         Stripe.apiKey = apiKey

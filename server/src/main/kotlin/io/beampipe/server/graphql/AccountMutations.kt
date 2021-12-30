@@ -31,6 +31,7 @@ import java.security.SecureRandom
 import java.time.ZoneId
 import java.util.Base64
 import java.util.UUID
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 
@@ -46,7 +47,8 @@ class AccountMutations(
     lateinit var accountQuery: AccountQuery
 
     @Inject
-    lateinit var stripeClient: StripeClient
+    @Nullable
+    var stripeClient: StripeClient? = null
 
     suspend fun updateName(context: Context, name: String): String = context.withAccountId { accountId ->
         newSuspendedTransaction {

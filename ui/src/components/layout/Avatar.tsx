@@ -61,7 +61,7 @@ export const Avatar = ({ user }: { user: User }) => {
         </Link>
       </MenuSection>
       <MenuDivider />
-      <Link to="/logout">
+      <Link to="/sign-out">
         <MenuItem>Logout</MenuItem>
       </Link>
     </BaseMenu>

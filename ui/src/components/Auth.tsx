@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { gql, useMutation } from "urql";
 import { Button } from "./Buttons";
 import { onApiError } from "../utils/errors";
@@ -18,6 +18,7 @@ const validatePassword = (password: string) => {
 const login = async (email: string, password: string): Promise<boolean> => {
   const result = await fetch("/login", {
     method: "POST",
+    redirect: "manual",
     headers: {
       "Content-Type": "application/json",
     },
@@ -28,7 +29,24 @@ const login = async (email: string, password: string): Promise<boolean> => {
   });
 
   window.beampipe("login");
-  return result.url.endsWith("/app");
+  return !result.url.endsWith("/settings");
+};
+
+const logout = async (): Promise<void> => {
+  await fetch("/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const SignoutPage = () => {
+  useEffect(() => {
+    logout().then(() => window.location.assign("/"));
+  });
+
+  return null;
 };
 
 export const SignupForm = () => {
@@ -64,7 +82,7 @@ export const SignupForm = () => {
 
     if (!error) {
       if (await login(email, password)) {
-        window.location.assign("/app");
+        window.location.assign("/");
       } else {
         setError("Exception while logging in");
       }
