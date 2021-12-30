@@ -8,7 +8,6 @@ import { scaleLinear } from "d3";
 import _ from "lodash";
 import { useState, ReactNode } from "react";
 import Tippy from "@tippyjs/react";
-import React from "react";
 import { followCursor } from "tippy.js";
 import world from "./world-110m.json";
 
