@@ -502,49 +502,47 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
 
         <DashboardCard position="right">
           <CardTitle>Sources</CardTitle>
-          <div className="flex flex-1 max-w-full">
-            <NonIdealState
-              isLoading={stats.fetching || drilldownStats.fetching}
-              isIdeal={stats.data?.events.topSources.length > 0}
-            >
-              <Table
-                showImages
-                columnHeadings={["Source", "Visits"]}
-                drilldownData={
-                  isDrilldown
-                    ? drilldownStats.data?.events.topSources.map(
-                        (source: any) => ({
-                          key: `${source.source}_${source.referrer}`,
-                          count: source.count,
-                        })
-                      )
-                    : null
-                }
-                data={stats.data?.events.topSources.map((source: any) => ({
-                  key: `${source.source}_${source.referrer}`,
-                  label: source.source || source.referrer || "none",
-                  count: source.count,
-                  image: source.referrer && (
-                    <img
-                      className="inline h-4 w-4"
-                      alt={source.referrer}
-                      src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
-                    />
-                  ),
-                  onClick: () =>
-                    setDrilldown((prevState) => ({
-                      ...prevState,
-                      referrer: {
-                        source: source.source,
-                        referrer: source.referrer,
-                        isDirect:
-                          source.source == null && source.referrer == null,
-                      },
-                    })),
-                }))}
-              />
-            </NonIdealState>
-          </div>
+          <NonIdealState
+            isLoading={stats.fetching || drilldownStats.fetching}
+            isIdeal={stats.data?.events.topSources.length > 0}
+          >
+            <Table
+              showImages
+              columnHeadings={["Source", "Visits"]}
+              drilldownData={
+                isDrilldown
+                  ? drilldownStats.data?.events.topSources.map(
+                      (source: any) => ({
+                        key: `${source.source}_${source.referrer}`,
+                        count: source.count,
+                      })
+                    )
+                  : null
+              }
+              data={stats.data?.events.topSources.map((source: any) => ({
+                key: `${source.source}_${source.referrer}`,
+                label: source.source || source.referrer || "none",
+                count: source.count,
+                image: source.referrer && (
+                  <img
+                    className="inline h-4 w-4"
+                    alt={source.referrer}
+                    src={`https://icons.duckduckgo.com/ip3/${source.referrer}.ico`}
+                  />
+                ),
+                onClick: () =>
+                  setDrilldown((prevState) => ({
+                    ...prevState,
+                    referrer: {
+                      source: source.source,
+                      referrer: source.referrer,
+                      isDirect:
+                        source.source == null && source.referrer == null,
+                    },
+                  })),
+              }))}
+            />
+          </NonIdealState>
         </DashboardCard>
 
         <MapCard
