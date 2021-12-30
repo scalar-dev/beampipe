@@ -1,0 +1,26 @@
+# The following redirect is intended for use with most SPAs that handle routing internally.
+[[redirects]]
+  from = "/graphql"
+  to = "https://api.beampipe.io/graphql"
+  status = 200
+
+[[redirects]]
+  from = "/oauth/*"
+  to = "https://api.beampipe.io/oauth/:splat"
+  status = 200
+  headers = {x-forwarded-host="app.beampipe.io"}
+
+[[redirects]]
+  from = "/logout"
+  to = "https://api.beampipe.io/logout"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "https://api.beampipe.io/login"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
