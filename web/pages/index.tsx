@@ -342,7 +342,7 @@ export const TakeBackControl = () => (
       Take back control of your analytics.
     </div>
     <div className="pt-8">
-      <Link href="/sign-up">
+      <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
         <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
           Get started.
         </a>
@@ -367,7 +367,7 @@ const Hero = () => (
 
     <div className="flex flex-col py-4">
       <div className="m-auto flex items-center justify-center">
-        <Link href="/sign-up">
+        <Link href={`${process.env.NEXT_PUBLIC_APP_URL}/sign-up`}>
           <a className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4">
             Sign up free
           </a>
