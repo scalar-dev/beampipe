@@ -10,7 +10,7 @@ export const Secure: React.FC = ({ children }) => {
     if (!loading && !user) {
       navigate("/sign-up");
     }
-  }, [loading, user]);
+  }, [loading, user, navigate]);
 
   return !loading && user ? <>{children}</> : null;
 };
