@@ -60,6 +60,10 @@ export const LineChart = ({
   const chart = useRef<Chart<"line", any>>();
 
   useEffect(() => {
+    if (chart.current) {
+      chart.current.destroy();
+    }
+
     chart.current = new Chart<"line">(canvasRef.current!, {
       type: "line",
       plugins: onSelect ? [RangeSelectPlugin] : [],
