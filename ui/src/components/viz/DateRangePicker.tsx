@@ -22,7 +22,9 @@ export const DateRangePicker = ({
         startDate: startTime?.toDate(),
         endDate: endTime?.toDate(),
         setup: (picker) => {
-          picker.on("selected", onSelect);
+          picker.on("selected", (start, end) =>
+            onSelect(start.toJSDate(), end.toJSDate())
+          );
         },
       });
 
