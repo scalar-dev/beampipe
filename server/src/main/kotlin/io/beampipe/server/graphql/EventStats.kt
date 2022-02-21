@@ -249,7 +249,7 @@ data class EventStats(
 
         Goals
             .join(Domains, JoinType.INNER, Goals.domain, Domains.id)
-            .join(eventTypePathCount, JoinType.INNER, null, null) {
+            .join(eventTypePathCount, JoinType.LEFT, null, null) {
                 eventTypePathCount[Events.type].eq(Goals.eventType) and (
                         eventTypePathCount[Events.path].eq(Goals.path) or Goals.path.eq("") or Goals.path.isNull()
                         )
