@@ -26,7 +26,7 @@ class DomainQuery {
             context.checkDomainAccess(domainId)
 
             Events.slice(Events.type)
-                .select { Domains.domain eq domain }
+                .select { Events.domain eq domain }
                 .withDistinct(true)
                 .map { it[Events.type] }
         }
