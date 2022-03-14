@@ -63,6 +63,7 @@ micronaut:
   server:
     cors:
       enabled: false
+    client-address-header: X-Nf-Client-Connection-Ip
 
   http:
     services:
