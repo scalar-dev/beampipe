@@ -1,0 +1,97 @@
+micronaut:
+  application:
+    name: server
+  security:
+    enabled: true
+    authentication: cookie
+    redirect:
+      login-success: https://app.beampipe.io/
+      login-failure: https://app.beampipe.io/settings
+    token:
+      jwt:
+        enabled: true
+        cookie:
+          enabled: true
+        generator:
+          access-token:
+            expiration: 604800 # A week
+          access-token-expiration: 604800 # A week
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+    oauth2:
+      clients:
+        github:
+          client-id:  '${GITHUB_CLIENT_ID:0eec0eaa4d9e88d6a91c}'
+          client-secret: '${GITHUB_CLIENT_SECRET:ae4f7127e074e953a50b0aedb578ad908e5dfe15}'
+          scopes:
+            - user:email
+          authorization:
+            url: 'https://github.com/login/oauth/authorize'
+          token:
+            url: 'https://github.com/login/oauth/access_token'
+            auth-method: client-secret-post
+
+        slack:
+          client-id:  '${SLACK_CLIENT_ID:1214303684884.1287705576788}'
+          client-secret: '${SLACK_CLIENT_SECRET:6bc5d2b9479ea561a4096ae5fb5139ca}'
+          scopes:
+            - chat:write
+            - chat:write.public
+            - commands
+            - team:read
+          authorization:
+            url: 'https://slack.com/oauth/v2/authorize'
+          token:
+            url: 'https://slack.com/api/oauth.v2.access'
+            auth-method: client-secret-post
+    intercept-url-map:
+      - pattern: /graphql
+        access:
+          - isAnonymous()
+      - pattern: /graphiql
+        access:
+          - isAnonymous()
+      - pattern: /slack/events
+        access:
+          - isAnonymous()
+    endpoints:
+      logout:
+        get-allowed: true
+
+  server:
+    cors:
+      enabled: false
+    client-address-header: X-Nf-Client-Connection-Ip
+
+  http:
+    services:
+      githubv3:
+        url: "https://api.github.com"
+
+endpoints:
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+    jdbc:
+      enabled: true
+
+datasources:
+  default:
+    url: jdbc:postgresql://${postgres.host:localhost}/${postgres.database:postgres}
+    driverClassName: org.postgresql.Driver
+    username: ${postgres.username:postgres}
+    password: ${postgres.password:postgres}
+    dialect: postgres
+    maximumPoolSize: 15
+    minimumIdle: 5
+graphql:
+  enabled: true
+  path: /graphql
+  graphiql:
+    enabled:  true
+flyway:
+  datasources:
+    default:
+      locations: classpath:databasemigrations
