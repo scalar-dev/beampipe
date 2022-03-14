@@ -1,4 +1,5 @@
 import { Chart, Plugin } from "chart.js";
+import moment from "moment";
 
 type RangeSelectState = {
   enabled: boolean;
@@ -94,8 +95,8 @@ export const RangeSelectPlugin: Plugin<"line"> = {
 
     // handle drag to zoom
     if (chart.rangeSelect.drag?.startX && buttons === 0) {
-      var start = xScale.getValueForPixel(chart.rangeSelect.drag.startX);
-      var end = xScale.getValueForPixel(chart.rangeSelect.x);
+      var start = moment(xScale.getValueForPixel(chart.rangeSelect.drag.startX));
+      var end = moment(xScale.getValueForPixel(chart.rangeSelect.x));
 
       if (Math.abs(chart.rangeSelect.drag.startX - chart.rangeSelect.x!) > 1) {
         const onSelect = (chart.options?.plugins as any)?.["rangeSelect"]
