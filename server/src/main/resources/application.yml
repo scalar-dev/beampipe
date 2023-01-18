@@ -19,12 +19,12 @@ micronaut:
         signatures:
           secret:
             generator:
-              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET}"'
     oauth2:
       clients:
         github:
-          client-id:  '${GITHUB_CLIENT_ID:0eec0eaa4d9e88d6a91c}'
-          client-secret: '${GITHUB_CLIENT_SECRET:ae4f7127e074e953a50b0aedb578ad908e5dfe15}'
+          client-id:  '${GITHUB_CLIENT_ID}'
+          client-secret: '${GITHUB_CLIENT_SECRET}'
           scopes:
             - user:email
           authorization:
@@ -34,8 +34,8 @@ micronaut:
             auth-method: client-secret-post
 
         slack:
-          client-id:  '${SLACK_CLIENT_ID:1214303684884.1287705576788}'
-          client-secret: '${SLACK_CLIENT_SECRET:6bc5d2b9479ea561a4096ae5fb5139ca}'
+          client-id:  '${SLACK_CLIENT_ID}'
+          client-secret: '${SLACK_CLIENT_SECRET}'
           scopes:
             - chat:write
             - chat:write.public
