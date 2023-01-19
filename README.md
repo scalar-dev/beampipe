@@ -6,7 +6,18 @@ Beampipe is a simple, open source web analytics tool built on TimescaleDB.  Try 
 
 Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 
-<br>
+## Architecture
+Beampipe is designed to be simple and easy to deploy anywhere. The backend is
+written in [Kotlin](https://www.kotlinlang.org) using
+[Micronaut](https://www.micronaut.io) and requires only on a [PostgreSQL](https://www.postgresql.org) database
+with the [TimescaleDB](https://www.timescale.com) extension installed.
+
+The frontend is built with [TypeScript](https://www.typescriptlang.org),
+[React](https://reactjs.org) and [Tailwind](https://www.tailwindcss.com).
+
+Both components can be deployed via kubernetes (docker images and configuration
+coming soon!).
+
 <br>
 
 ## Website
