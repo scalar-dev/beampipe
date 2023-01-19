@@ -7,6 +7,7 @@ env:
   DOCKER_REPO: rg.fr-par.scw.cloud/alysis
   DOCKER_USERNAME: alexsparrow
   DOCKER_PASSWORD: ${{ secrets.SCALEWAY_SECRET }}
+  GEOLITE2_LICENSE_KEY: ${{ secrets.GEOLIT2_LICENSE_KEY }}
 jobs:
   server:
     runs-on: ubuntu-latest
@@ -16,7 +17,7 @@ jobs:
     - name: Build
       run: |
          echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
-         wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=kfhdgwWCgGixOFlA&suffix=tar.gz"
+         wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOLITE2_LICENSE_KEY&suffix=tar.gz"
          tar xf geolite2.tar.gz
          mv GeoLite2* geolite2
 
