@@ -65,7 +65,7 @@ const SocialButtons = () => (
 
     <a
       className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
-      href="https://github.com/beampipe"
+      href="https://github.com/scalar-dev/beampipe"
     >
       <FontAwesomeIcon size="lg" className="fill-current" icon={faGithub} />
     </a>

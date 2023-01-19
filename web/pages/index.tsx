@@ -313,7 +313,7 @@ export const Footer = () => (
             </li>
             <li className="mt-2 inline-block mr-2 md:block md:mr-0">
               <a
-                href="https://github.com/beampipe"
+                href="https://github.com/scalar-dev/beampipe"
                 target="_blank"
                 rel="noreferrer"
                 className="no-underline hover:underline"
