@@ -8,14 +8,16 @@ Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is
-written in Kotlin using Micronaut and depends only on a PostgreSQL database with
-the TimescaleDB extension installed.
+written in [Kotlin](https://www.kotlinlang.org) using
+[Micronaut](https://www.micronaut.io) and requires only on a [PostgreSQL](https://www.postgresql.org) database
+with the [TimescaleDB](https://www.timescale.com) extension installed.
 
-The frontend is built with TypeScript, React, Tailwind and graphql.
+The frontend is built with [TypeScript](https://www.typescriptlang.org),
+[React](https://reactjs.org) and [Tailwind](https://www.tailwindcss.com).
 
-Both components can be deployed via kubernetes (configuration coming soon!).
+Both components can be deployed via kubernetes (docker images and configuration
+coming soon!).
 
-<br>
 <br>
 
 ## Website
