@@ -1,7 +1,7 @@
 # Beampipe
 
 Beampipe is a simple, open source web analytics tool built on TimescaleDB.  Try
-it out at: [beampipe.io](https://beampipe.io/). We are currently working on
+it out at [beampipe.io](https://beampipe.io/). We are currently working on
 updating this README and making beampipe easy to self-host.
 
 ![screenhot](web/public/images/screenshot.png)
