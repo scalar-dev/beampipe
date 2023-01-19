@@ -9,7 +9,7 @@ Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is
 written in [Kotlin](https://www.kotlinlang.org) using
-[Micronaut](https://www.micronaut.io) and requires only on a [PostgreSQL](https://www.postgresql.org) database
+[Micronaut](https://www.micronaut.io) and requires only a [PostgreSQL](https://www.postgresql.org) database
 with the [TimescaleDB](https://www.timescale.com) extension installed.
 
 The frontend is built with [TypeScript](https://www.typescriptlang.org),
