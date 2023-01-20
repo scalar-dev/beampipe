@@ -3,25 +3,33 @@ name: CI
 on: [push]
 
 env:
-  DOCKER_SERVER: rg.fr-par.scw.cloud
-  DOCKER_REPO: rg.fr-par.scw.cloud/alysis
-  DOCKER_USERNAME: alexsparrow
-  DOCKER_PASSWORD: ${{ secrets.SCALEWAY_SECRET }}
-  GEOLITE2_LICENSE_KEY: ${{ secrets.GEOLIT2_LICENSE_KEY }}
+  DOCKER_REPO: scalardev/beampipe
+  GEOLITE2_LICENSE_KEY: ${{ secrets.GEOLITE2_LICENSE_KEY }}
 jobs:
   server:
     runs-on: ubuntu-latest
     container: alexsparrow/wat-builder
     steps:
     - uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      if: github.ref == 'refs/heads/master'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
     - name: Build
       run: |
-         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
+         ./gradlew server:assemble
+
+    - name: Push
+      if: github.ref == 'refs/heads/master'
+      run: |
          wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOLITE2_LICENSE_KEY&suffix=tar.gz"
          tar xf geolite2.tar.gz
          mv GeoLite2* geolite2
-
-         ./gradlew server:jib --no-daemon --console=plain --image=$DOCKER_REPO/server:$GITHUB_RUN_NUMBER
+         ./gradlew server:jib --no-daemon --console=plain --image=$DOCKER_REPO:$GITHUB_RUN_NUMBER
 
   web:
     runs-on: ubuntu-latest
@@ -37,7 +45,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Login to Docker Hub
+      if: github.ref == 'refs/heads/master'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
     - name: Build
       run: |
         cd ui
         docker build -t scalar-dev/beampipe-ui:$GITHUB_SHA .
+
+    - name: Push
+      if: github.ref == 'refs/heads/master'
+      run: |
+        docker push -t scalar-dev/beampipe-ui:$GITHUB_RUN_NUMBER

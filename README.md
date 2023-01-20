@@ -1,5 +1,4 @@
 # Beampipe
-
 Beampipe is a simple, open source web analytics tool built on TimescaleDB.  Try
 it out at [beampipe.io](https://beampipe.io/). We are currently working on
 updating this README and making beampipe easy to self-host.
@@ -7,6 +6,13 @@ updating this README and making beampipe easy to self-host.
 ![screenhot](web/public/images/screenshot.png)
 
 Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
+
+## Running beampipe
+The easiest way to get beampipe running locally is via docker. 
+
+Docker images are available on Docker Hub:
+[server](https://hub.docker.com/r/scalardev/beampipe) and
+[ui](https://hub.docker.com/r/scalardev/beampipe-ui).
 
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is
