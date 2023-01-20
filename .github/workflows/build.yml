@@ -3,10 +3,9 @@ name: CI
 on: [push]
 
 env:
-  DOCKER_SERVER: rg.fr-par.scw.cloud
-  DOCKER_REPO: rg.fr-par.scw.cloud/alysis
+  DOCKER_REPO: scalardev/beampipe
   DOCKER_USERNAME: alexsparrow
-  DOCKER_PASSWORD: ${{ secrets.SCALEWAY_SECRET }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
   GEOLITE2_LICENSE_KEY: ${{ secrets.GEOLIT2_LICENSE_KEY }}
 jobs:
   server:
@@ -16,7 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin $DOCKER_SERVER
+         echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin
          wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOLITE2_LICENSE_KEY&suffix=tar.gz"
          tar xf geolite2.tar.gz
          mv GeoLite2* geolite2
