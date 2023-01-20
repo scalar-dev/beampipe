@@ -54,9 +54,9 @@ jobs:
     - name: Build
       run: |
         cd ui
-        docker build -t scalar-dev/beampipe-ui:$GITHUB_SHA .
+        docker build -t scalar-dev/beampipe-ui:$GITHUB_RUN_NUMBER .
 
     - name: Push
       if: github.ref == 'refs/heads/master'
       run: |
-        docker push -t scalar-dev/beampipe-ui:$GITHUB_RUN_NUMBER
+        docker push scalar-dev/beampipe-ui:$GITHUB_RUN_NUMBER
