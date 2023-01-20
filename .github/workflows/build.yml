@@ -25,7 +25,7 @@ jobs:
          tar xf geolite2.tar.gz
          mv GeoLite2* geolite2
 
-         ./gradlew server:jib --no-daemon --console=plain --image=$DOCKER_REPO/server:$GITHUB_RUN_NUMBER
+         ./gradlew server:jib --no-daemon --console=plain --image=$DOCKER_REPO:$GITHUB_RUN_NUMBER
 
   web:
     runs-on: ubuntu-latest
