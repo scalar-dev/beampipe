@@ -7,6 +7,13 @@ updating this README and making beampipe easy to self-host.
 
 Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 
+## Running beampipe
+The easiest way to get beampipe running locally is via docker. 
+
+Docker images are available on Docker Hub:
+[server](https://hub.docker.com/r/scalardev/beampipe) and
+[ui](https://hub.docker.com/r/scalardev/beampipe-ui).
+
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is
 written in [Kotlin](https://www.kotlinlang.org) using
