@@ -8,7 +8,7 @@ import {
 const graphqlEndpoint = () =>
   window.location.hostname === "app.beampipe.io"
     ? "https://app.beampipe.io/graphql"
-    : `http://${window.location.hostname}:3000/graphql`;
+    : `http://${window.location.hostname}:${window.location.port}/graphql`;
 
 export const client = createClient({
   url:

@@ -1,0 +1,12 @@
+apply plugin: 'base'
+
+task npmInstall(type: Exec) {
+    commandLine "npm", "install"
+}
+
+task bundle(type: Exec) {
+    commandLine "npm", "run", "build"
+}
+
+bundle.dependsOn(npmInstall)
+assemble.dependsOn(bundle)

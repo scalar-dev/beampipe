@@ -1,6 +1,12 @@
 micronaut:
   application:
     name: server
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/ui/**"
+        paths: classpath:ui
   security:
     enabled: true
     authentication: cookie
@@ -23,8 +29,8 @@ micronaut:
     oauth2:
       clients:
         github:
-          client-id:  '${GITHUB_CLIENT_ID}'
-          client-secret: '${GITHUB_CLIENT_SECRET}'
+          client-id:  '${GITHUB_CLIENT_ID:}'
+          client-secret: '${GITHUB_CLIENT_SECRET:}'
           scopes:
             - user:email
           authorization:
@@ -34,8 +40,8 @@ micronaut:
             auth-method: client-secret-post
 
         slack:
-          client-id:  '${SLACK_CLIENT_ID}'
-          client-secret: '${SLACK_CLIENT_SECRET}'
+          client-id:  '${SLACK_CLIENT_ID:}'
+          client-secret: '${SLACK_CLIENT_SECRET:}'
           scopes:
             - chat:write
             - chat:write.public
@@ -47,13 +53,16 @@ micronaut:
             url: 'https://slack.com/api/oauth.v2.access'
             auth-method: client-secret-post
     intercept-url-map:
-      - pattern: /graphql
-        access:
-          - isAnonymous()
       - pattern: /graphiql
         access:
           - isAnonymous()
+      - pattern: /graphql
+        access:
+          - isAnonymous()
       - pattern: /slack/events
+        access:
+          - isAnonymous()
+      - pattern: /ui/**
         access:
           - isAnonymous()
     endpoints:
