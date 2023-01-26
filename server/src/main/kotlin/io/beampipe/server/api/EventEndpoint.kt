@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @Controller("/event")
 @Secured(SecurityRule.IS_ANONYMOUS)
-class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) {
+class EventEndpoint {
     val LOG = logger()
 
     @Inject
@@ -40,6 +40,9 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
 
     @Inject
     lateinit var slackNotifier: SlackNotifier
+
+    @Inject
+    lateinit var geoTagger: GeoTagger
 
     val uaa = UserAgentAnalyzer
         .newBuilder()
@@ -52,8 +55,6 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     var key: ByteArray = "0123456789ABCDEF".toByteArray()
     var container = SipHasher.container(key)
 
-    var database = File(geoLite2DbPath)
-    var reader = DatabaseReader.Builder(database).build()
 
     data class Event(
         val type: String,
@@ -75,7 +76,7 @@ class EventEndpoint(@Property(name = "geolite2.db") val geoLite2DbPath: String) 
     suspend fun storeEvent(clientIp: String?, event: Event) {
         val ipCity = GlobalScope.async {
             val ipAddress = InetAddress.getByName(clientIp)
-            reader.tryCity(ipAddress)
+            geoTagger.tag(ipAddress)
         }.await()
 
         val uri = URI.create(event.url)

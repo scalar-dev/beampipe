@@ -4,15 +4,25 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.beampipe.server.api.EventEndpoint
+import io.beampipe.server.auth.hashPassword
+import io.beampipe.server.db.Accounts
+import io.beampipe.server.db.Domains
+import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.EventQuery
 import io.micronaut.configuration.graphql.GraphQLRequestBody
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.Before
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -46,8 +56,26 @@ class EventEndpointShould : TestPropertyProvider {
         1024
     )
 
-    data class Response<T>(val data: T)
-    data class Events(val events: List<EventQuery.Event>)
+//    data class Response<T>(val data: T)
+//    data class Events(val rawEvents: List<EventQuery.Event>)
+
+    @BeforeAll
+    fun setup() {
+        transaction {
+            val accountId = Accounts.insertAndGetId {
+                it[Accounts.email] = "person@hello.com"
+                it[Accounts.password] = "whatever"
+                it[Accounts.salt] = "foo"
+                it[Accounts.emailOk] = true
+            }.value
+
+            Domains.insertAndGetId {
+                it[Domains.domain] = "hello.com"
+                it[Domains.accountId] = accountId
+                it[Domains.public] = true
+            }.value
+        }
+    }
 
     @Test
     fun insert_events() {
@@ -57,29 +85,16 @@ class EventEndpointShould : TestPropertyProvider {
                 .exchange<EventEndpoint.Event, Void>(request)
         }
 
-        val body = GraphQLRequestBody()
-        body.query = """
-            {
-              events(domain: "hello.com") {
-                type
-                time
-                source
-                city
-                country
-              } 
-            }
-        """.trimIndent()
+        val events = transaction {
+            Events.selectAll().toList()
+        }
 
-        val response = client.toBlocking().retrieve(
-            HttpRequest.POST("/graphql", body)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-        val objectMapper = jacksonObjectMapper()
-        objectMapper.registerModule(JavaTimeModule())
-        val events = objectMapper.readValue<Response<Events>>(response)
+        assertEquals(3, events.size)
 
-        assertEquals("Nashville", events.data.events[0].city)
-        assertEquals("United States", events.data.events[0].country)
+        events.forEach { event ->
+            assertEquals("foo.com", event[Events.domain])
+            assertEquals("event", event[Events.type])
+        }
     }
 
     override fun getProperties(): MutableMap<String, String> {

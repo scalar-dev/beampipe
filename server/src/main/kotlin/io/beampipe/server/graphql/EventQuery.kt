@@ -6,6 +6,7 @@ import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
@@ -117,6 +118,14 @@ class EventQuery {
             .withDistinct()
             .count()
     }
+
+    suspend fun rawEvents(context: Context, domain: String): List<Event> = newSuspendedTransaction {
+        val userId = accountQuery.user(context)?.id
+        matchingDomain(userId, domain)
+
+        Events.select{ Events.domain.eq(domain) }.limit(1000).map { Event(it[Events.type], it[Events.time], it[Events.sourceClean], it[Events.city], it[Events.country]) }
+    }
+
 
     suspend fun events(
         context: Context,

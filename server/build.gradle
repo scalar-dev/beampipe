@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.5.30"
-    id "org.jetbrains.kotlin.kapt" version "1.5.30"
+    id "org.jetbrains.kotlin.jvm" version "1.8.0"
+    id "org.jetbrains.kotlin.kapt" version "1.8.0"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.5.30"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.application") version "1.2.0"
@@ -87,9 +87,9 @@ dependencies {
 
     testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
 
-    testImplementation "org.testcontainers:testcontainers:1.12.3"
-    testImplementation "org.testcontainers:postgresql:1.12.3"
-    testImplementation "org.testcontainers:junit-jupiter:1.12.3"
+    testImplementation "org.testcontainers:testcontainers:1.17.6"
+    testImplementation "org.testcontainers:postgresql:1.17.6"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
 }
 
 mainClassName = "io.beampipe.server.ApplicationKt"
