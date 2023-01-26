@@ -1,32 +1,19 @@
 package server
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.beampipe.server.api.EventEndpoint
-import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
-import io.beampipe.server.graphql.EventQuery
-import io.micronaut.configuration.graphql.GraphQLRequestBody
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.MediaType
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
 import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.Before
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestMethodOrder
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import javax.inject.Inject
@@ -98,6 +85,9 @@ class EventEndpointShould : TestPropertyProvider {
     }
 
     override fun getProperties(): MutableMap<String, String> {
-        return mutableMapOf("postgres.port" to postgresContainer.firstMappedPort.toString())
+        return mutableMapOf(
+                "postgres.port" to postgresContainer.firstMappedPort.toString(),
+                "postgres.host" to postgresContainer.host
+        )
     }
 }
