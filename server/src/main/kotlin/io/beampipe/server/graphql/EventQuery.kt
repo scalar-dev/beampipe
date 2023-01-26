@@ -119,14 +119,6 @@ class EventQuery {
             .count()
     }
 
-    suspend fun rawEvents(context: Context, domain: String): List<Event> = newSuspendedTransaction {
-        val userId = accountQuery.user(context)?.id
-        matchingDomain(userId, domain)
-
-        Events.select{ Events.domain.eq(domain) }.limit(1000).map { Event(it[Events.type], it[Events.time], it[Events.sourceClean], it[Events.city], it[Events.country]) }
-    }
-
-
     suspend fun events(
         context: Context,
         domain: String,
