@@ -15,10 +15,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Replaces(DefaultGraphQLExecutionInputCustomizer::class)
-class GraphQLExecutionInput : GraphQLExecutionInputCustomizer {
-    @Inject
-    lateinit var securityService: SecurityService
-
+class GraphQLExecutionInput(@Inject val securityService: SecurityService?) : GraphQLExecutionInputCustomizer {
     @Inject
     lateinit var hostResolver: HttpHostResolver
 
@@ -28,7 +25,7 @@ class GraphQLExecutionInput : GraphQLExecutionInputCustomizer {
         httpResponse: MutableHttpResponse<String>?
     ): Publisher<ExecutionInput> {
         return Publishers.just(executionInput.transform { builder ->
-            builder.context(Context(securityService.authentication.orElse(null), hostResolver.resolve(httpRequest)))
+            builder.context(Context(securityService?.authentication?.orElse(null), hostResolver.resolve(httpRequest)))
         })
     }
 }

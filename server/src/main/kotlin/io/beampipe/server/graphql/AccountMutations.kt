@@ -40,8 +40,8 @@ class AccountMutations(
         name = "stripe.product",
         defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
     ) val stripeProduct: String,
-    @Inject val jwtTokenGenerator: JwtTokenGenerator,
-    @Inject val jwtTokenValidator: JwtTokenValidator
+    @Inject val jwtTokenGenerator: JwtTokenGenerator?,
+    @Inject val jwtTokenValidator: JwtTokenValidator?
 ) {
     @Inject
     lateinit var accountQuery: AccountQuery
@@ -198,7 +198,9 @@ class AccountMutations(
 
         if (accountId != null) {
             val userDetails = UserDetails(accountId.toString(), emptyList())
-            val token = jwtTokenGenerator.generateToken(userDetails, 7 * 24 * 60 * 60).orElseThrow()
+            val token = jwtTokenGenerator!!
+                    .generateToken(userDetails, 7 * 24 * 60 * 60)
+                    .orElseThrow { RuntimeException("foo") }
 
             ResetTokens.insert {
                 it[ResetTokens.accountId] = accountId
@@ -218,7 +220,7 @@ class AccountMutations(
             .firstOrNull()
             ?.get(ResetTokens.accountId)
 
-        val auth = jwtTokenValidator.validateToken(token, null).awaitFirstOrNull()
+        val auth = jwtTokenValidator!!.validateToken(token, null).awaitFirstOrNull()
 
         if (accountId != null && auth != null) {
             val salt = ByteArray(16)

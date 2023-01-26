@@ -1,8 +1,8 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.5.30"
-    id "org.jetbrains.kotlin.kapt" version "1.5.30"
+    id "org.jetbrains.kotlin.jvm" version "1.8.0"
+    id "org.jetbrains.kotlin.kapt" version "1.8.0"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.5.30"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.micronaut.application") version "1.2.0"
     id 'com.google.cloud.tools.jib' version '3.1.4'
 }
@@ -21,6 +21,12 @@ micronaut {
     processing {
         incremental(true)
         annotations("io.beampipe.*")
+    }
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
@@ -87,29 +93,15 @@ dependencies {
 
     testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
 
-    testImplementation "org.testcontainers:testcontainers:1.12.3"
-    testImplementation "org.testcontainers:postgresql:1.12.3"
-    testImplementation "org.testcontainers:junit-jupiter:1.12.3"
+    testImplementation "org.testcontainers:testcontainers:1.17.6"
+    testImplementation "org.testcontainers:postgresql:1.17.6"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
 }
 
 mainClassName = "io.beampipe.server.ApplicationKt"
 
 allOpen {
     annotation("io.micronaut.aop.Around")
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        //Will retain parameter names for Java reflection
-        javaParameters = true
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        javaParameters = true
-    }
 }
 
 shadowJar {
@@ -130,6 +122,3 @@ jib {
         }
     }
 }
-
-
-

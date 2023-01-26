@@ -8,7 +8,6 @@ env:
 jobs:
   server:
     runs-on: ubuntu-latest
-    container: alexsparrow/wat-builder
     steps:
     - uses: actions/checkout@v2
 
@@ -21,7 +20,7 @@ jobs:
 
     - name: Build
       run: |
-         ./gradlew server:assemble
+         ./gradlew server:build
 
     - name: Push
       if: github.ref == 'refs/heads/master'

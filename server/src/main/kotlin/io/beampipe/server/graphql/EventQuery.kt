@@ -6,6 +6,7 @@ import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
