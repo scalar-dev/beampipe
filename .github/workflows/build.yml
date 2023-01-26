@@ -21,7 +21,7 @@ jobs:
 
     - name: Build
       run: |
-         ./gradlew server:assemble
+         ./gradlew server:build
 
     - name: Push
       if: github.ref == 'refs/heads/master'
