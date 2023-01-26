@@ -198,7 +198,9 @@ class AccountMutations(
 
         if (accountId != null) {
             val userDetails = UserDetails(accountId.toString(), emptyList())
-            val token = jwtTokenGenerator!!.generateToken(userDetails, 7 * 24 * 60 * 60).orElseThrow()
+            val token = jwtTokenGenerator!!
+                    .generateToken(userDetails, 7 * 24 * 60 * 60)
+                    .orElseThrow { RuntimeException("foo") }
 
             ResetTokens.insert {
                 it[ResetTokens.accountId] = accountId
