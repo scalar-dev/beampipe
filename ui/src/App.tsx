@@ -13,7 +13,7 @@ import { SignOut } from "./pages/SignOut";
 export const App = () => (
   <Provider value={client}>
     <AuthProvider>
-      <Router basename="/ui">
+      <Router>
         <Routes>
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />

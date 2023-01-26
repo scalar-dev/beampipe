@@ -4,8 +4,8 @@ micronaut:
   router:
     static-resources:
       default:
-        enabled: true
-        mapping: "/ui/**"
+        enabled: ${ENABLE_UI:false}
+        mapping: "/**"
         paths: classpath:ui
   security:
     enabled: true
@@ -53,6 +53,9 @@ micronaut:
             url: 'https://slack.com/api/oauth.v2.access'
             auth-method: client-secret-post
     intercept-url-map:
+      - pattern: /**
+        access:
+          - isAnonymous()
       - pattern: /graphiql
         access:
           - isAnonymous()
