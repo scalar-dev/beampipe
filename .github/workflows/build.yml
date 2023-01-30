@@ -27,7 +27,7 @@ jobs:
     - name: Push
       # if: github.ref == 'refs/heads/master'
       run: |
-        ./gradlew --no-daemon --console=plain -P build-ui server:job --image=scalar-dev/beampipe:$GITHUB_RUN_NUMBER
+        ./gradlew --no-daemon --console=plain -P build-ui server:jib --image=scalar-dev/beampipe:$GITHUB_RUN_NUMBER
 
   web:
     runs-on: ubuntu-latest
