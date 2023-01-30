@@ -19,7 +19,7 @@ jobs:
 
     - name: Build
       run: |
-         ./gradlew server:build
+         ./gradlew server:build jibDockerBuild
 
     - name: Push
       if: github.ref == 'refs/heads/master'

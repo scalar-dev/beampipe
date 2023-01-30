@@ -151,7 +151,7 @@ jib {
     if (bundleUi) {
         container {
            environment = [
-               "ENABLE_UI": true
+               "ENABLE_UI": "true"
            ]
         }
     }
