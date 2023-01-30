@@ -32,7 +32,7 @@ class DomainQuery {
         }
     }
 
-    suspend fun listGoals(context: Context, domainId: UUID): List<Goal> = context.withAccountId { accountId ->
+    suspend fun listGoals(context: Context, domainId: UUID): List<Goal> = context.withAccountId { _ ->
         newSuspendedTransaction {
             context.checkDomainAccess(domainId)
 
@@ -50,7 +50,7 @@ class DomainQuery {
         }
     }
 
-    suspend fun domain(context: Context, id: UUID?, domain: String?): DomainQ = context.withAccountId { accountId ->
+    suspend fun domain(context: Context, id: UUID?, domain: String?): DomainQ = context.withAccountId { _ ->
         val domainId = id ?: newSuspendedTransaction {
             Domains.slice(Domains.id).select { Domains.domain eq domain!! }.firstOrNull()!![Domains.id].value
         }

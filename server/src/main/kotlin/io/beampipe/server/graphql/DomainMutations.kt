@@ -15,7 +15,7 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
-fun canonicaliseDomain(domain:String) = domain.trim().toLowerCase()
+fun canonicaliseDomain(domain:String) = domain.trim().lowercase()
 
 @Singleton
 class DomainMutations(@Inject val accountQuery: AccountQuery) {
@@ -30,7 +30,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
     }
 
     suspend fun addGoal(context: Context, domainId: UUID, name: String, description: String?, eventType: String, path: String?) =
-        context.withAccountId { accountId ->
+        context.withAccountId { _ ->
             newSuspendedTransaction {
                 context.checkDomainAccess(domainId)
 
@@ -48,7 +48,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
             }
         }
 
-    suspend fun deleteGoal(context: Context, id: UUID) = context.withAccountId { accountId ->
+    suspend fun deleteGoal(context: Context, id: UUID) = context.withAccountId { _ ->
         newSuspendedTransaction {
             val goal = Goals.select { Goals.id eq id }
                 .firstOrNull()!!
