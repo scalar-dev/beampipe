@@ -2,7 +2,7 @@ version: "3.3"
 services:
   postgres:
     restart: always
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:latest-pg14
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -10,4 +10,14 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
+  beampipe:
+    restart: always
+    image: scalardev/beampipe
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "8080:8080"
