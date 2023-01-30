@@ -11,8 +11,8 @@ Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 The easiest way to get beampipe running locally is via docker. 
 
 Docker images are available on Docker Hub:
-[server](https://hub.docker.com/r/scalardev/beampipe) and
-[ui](https://hub.docker.com/r/scalardev/beampipe-ui).
+- [server](https://hub.docker.com/r/scalardev/beampipe) contains both the server and the UI
+- [ui](https://hub.docker.com/r/scalardev/beampipe-ui) is just the UI (served via nginx) e.g. for running in k8s.
 
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is
