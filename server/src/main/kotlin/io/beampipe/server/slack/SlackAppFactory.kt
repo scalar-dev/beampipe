@@ -74,7 +74,7 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
         }
     }
 
-    private fun listSubscriptions(parts: List<String>, req: SlashCommandRequest, ctx:SlashCommandContext): Response =
+    private fun listSubscriptions(req: SlashCommandRequest, ctx:SlashCommandContext): Response =
         transaction {
             val unsubscribeSections = SlackSubscriptions.select {
                 SlackSubscriptions.channelId eq (req.payload.channelId) and
@@ -170,7 +170,7 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
 
             when (parts[0]) {
                 "subscribe" -> subscribe(parts, req, ctx)
-                "list" -> listSubscriptions(parts, req, ctx)
+                "list" -> listSubscriptions(req, ctx)
                 "summary" -> subscribeSummary(parts, req, ctx)
                 "help" -> helpMessage(ctx)
                 else -> helpMessage(ctx)

@@ -18,7 +18,7 @@ import java.time.Instant
 import java.util.Base64
 import javax.inject.Singleton
 
-fun canonicaliseEmail(email: String) = email.trim().toLowerCase()
+fun canonicaliseEmail(email: String) = email.trim().lowercase()
 
 @Singleton
 class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
