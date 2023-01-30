@@ -8,11 +8,20 @@ updating this README and making beampipe easy to self-host.
 Beampipe is built and sponsored by [Scalar](https://www.scalar.dev).
 
 ## Running beampipe
-The easiest way to get beampipe running locally is via docker. 
+
+If you want to have a quick play with beampipe on your local machine, the simplest way is using `docker-compose`:
+
+```
+curl https://raw.githubusercontent.com/scalar-dev/beampipe/master/docker-compose.yml -o docker-compose.yml
+docker-compose up
+```
+
+This will launch both `timescaledb` and `beampipe`. You should be able to access the web UI at `http://localhost:8080`.
 
 Docker images are available on Docker Hub:
 - [server](https://hub.docker.com/r/scalardev/beampipe) contains both the server and the UI
 - [ui](https://hub.docker.com/r/scalardev/beampipe-ui) is just the UI (served via nginx) e.g. for running in k8s.
+
 
 ## Architecture
 Beampipe is designed to be simple and easy to deploy anywhere. The backend is

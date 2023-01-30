@@ -142,7 +142,7 @@ jib {
             paths {
                 path {
                     from = "$rootDir/ui/build"
-                    into = "/ui"
+                    into = "/app/classes/ui"
                 }
             }
         }

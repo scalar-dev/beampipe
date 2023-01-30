@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Login to Docker Hub
-      # if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -22,12 +22,12 @@ jobs:
         wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOLITE2_LICENSE_KEY&suffix=tar.gz"
         tar xf geolite2.tar.gz
         mv GeoLite2* geolite2
-        ./gradlew --no-daemon --console=plain -P build-ui server:build jibDockerBuild
+        ./gradlew --no-daemon --console=plain -P bundle-ui server:build jibDockerBuild
 
     - name: Push
-      # if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       run: |
-        ./gradlew --no-daemon --console=plain -P build-ui server:jib --image=scalardev/beampipe:$GITHUB_RUN_NUMBER -Djib.to.tags=latest
+        ./gradlew --no-daemon --console=plain -P bundle-ui server:jib --image=scalardev/beampipe:$GITHUB_RUN_NUMBER -Djib.to.tags=latest
 
   web:
     runs-on: ubuntu-latest
