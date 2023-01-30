@@ -30,6 +30,12 @@ kotlin {
     }
 }
 
+def bundleUi = project.hasProperty('bundle-ui')
+
+if (bundleUi) {
+    println("Building with UI")
+}
+
 dependencies {
     implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
@@ -96,6 +102,11 @@ dependencies {
     testImplementation "org.testcontainers:testcontainers:1.17.6"
     testImplementation "org.testcontainers:postgresql:1.17.6"
     testImplementation "org.testcontainers:junit-jupiter:1.17.6"
+
+    if (bundleUi) {
+        runtimeOnly project(':ui')
+    }
+
 }
 
 mainClassName = "io.beampipe.server.ApplicationKt"
@@ -106,6 +117,12 @@ allOpen {
 
 shadowJar {
     mergeServiceFiles()
+
+    if (bundleUi) {
+        from("$rootDir/ui/build") {
+            into "ui/"
+        }
+    }
 }
 
 jib {
@@ -120,5 +137,28 @@ jib {
                 into = "/data"
             }
         }
+
+        if (bundleUi) {
+            paths {
+                path {
+                    from = "$rootDir/ui/build"
+                    into = "/ui"
+                }
+            }
+        }
+    }
+
+    if (bundleUi) {
+        container {
+           environment = [
+               "ENABLE_UI": true
+           ]
+        }
     }
 }
+
+if (bundleUi) {
+    shadowJar.dependsOn ":ui:build"
+    compileJava.dependsOn ":ui:build"
+}
+

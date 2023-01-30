@@ -2973,20 +2973,12 @@
     "@typescript-eslint/types" "5.6.0"
     eslint-visitor-keys "^3.0.0"
 
-"@urql/core@>=2.3.6", "@urql/core@^2.3.6":
+"@urql/core@^2.3.6":
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/@urql/core/-/core-2.3.6.tgz#ee0a6f8fde02251e9560c5f17dce5cd90f948552"
   integrity sha512-PUxhtBh7/8167HJK6WqBv6Z0piuiaZHQGYbhwpNL9aIQmLROPEdaUYkY4wh45wPQXcTpnd11l0q3Pw+TI11pdw==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.0"
-    wonka "^4.0.14"
-
-"@urql/exchange-auth@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@urql/exchange-auth/-/exchange-auth-0.1.7.tgz#fc2536bed9978076f6233ed219bc13ff38b2553f"
-  integrity sha512-4Bmmi6YMW1YjZnTdr0Gfp9IoIY1fpNGq/fo1XHWEFEYe+IEOEDQhKT1CyhztyvvKpFw2C46D32MJRWJHQUPo/g==
-  dependencies:
-    "@urql/core" ">=2.3.6"
     wonka "^4.0.14"
 
 "@webassemblyjs/ast@1.11.1":
@@ -3519,10 +3511,10 @@ babel-plugin-macros@^3.1.0:
     cosmiconfig "^7.0.0"
     resolve "^1.19.0"
 
-babel-plugin-named-asset-import@1.0.0-next.102+657739fb:
-  version "1.0.0-next.102"
-  resolved "https://registry.yarnpkg.com/babel-plugin-named-asset-import/-/babel-plugin-named-asset-import-1.0.0-next.102.tgz#ef85b2e94fd9763f5d17b5f7fa1be427805d5384"
-  integrity sha512-TzhP6fJmMe2iCEK/PJ3DHkysNGfy4A0uJgzzfsSErttkpHPAkq+xN+RxjYEkn3Srl6rQCfIkC36u5Zr8xrDYPw==
+babel-plugin-named-asset-import@^0.3.8:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/babel-plugin-named-asset-import/-/babel-plugin-named-asset-import-0.3.8.tgz#6b7fa43c59229685368683c28bc9734f24524cc2"
+  integrity sha512-WXiAc++qo7XcJ1ZnTYGtLxmBCVbddAml3CEXgWaBzNzLNoxtQ8AiGEFDMOhot9XjTCQbvP5E77Fj9Gk924f00Q==
 
 babel-plugin-polyfill-corejs2@^0.3.0:
   version "0.3.0"
@@ -3579,10 +3571,10 @@ babel-preset-jest@^27.4.0:
     babel-plugin-jest-hoist "^27.4.0"
     babel-preset-current-node-syntax "^1.0.0"
 
-babel-preset-react-app@11.0.0-next.102+657739fb:
-  version "11.0.0-next.102"
-  resolved "https://registry.yarnpkg.com/babel-preset-react-app/-/babel-preset-react-app-11.0.0-next.102.tgz#4c65672b8d86645a18e2ccbbb92cdb5848c9efd3"
-  integrity sha512-Vhev1FnkwCiDSaqvCJv+fGNuPJ5O1pwRLEtF0LfPeBbYYoJTW0K9qZH81xb6aQ/8o81XX1uPksEHMMqyZCuFiw==
+babel-preset-react-app@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-react-app/-/babel-preset-react-app-10.0.1.tgz#ed6005a20a24f2c88521809fa9aea99903751584"
+  integrity sha512-b0D9IZ1WhhCWkrTXyFuIIgqGzSkRIH5D5AmB0bXbzYAB1OBAwHcUeyWW2LorutLWF5btNo/N7r/cIdmvvKJlYg==
   dependencies:
     "@babel/core" "^7.16.0"
     "@babel/plugin-proposal-class-properties" "^7.16.0"
@@ -4045,10 +4037,10 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-confusing-browser-globals@2.0.0-next.102+657739fb:
-  version "2.0.0-next.102"
-  resolved "https://registry.yarnpkg.com/confusing-browser-globals/-/confusing-browser-globals-2.0.0-next.102.tgz#723e1a52959342ef334da17e4ed6614ad7eca58e"
-  integrity sha512-3J271XYW5deSgBspYIt0XQfOgICG2n9ZcQQqy6sW3ekued3lMVuBaLmIPy1B1qANvdqLzKqtSAi4dcQ+5+AXOg==
+confusing-browser-globals@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/confusing-browser-globals/-/confusing-browser-globals-1.0.11.tgz#ae40e9b57cdd3915408a2805ebd3a5585608dc81"
+  integrity sha512-JsPKdmh8ZkmnHxDk55FZ1TqVLvEQTvoByJZRN9jzI0UjxK/QgAmsphz7PGtqgPieQZ/CQcHWXCR7ATDNhGe+YA==
 
 connect-history-api-fallback@^1.6.0:
   version "1.6.0"
@@ -5226,18 +5218,18 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-react-app@7.0.0-next.102+657739fb:
-  version "7.0.0-next.102"
-  resolved "https://registry.yarnpkg.com/eslint-config-react-app/-/eslint-config-react-app-7.0.0-next.102.tgz#6d2017238293280079de93815c08945865daedae"
-  integrity sha512-sbJvZgE/0WJTZ5LuVCmAaShUcxyniPlJwcoxcxz5HSvpweEVKX85fY23ifwVO3/Rq8nIBCOQ+A1MOEjcmZ2C3A==
+eslint-config-react-app@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-react-app/-/eslint-config-react-app-7.0.1.tgz#73ba3929978001c5c86274c017ea57eb5fa644b4"
+  integrity sha512-K6rNzvkIeHaTd8m/QEh1Zko0KI7BACWkkneSs6s9cKZC/J27X3eZR6Upt1jkmZ/4FK+XUOPPxMEN7+lbUXfSlA==
   dependencies:
     "@babel/core" "^7.16.0"
     "@babel/eslint-parser" "^7.16.3"
     "@rushstack/eslint-patch" "^1.1.0"
     "@typescript-eslint/eslint-plugin" "^5.5.0"
     "@typescript-eslint/parser" "^5.5.0"
-    babel-preset-react-app "11.0.0-next.102+657739fb"
-    confusing-browser-globals "2.0.0-next.102+657739fb"
+    babel-preset-react-app "^10.0.1"
+    confusing-browser-globals "^1.0.11"
     eslint-plugin-flowtype "^8.0.3"
     eslint-plugin-import "^2.25.3"
     eslint-plugin-jest "^25.3.0"
@@ -8813,10 +8805,10 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-app-polyfill@3.0.0-next.102+657739fb:
-  version "3.0.0-next.102"
-  resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-3.0.0-next.102.tgz#cd53abaf6be33d3d510592dc37585f87b736e8b7"
-  integrity sha512-PVgxH8/ZaO0Uu1pYcZDwryswQUKQy4CJCEJyaRHkDvJqPJ1nblJrETw7usffCBkQqOrWk5ElCnvuxndaKDVUnQ==
+react-app-polyfill@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-3.0.0.tgz#95221e0a9bd259e5ca6b177c7bb1cb6768f68fd7"
+  integrity sha512-sZ41cxiU5llIB003yxxQBYrARBqe0repqPTTYBTmMqTz9szeBbE37BehCE891NZsmdZqqP+xWKdT3eo3vOzN8w==
   dependencies:
     core-js "^3.19.2"
     object-assign "^4.1.1"
@@ -8830,10 +8822,10 @@ react-cool-onclickoutside@^1.7.0:
   resolved "https://registry.yarnpkg.com/react-cool-onclickoutside/-/react-cool-onclickoutside-1.7.0.tgz#abc844e14852220fe15f81d7ef44976d15cd9980"
   integrity sha512-HVZK2155Unee+enpoHKyYP2UdQK69thw90XAOUCjvJBcgRSgfRPgWWt/W1dYzoGp3+nleAa8SJxF1d4FMA4Qmw==
 
-react-dev-utils@12.0.0-next.58+657739fb:
-  version "12.0.0-next.58"
-  resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-12.0.0-next.58.tgz#ef8e5daa888820d465e05041c1142bd7914c25e2"
-  integrity sha512-EE1ZBMahzN+sF5oXZgA0Iim2oPluEuAi4K9W2/f98oPFLhCFA2ZytW3NIZayKPoeGFCAUy2fI/PD8tyw7KxBOw==
+react-dev-utils@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-12.0.1.tgz#ba92edb4a1f379bd46ccd6bcd4e7bc398df33e73"
+  integrity sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==
   dependencies:
     "@babel/code-frame" "^7.16.0"
     address "^1.1.2"
@@ -8854,7 +8846,7 @@ react-dev-utils@12.0.0-next.58+657739fb:
     open "^8.4.0"
     pkg-up "^3.1.0"
     prompts "^2.4.2"
-    react-error-overlay "7.0.0-next.65+657739fb"
+    react-error-overlay "^6.0.11"
     recursive-readdir "^2.2.2"
     shell-quote "^1.7.3"
     strip-ansi "^6.0.1"
@@ -8869,10 +8861,10 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-error-overlay@7.0.0-next.65+657739fb:
-  version "7.0.0-next.65"
-  resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-7.0.0-next.65.tgz#903df789eb8efd99bbff70075fea97d0b3060d2b"
-  integrity sha512-tOAxyTOaOrwon2GMS6cTfFdTHBIifyf7i/SphLxHZtWVhD/dk+pfEp/ACaQe3J1lO7qEv/ei2np3XxRezyedrg==
+react-error-overlay@^6.0.11:
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
+  integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
 react-is@^16.8.1:
   version "16.13.1"
@@ -8904,18 +8896,18 @@ react-router@6.0.2:
   dependencies:
     history "^5.1.0"
 
-react-scripts@next:
-  version "5.0.0-next.58"
-  resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-5.0.0-next.58.tgz#eacb11e75b588129dc177c0fa0b1e16c549d33f9"
-  integrity sha512-7c7hvLB7z7gTOUfcWQhrOLvUSOCGzE1hZK5AgJoC0eQKs4jc354q+62bGzbL4Efii2dBmqsefXykJmpmtvBxCQ==
+react-scripts@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-5.0.1.tgz#6285dbd65a8ba6e49ca8d651ce30645a6d980003"
+  integrity sha512-8VAmEm/ZAwQzJ+GOMLbBsTdDKOpuZh7RPs0UymvBR2vRk4iZWCskjbFnxqjrzoIvlNNRZ3QJFx6/qDSi6zSnaQ==
   dependencies:
     "@babel/core" "^7.16.0"
     "@pmmmwh/react-refresh-webpack-plugin" "^0.5.3"
     "@svgr/webpack" "^5.5.0"
     babel-jest "^27.4.2"
     babel-loader "^8.2.3"
-    babel-plugin-named-asset-import "1.0.0-next.102+657739fb"
-    babel-preset-react-app "11.0.0-next.102+657739fb"
+    babel-plugin-named-asset-import "^0.3.8"
+    babel-preset-react-app "^10.0.1"
     bfj "^7.0.2"
     browserslist "^4.18.1"
     camelcase "^6.2.1"
@@ -8925,7 +8917,7 @@ react-scripts@next:
     dotenv "^10.0.0"
     dotenv-expand "^5.1.0"
     eslint "^8.3.0"
-    eslint-config-react-app "7.0.0-next.102+657739fb"
+    eslint-config-react-app "^7.0.1"
     eslint-webpack-plugin "^3.1.1"
     file-loader "^6.2.0"
     fs-extra "^10.0.0"
@@ -8941,8 +8933,8 @@ react-scripts@next:
     postcss-normalize "^10.0.1"
     postcss-preset-env "^7.0.1"
     prompts "^2.4.2"
-    react-app-polyfill "3.0.0-next.102+657739fb"
-    react-dev-utils "12.0.0-next.58+657739fb"
+    react-app-polyfill "^3.0.0"
+    react-dev-utils "^12.0.1"
     react-refresh "^0.11.0"
     resolve "^1.20.0"
     resolve-url-loader "^4.0.0"
@@ -8950,6 +8942,7 @@ react-scripts@next:
     semver "^7.3.5"
     source-map-loader "^3.0.0"
     style-loader "^3.3.1"
+    tailwindcss "^3.0.2"
     terser-webpack-plugin "^5.2.5"
     webpack "^5.64.4"
     webpack-dev-server "^4.6.0"
