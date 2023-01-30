@@ -30,10 +30,10 @@ kotlin {
     }
 }
 
-def allInOne = project.hasProperty('all-in-one')
+def bundleUi = project.hasProperty('bundle-ui')
 
-if (allInOne) {
-    println("all-in-one")
+if (bundleUi) {
+    println("Building with UI")
 }
 
 dependencies {
@@ -103,7 +103,7 @@ dependencies {
     testImplementation "org.testcontainers:postgresql:1.17.6"
     testImplementation "org.testcontainers:junit-jupiter:1.17.6"
 
-    if (allInOne) {
+    if (bundleUi) {
         runtimeOnly project(':ui')
     }
 
@@ -118,7 +118,7 @@ allOpen {
 shadowJar {
     mergeServiceFiles()
 
-    if (allInOne) {
+    if (bundleUi) {
         from("$rootDir/ui/build") {
             into "ui/"
         }
@@ -138,7 +138,7 @@ jib {
             }
         }
 
-        if (project.hasProperty('all-in-one')) {
+        if (bundleUi) {
             paths {
                 path {
                     from = "$rootDir/ui/build"
@@ -147,9 +147,17 @@ jib {
             }
         }
     }
+
+    if (bundleUi) {
+        container {
+           environment = [
+               "ENABLE_UI": true
+           ]
+        }
+    }
 }
 
-if (allInOne) {
+if (bundleUi) {
     shadowJar.dependsOn ":ui:build"
     compileJava.dependsOn ":ui:build"
 }

@@ -56,18 +56,6 @@ micronaut:
       - pattern: /**
         access:
           - isAnonymous()
-      - pattern: /graphiql
-        access:
-          - isAnonymous()
-      - pattern: /graphql
-        access:
-          - isAnonymous()
-      - pattern: /slack/events
-        access:
-          - isAnonymous()
-      - pattern: /ui/**
-        access:
-          - isAnonymous()
     endpoints:
       logout:
         get-allowed: true
