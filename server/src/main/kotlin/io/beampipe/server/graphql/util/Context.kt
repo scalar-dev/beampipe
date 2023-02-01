@@ -3,10 +3,9 @@ package io.beampipe.server.graphql.util
 import com.expediagroup.graphql.execution.GraphQLContext
 import io.beampipe.server.db.Domains
 import io.micronaut.security.authentication.Authentication
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
-import java.util.UUID
+import java.util.*
 
 data class Context(val authentication: Authentication?, val host: String) : GraphQLContext {
     val accountId: UUID

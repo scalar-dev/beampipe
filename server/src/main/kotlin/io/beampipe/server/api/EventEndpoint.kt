@@ -1,11 +1,9 @@
 package io.beampipe.server.api
 
-import com.maxmind.geoip2.DatabaseReader
 import com.snowplowanalytics.refererparser.Parser
 import io.beampipe.server.db.Events
 import io.beampipe.server.slack.SlackNotifier
 import io.beampipe.server.slack.logger
-import io.micronaut.context.annotation.Property
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpResponse
@@ -17,17 +15,16 @@ import io.micronaut.http.server.util.HttpClientAddressResolver
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import io.whitfin.siphash.SipHasher
+import jakarta.inject.Inject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import nl.basjes.parse.useragent.UserAgent
 import nl.basjes.parse.useragent.UserAgentAnalyzer
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import java.io.File
 import java.net.InetAddress
 import java.net.URI
 import java.time.Instant
-import javax.inject.Inject
 
 
 @Controller("/event")

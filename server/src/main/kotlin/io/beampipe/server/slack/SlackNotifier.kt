@@ -7,6 +7,7 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
+import jakarta.inject.Singleton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
@@ -18,7 +19,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.annotation.PostConstruct
-import javax.inject.Singleton
 
 inline fun <reified T> T.logger(): Logger {
     return LoggerFactory.getLogger(T::class.java)

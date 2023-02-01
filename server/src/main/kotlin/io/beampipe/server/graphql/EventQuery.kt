@@ -5,6 +5,8 @@ import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -17,8 +19,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = when (timePeriodStart ?: "day") {
     "day" -> origin.minus(1, ChronoUnit.DAYS)

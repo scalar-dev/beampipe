@@ -4,11 +4,11 @@ import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.security.oauth2.url.DefaultOauthRouteUrlBuilder
 import io.micronaut.security.oauth2.url.OauthRouteUrlBuilder
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.apache.hc.core5.net.URIBuilder
 import java.net.URI
 import java.net.URL
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /***
  * This is a hack to workaround the fact that we are currently using netlify to redirect to the oauth endpoints.

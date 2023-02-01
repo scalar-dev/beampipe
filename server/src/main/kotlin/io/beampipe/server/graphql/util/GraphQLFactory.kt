@@ -16,23 +16,23 @@ import io.beampipe.server.graphql.DomainQuery
 import io.beampipe.server.graphql.EventQuery
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 @Factory
 class GraphQLFactory(
-    @Inject val eventQuery: EventQuery,
-    @Inject val accountQuery: AccountQuery,
-    @Inject val accountMutations: AccountMutations,
-    @Inject val domainQuery: DomainQuery,
-    @Inject val domainMutations: DomainMutations,
-    @Inject val objectMapper: ObjectMapper
+        @Inject val eventQuery: EventQuery,
+        @Inject val accountQuery: AccountQuery,
+        @Inject val accountMutations: AccountMutations,
+        @Inject val domainQuery: DomainQuery,
+        @Inject val domainMutations: DomainMutations,
+        @Inject val objectMapper: ObjectMapper
 ) {
     @Bean
     @Singleton

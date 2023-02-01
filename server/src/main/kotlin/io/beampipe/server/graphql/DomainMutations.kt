@@ -4,6 +4,8 @@ import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Goals
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -12,8 +14,6 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 fun canonicaliseDomain(domain:String) = domain.trim().lowercase()
 

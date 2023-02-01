@@ -6,8 +6,8 @@ import io.micronaut.security.authentication.AuthenticationFailed
 import io.micronaut.security.authentication.AuthenticationProvider
 import io.micronaut.security.authentication.AuthenticationRequest
 import io.micronaut.security.authentication.AuthenticationResponse
-import io.micronaut.security.authentication.UserDetails
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
+import jakarta.inject.Singleton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.jetbrains.exposed.sql.select
@@ -16,7 +16,6 @@ import org.jetbrains.exposed.sql.update
 import org.reactivestreams.Publisher
 import java.time.Instant
 import java.util.Base64
-import javax.inject.Singleton
 
 fun canonicaliseEmail(email: String) = email.trim().lowercase()
 
@@ -49,7 +48,7 @@ class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
                     val hash = hashPassword(authenticationRequest.secret as String, salt)
 
                     if (hash == account[Accounts.password]) {
-                        UserDetails(
+                        AuthenticationResponse.success(
                             account[Accounts.id].value.toString(),
                             emptyList(),
                             mapOf(
