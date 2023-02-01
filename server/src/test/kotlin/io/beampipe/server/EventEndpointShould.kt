@@ -1,14 +1,15 @@
-package server
+package io.beampipe.server
 
 import io.beampipe.server.api.EventEndpoint
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
+import io.micronaut.rxjava3.http.client.Rx3HttpClient
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
+import jakarta.inject.Inject
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import javax.inject.Inject
+import server.KPostgreSQLContainer
 
 @Testcontainers
 @MicronautTest
@@ -31,7 +32,7 @@ class EventEndpointShould : TestPropertyProvider {
 
     @Inject
     @field:Client("/")
-    lateinit var client: RxHttpClient
+    lateinit var client: Rx3HttpClient
 
     private fun event() = EventEndpoint.Event(
         "event",
