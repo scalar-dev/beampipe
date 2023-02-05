@@ -50,7 +50,7 @@ const SocialButtons = () => (
       <FontAwesomeIcon size="lg" className="fill-current" icon={faMedium} />
     </a>
 
-    <a
+    {/* <a
       className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://www.producthunt.com/posts/beampipe"
     >
@@ -59,7 +59,7 @@ const SocialButtons = () => (
         className="fill-current"
         icon={faProductHunt}
       />
-    </a>
+    </a> */}
 
     <a
       className="flex items-center text-gray-500 hover:text-gray-700 mr-3"
@@ -182,7 +182,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 </div>
               </div>
 
-              <div className="pr-2">
+              <div className="pr-2 flex flex-row items-center">
                 <IfUserLoggedIn>
                   <div className="p-4 lg:p-0">
                     <Avatar user={user.user!!} />
@@ -208,7 +208,16 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   </div>
                 </IfAnonymous>
               </div>
-              <SocialButtons />
+              <div className="flex flex-col items-center">
+                <SocialButtons />
+                <a
+                  className={NAV_LINK_CLASS}
+                  href="https://www.scalar.dev"
+                  onClick={() => setMenuVisible((visible) => !visible)}
+                >
+                  scalar.dev
+                </a>
+              </div>
             </div>
           </nav>
         </div>
