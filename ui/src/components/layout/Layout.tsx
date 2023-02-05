@@ -7,7 +7,6 @@ import { Avatar } from "./Avatar";
 import {
   faGithub,
   faTwitter,
-  faProductHunt,
   faMedium,
 } from "@fortawesome/free-brands-svg-icons";
 import { UserContext } from "../../utils/auth";
