@@ -218,7 +218,10 @@ export const Footer = () => (
           </a>
 
           <span>
-          Sponsored by <a href="https://www.scalar.dev" className="hover:underline">scalar.dev</a>
+            Sponsored by{" "}
+            <a href="https://www.scalar.dev" className="hover:underline">
+              scalar.dev
+            </a>
           </span>
         </div>
 
