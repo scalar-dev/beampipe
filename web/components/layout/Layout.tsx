@@ -7,7 +7,6 @@ import { AnchorButton } from "../Buttons";
 import {
   faGithub,
   faTwitter,
-  faProductHunt,
   faMedium,
 } from "@fortawesome/free-brands-svg-icons";
 
@@ -21,13 +20,14 @@ interface NavLinkProps
     HTMLAnchorElement
   > {}
 
+const NAV_LINK_CLASS = "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4"
+
 const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
   ({ children, className, ...otherProps }, ref) => (
     <a
       ref={ref}
-      className={`text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4 ${
-        className || ""
-      }`}
+      className={`${NAV_LINK_CLASS}
+        ${className || ""}`}
       {...otherProps}
     >
       {children}
@@ -52,7 +52,7 @@ const SocialButtons = () => (
       <FontAwesomeIcon size="lg" className="fill-current" icon={faMedium} />
     </a>
 
-    <a
+    {/* <a
       className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
       href="https://www.producthunt.com/posts/beampipe"
     >
@@ -61,7 +61,7 @@ const SocialButtons = () => (
         className="fill-current"
         icon={faProductHunt}
       />
-    </a>
+    </a> */}
 
     <a
       className="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
@@ -193,7 +193,16 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                   </AnchorButton>
                 </div>
               </div>
-              <SocialButtons />
+              <div className="flex flex-col items-center">
+                <SocialButtons />
+                <a
+                  className={NAV_LINK_CLASS}
+                  href="https://www.scalar.dev"
+                  onClick={() => setMenuVisible((visible) => !visible)}
+                >
+                  scalar.dev
+                </a>
+              </div>
             </div>
           </nav>
         </div>
