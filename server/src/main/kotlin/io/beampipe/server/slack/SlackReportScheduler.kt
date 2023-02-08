@@ -26,7 +26,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 
 @Singleton

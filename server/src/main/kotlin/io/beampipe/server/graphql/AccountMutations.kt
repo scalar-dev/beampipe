@@ -13,35 +13,27 @@ import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import io.beampipe.server.stripe.StripeClient
 import io.micronaut.context.annotation.Property
-import io.micronaut.security.authentication.UserDetails
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.security.authentication.Authentication
 import io.micronaut.security.token.jwt.generator.JwtTokenGenerator
 import io.micronaut.security.token.jwt.validator.JwtTokenValidator
-import kotlinx.coroutines.reactive.awaitFirst
+import jakarta.inject.Inject
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.apache.commons.validator.routines.EmailValidator
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
 import java.security.SecureRandom
 import java.time.ZoneId
-import java.util.Base64
-import java.util.UUID
-import javax.annotation.Nullable
-import javax.inject.Inject
+import java.util.*
 
 
 class AccountMutations(
-    @Property(
+        @Property(
         name = "stripe.product",
         defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
     ) val stripeProduct: String,
-    @Inject val jwtTokenGenerator: JwtTokenGenerator?,
-    @Inject val jwtTokenValidator: JwtTokenValidator?
+        @Inject val jwtTokenGenerator: JwtTokenGenerator?,
+        @Inject val jwtTokenValidator: JwtTokenValidator?
 ) {
     @Inject
     lateinit var accountQuery: AccountQuery
@@ -197,7 +189,7 @@ class AccountMutations(
         val accountId = Accounts.select { Accounts.email eq email }.firstOrNull()?.get(Accounts.id)?.value
 
         if (accountId != null) {
-            val userDetails = UserDetails(accountId.toString(), emptyList())
+            val userDetails = Authentication.build(accountId.toString(), emptyList())
             val token = jwtTokenGenerator!!
                     .generateToken(userDetails, 7 * 24 * 60 * 60)
                     .orElseThrow { RuntimeException("foo") }

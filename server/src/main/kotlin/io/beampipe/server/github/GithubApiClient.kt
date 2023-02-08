@@ -5,7 +5,7 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Headers
 import io.micronaut.http.client.annotation.Client
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 @Headers(
     Header(name = "User-Agent", value = "https://micronautguides.com"),
@@ -19,7 +19,7 @@ interface GithubApiClient {
     @Get("/user")
     fun getUser(
         @Header(HttpHeaders.AUTHORIZATION) authorization: String?
-    ): Flowable<GithubUser?>?
+    ): Flowable<GithubUser>?
 
     @Get("/user/emails")
     fun getUserEmails(

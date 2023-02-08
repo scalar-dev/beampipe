@@ -4,12 +4,14 @@ import com.slack.api.Slack
 import com.slack.api.methods.request.team.TeamInfoRequest
 import io.beampipe.server.db.Accounts
 import io.micronaut.core.async.publisher.Publishers
+import io.micronaut.security.authentication.Authentication
 import io.micronaut.security.authentication.AuthenticationResponse
-import io.micronaut.security.authentication.UserDetails
 import io.micronaut.security.oauth2.endpoint.authorization.state.State
-import io.micronaut.security.oauth2.endpoint.token.response.OauthUserDetailsMapper
+import io.micronaut.security.oauth2.endpoint.token.response.OauthAuthenticationMapper
 import io.micronaut.security.oauth2.endpoint.token.response.TokenResponse
 import io.micronaut.security.utils.SecurityService
+import jakarta.inject.Named
+import jakarta.inject.Singleton
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -17,12 +19,10 @@ import org.reactivestreams.Publisher
 import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
-import javax.inject.Named
-import javax.inject.Singleton
 
 @Named("slack")
 @Singleton
-class SlackUserDetailsMapper(val securityService: SecurityService) : OauthUserDetailsMapper {
+class SlackUserDetailsMapper(val securityService: SecurityService) : OauthAuthenticationMapper {
     override fun createAuthenticationResponse(
         tokenResponse: TokenResponse?,
         state: State?
@@ -57,14 +57,10 @@ class SlackUserDetailsMapper(val securityService: SecurityService) : OauthUserDe
         return Publishers.fromCompletableFuture(future)
     }
 
-    override fun createUserDetails(tokenResponse: TokenResponse?): Publisher<UserDetails> {
-        TODO("Not yet implemented")
-    }
-
     class AuthenicationIsActuallyOkButWeDontWantToSetCookies : AuthenticationResponse {
         override fun getMessage(): Optional<String> = Optional.empty()
         override fun isAuthenticated() = true
-        override fun getUserDetails(): Optional<UserDetails> = Optional.empty()
+        override fun getAuthentication(): Optional<Authentication> = Optional.empty()
     }
 
 }

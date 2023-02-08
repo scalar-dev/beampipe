@@ -9,9 +9,9 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.server.util.HttpHostResolver
 import io.micronaut.security.utils.SecurityService
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.reactivestreams.Publisher
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 @Replaces(DefaultGraphQLExecutionInputCustomizer::class)

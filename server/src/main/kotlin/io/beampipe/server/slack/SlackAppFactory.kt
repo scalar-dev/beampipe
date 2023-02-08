@@ -16,6 +16,8 @@ import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -23,9 +25,7 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
-import javax.inject.Inject
 
-import javax.inject.Singleton
 
 @Factory
 class AppFactory(@Inject val slackNotifier: SlackNotifier) {

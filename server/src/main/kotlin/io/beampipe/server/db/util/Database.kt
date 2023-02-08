@@ -1,9 +1,9 @@
 package io.beampipe.server.db.util
 
 import io.micronaut.context.annotation.Context
+import jakarta.inject.Inject
 import org.jetbrains.exposed.sql.Database
 import javax.annotation.PostConstruct
-import javax.inject.Inject
 import javax.sql.DataSource
 
 @Context
