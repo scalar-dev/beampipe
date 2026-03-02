@@ -5,8 +5,15 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "beampipe docs",
+      logo: {
+        src: "./src/assets/logo.svg",
+      },
+      customCss: ["./src/styles/custom.css"],
       favicon: "/favicon.png",
-      customCss: [],
+      components: {
+        ThemeProvider: "./src/components/ThemeProvider.astro",
+        ThemeSelect: "./src/components/ThemeSelect.astro",
+      },
       sidebar: [
         { label: "Introduction", slug: "index" },
         { label: "Getting started", slug: "getting-started" },
