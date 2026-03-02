@@ -1,11 +1,13 @@
 # Stage 1: Build the React UI
-FROM node:16-alpine AS ui-build
-WORKDIR /app/ui
-COPY ui/package.json ui/yarn.lock ./
-RUN yarn install --frozen-lockfile
-COPY ui/ .
+FROM oven/bun:latest AS ui-build
+WORKDIR /app
+RUN echo '{"private":true,"workspaces":["packages/*","ui"]}' > package.json
+COPY packages/tracker/ packages/tracker/
+COPY ui/package.json ui/
+RUN bun install
+COPY ui/ ui/
 ENV CI=true
-RUN yarn build
+RUN bun run --cwd ui build
 
 # Stage 2: Build the server Shadow JAR
 FROM gradle:7.6-jdk11 AS server-build

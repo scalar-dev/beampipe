@@ -2,3 +2,9 @@
 .idea
 data/
 postgres-data
+node_modules/
+
+# Built tracker artifacts
+packages/tracker/dist/
+ui/public/tracker.js
+web/public/js/tracker.js

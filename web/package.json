@@ -3,13 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
+    "prebuild": "bun run --cwd ../packages/tracker build && cp ../packages/tracker/dist/tracker.js public/js/tracker.js",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint",
-    "buildTracker": "tsc --outDir public tracker/tracker.ts"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@beampipe/tracker": "workspace:*",
+    "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
@@ -30,6 +31,6 @@
     "eslint-config-next": "12.0.7",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.2",
-    "typescript": "4.5.4"
+    "typescript": "^5.0.0"
   }
 }

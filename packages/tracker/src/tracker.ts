@@ -1,4 +1,4 @@
-(function (window: Window, apiHost: string) {
+(function (window: Window) {
   if ((window as any).beampipe) {
     return;
   }
@@ -16,10 +16,16 @@
     document.querySelector("[data-beampipe-domain]") ||
     document.querySelector("[data-alysis-domain]");
 
-  const domain =
+  const configuredDomain =
     ele?.getAttribute("data-beampipe-domain") ||
-    ele?.getAttribute("data-alysis-domain") ||
-    (isLocal ? "localhost" : location.host);
+    ele?.getAttribute("data-alysis-domain");
+
+  const domain = configuredDomain || (isLocal ? "localhost" : location.host);
+
+  const apiHost =
+    !configuredDomain || configuredDomain === "beampipe.io"
+      ? "https://api.beampipe.io/event"
+      : "https://" + configuredDomain + "/event";
 
   const track = (event: string) => {
     if (isLocal) {
@@ -65,4 +71,4 @@
   }
 
   log();
-})(window, "https://beampipe.io/event");
+})(window);

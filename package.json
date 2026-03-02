@@ -1,0 +1,5 @@
+{
+  "name": "beampipe",
+  "private": true,
+  "workspaces": ["packages/*", "ui", "web"]
+}

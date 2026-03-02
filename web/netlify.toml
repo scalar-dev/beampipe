@@ -1,9 +1,0 @@
-[[redirects]]
-  from = "/domain/*"
-  to = "https://app.beampipe.io/domain/:splat"
-  status = 301
-
-[[redirects]]
-  from = "/event"
-  to = "https://api.beampipe.io/event"
-  status = 200
