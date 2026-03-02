@@ -40,6 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "prebuild": "bun run --cwd ../packages/tracker build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

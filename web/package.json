@@ -3,12 +3,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
+    "prebuild": "bun run --cwd ../packages/tracker build",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint",
-    "buildTracker": "tsc --outDir public tracker/tracker.ts"
+    "lint": "next lint"
   },
   "dependencies": {
+    "@beampipe/tracker": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
