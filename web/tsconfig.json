@@ -17,9 +17,8 @@
   },
   "include": [
     "next-env.d.ts",
-    "tracker/tracker.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["node_modules", "tracker/tracker.ts"]
+  "exclude": ["node_modules"]
 }
