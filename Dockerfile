@@ -1,7 +1,7 @@
 # Stage 1: Build the React UI
 FROM oven/bun:latest AS ui-build
 WORKDIR /app
-COPY package.json bun.lock ./
+RUN echo '{"private":true,"workspaces":["packages/*","ui"]}' > package.json
 COPY packages/tracker/ packages/tracker/
 COPY ui/package.json ui/
 RUN bun install
