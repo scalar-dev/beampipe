@@ -23,9 +23,8 @@
   const domain = configuredDomain || (isLocal ? "localhost" : location.host);
 
   const apiHost =
-    !configuredDomain || configuredDomain === "beampipe.io"
-      ? "https://api.beampipe.io/event"
-      : "https://" + configuredDomain + "/event";
+    ele?.getAttribute("data-beampipe-event-url") ||
+    "https://api.beampipe.io/event";
 
   const track = (event: string) => {
     if (isLocal) {

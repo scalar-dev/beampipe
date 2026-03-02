@@ -1,10 +1,11 @@
 ---
-title: 'Custom events and goals'
+title: Custom events and goals
 ---
 
 Beampipe allows you to log custom events from your webpage. These can be used to track drop-off rates or notify you should something interesting happen.
 
-## Logging  events
+## Logging events
+
 Our tracker script (see [Getting started](/getting-started)) will automatically register a function on the `window` object called `window.beampipe`.
 
 To log an event, simply invoke this function wherever you like:
@@ -13,8 +14,8 @@ To log an event, simply invoke this function wherever you like:
 window.beampipe('signup');
 ```
 
-
 ## Configuring goals
+
 Once events are being captured by beampipe, you can set up a **Goal** to
 track the events. To do this, go to the domain view for the domain against
 which you are logging events. At the bottom of this page you will find the
@@ -30,4 +31,3 @@ function above. To track the `signup` events as a goal, we could fill it in as f
 ![Modal](/create_goal_filled.png)
 
 You can also configure page views as goals. In this case, the event type will be **page_view** and you must specify a path within website e.g. `/`.
-

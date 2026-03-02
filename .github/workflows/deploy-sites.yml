@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - chore/move-marketing-to-cloudflake
+      - chore/docs-to-cloudflare
 
 jobs:
   deploy-web:
@@ -30,3 +31,26 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: beampipe-web
           directory: web/out
+
+  deploy-docs:
+    name: Deploy Docs Site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run --cwd docs build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: beampipe-docs
+          directory: docs/dist
