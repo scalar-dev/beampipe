@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - chore/move-marketing-to-cloudflare
+      - chore/move-marketing-to-cloudflake
 
 jobs:
   deploy-web:
