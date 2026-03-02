@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [master, chore/railway-deploy]
+    branches: [master]
 
 jobs:
   release-please:
