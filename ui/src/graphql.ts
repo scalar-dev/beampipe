@@ -6,9 +6,7 @@ import {
 } from "urql";
 
 const graphqlEndpoint = () =>
-  window.location.hostname === "app.beampipe.io"
-    ? "https://app.beampipe.io/graphql"
-    : `http://${window.location.hostname}:${window.location.port}/graphql`;
+  `${window.location.origin}/graphql`;
 
 export const client = createClient({
   url:
