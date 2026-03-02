@@ -74,8 +74,9 @@ class EventEndpoint {
     }
 
     suspend fun storeEvent(clientIp: String?, event: Event) {
+        val ip = clientIp?.split(",")?.firstOrNull()?.trim()
         val ipCity = GlobalScope.async {
-            val ipAddress = InetAddress.getByName(clientIp)
+            val ipAddress = InetAddress.getByName(ip)
             geoTagger.tag(ipAddress)
         }.await()
 
