@@ -25,6 +25,7 @@ class GeoLiteGeoTagger(@Property(name = "geolite2.db") val geoLite2DbPath: Strin
 }
 
 @Singleton
+@Requires(missingProperty = "geolite2.db")
 class NoGeoTagger: GeoTagger {
     override fun tag(ipAddress: InetAddress) = Optional.empty<CityResponse>()
 }
