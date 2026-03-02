@@ -17,10 +17,10 @@ services:
       - postgres
     environment:
       JWT_GENERATOR_SIGNATURE_SECRET: pleasePleaseChangeMe
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USERNAME: postgres
-      POSTGRES_PASSWORD: postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
       PORT: 8080
       ENABLE_UI: "true"
     ports:

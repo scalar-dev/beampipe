@@ -80,10 +80,10 @@ endpoints:
 
 datasources:
   default:
-    url: jdbc:postgresql://${PGHOST:${postgres.host:localhost}}:${PGPORT:${postgres.port:5432}}/${PGDATABASE:${postgres.database:postgres}}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:postgres}
     driverClassName: org.postgresql.Driver
-    username: ${PGUSER:${postgres.username:postgres}}
-    password: ${PGPASSWORD:${postgres.password:postgres}}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:postgres}
     dialect: postgres
     maximumPoolSize: 15
     minimumIdle: 5
