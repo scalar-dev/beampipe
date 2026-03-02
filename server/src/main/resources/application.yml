@@ -61,9 +61,10 @@ micronaut:
         get-allowed: true
 
   server:
+    port: ${PORT:8080}
     cors:
       enabled: false
-    client-address-header: X-Nf-Client-Connection-Ip
+    client-address-header: ${CLIENT_ADDRESS_HEADER:X-Forwarded-For}
 
   http:
     services:
@@ -79,7 +80,7 @@ endpoints:
 
 datasources:
   default:
-    url: jdbc:postgresql://${postgres.host:localhost}/${postgres.database:postgres}
+    url: jdbc:postgresql://${postgres.host:localhost}:${postgres.port:5432}/${postgres.database:postgres}
     driverClassName: org.postgresql.Driver
     username: ${postgres.username:postgres}
     password: ${postgres.password:postgres}
