@@ -1,60 +1,69 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches: [master]
+  pull_request:
 
-env:
-  GEOLITE2_LICENSE_KEY: ${{ secrets.GEOLITE2_LICENSE_KEY }}
 jobs:
-  server:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    - name: Login to Docker Hub
-      if: github.ref == 'refs/heads/master'
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-    - name: Build
+    - name: Build Docker image
       run: |
-        wget -q -O geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$GEOLITE2_LICENSE_KEY&suffix=tar.gz"
-        tar xf geolite2.tar.gz
-        mv GeoLite2* geolite2
-        ./gradlew --no-daemon --console=plain -P bundle-ui server:build jibDockerBuild
-
-    - name: Push
-      if: github.ref == 'refs/heads/master'
-      run: |
-        ./gradlew --no-daemon --console=plain -P bundle-ui server:jib --image=scalardev/beampipe:$GITHUB_RUN_NUMBER -Djib.to.tags=latest
+        docker build \
+          --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
+          -t scalardev/beampipe:$GITHUB_RUN_NUMBER \
+          .
 
   web:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Build
       run: |
          cd ./web
          yarn
          yarn build
 
-  ui:
+  release-please:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+    - uses: googleapis/release-please-action@v4
+      id: release
+
+  deploy:
+    needs: [build, release-please]
+    if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
     - name: Login to Docker Hub
-      if: github.ref == 'refs/heads/master'
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-    - name: Build
-      run: |
-        cd ui
-        docker build -t scalardev/beampipe-ui:$GITHUB_RUN_NUMBER .
 
-    - name: Push
-      if: github.ref == 'refs/heads/master'
+    - name: Build and push Docker image
       run: |
-        docker push scalardev/beampipe-ui:$GITHUB_RUN_NUMBER
+        docker build \
+          --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
+          -t scalardev/beampipe:${{ needs.release-please.outputs.tag_name }} \
+          -t scalardev/beampipe:latest \
+          .
+        docker push scalardev/beampipe:${{ needs.release-please.outputs.tag_name }}
+        docker push scalardev/beampipe:latest
+
+    - name: Deploy to Railway
+      uses: railwayapp/cli-action@v1
+      with:
+        command: up --service ${{ vars.RAILWAY_SERVICE_ID }}
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
