@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    branches: [master, chore/railway-deploy]
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+
+  deploy:
+    needs: [release-please]
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
+            -t scalardev/beampipe:${{ needs.release-please.outputs.tag_name }} \
+            -t scalardev/beampipe:latest \
+            .
+          docker push scalardev/beampipe:${{ needs.release-please.outputs.tag_name }}
+          docker push scalardev/beampipe:latest
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service ${{ vars.RAILWAY_SERVICE_ID }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
