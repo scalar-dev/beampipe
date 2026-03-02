@@ -12,7 +12,8 @@ group "io.beampipe"
 
 repositories {
     mavenCentral()
-    jcenter()
+    maven { url = "https://maven.pkg.jetbrains.space/public/p/exposed/release" }
+    maven { url = "https://maven.snplow.com/releases" }
 }
 
 micronaut {
