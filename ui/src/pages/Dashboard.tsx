@@ -12,7 +12,7 @@ import {
   faCog,
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEventHandler } from "react";
+import { useState, useRef, MouseEventHandler, PropsWithChildren } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { Domain } from "../interfaces";
@@ -428,7 +428,7 @@ const DomainList = ({
     `,
   });
 
-  const Box: React.FunctionComponent = ({ children }) => (
+  const Box: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
     <div className="text-gray-700 font-bold mr-8 mb-4 md:mb-0 flex-1">
       {children}
     </div>

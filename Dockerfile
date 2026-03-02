@@ -17,7 +17,7 @@ COPY server/ server/
 RUN echo 'include "server"' > settings.gradle
 COPY build.gradle ./
 # Copy pre-built UI into resources so it's included in the JAR on the classpath
-COPY --from=ui-build /app/ui/build server/src/main/resources/ui/
+COPY --from=ui-build /app/ui/dist server/src/main/resources/ui/
 ENV GRADLE_OPTS="-Xmx512m -Dorg.gradle.jvmargs=-Xmx512m"
 RUN gradle --no-daemon --console=plain server:shadowJar
 

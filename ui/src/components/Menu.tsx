@@ -1,5 +1,5 @@
 import useOnclickOutside from "react-cool-onclickoutside";
-import { forwardRef } from "react";
+import { forwardRef, PropsWithChildren } from "react";
 
 interface MenutItemProps
   extends React.DetailedHTMLProps<
@@ -38,7 +38,7 @@ export const MenuDivider = () => (
   <div className="border-t border-gray-100"></div>
 );
 
-export const MenuSection: React.FunctionComponent = ({ children }) => (
+export const MenuSection: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
   <div className="py-1">{children}</div>
 );
 
@@ -50,7 +50,7 @@ interface MenuProps {
 }
 
 export const BaseMenu: React.FunctionComponent<
-  MenuProps & { element: React.ReactNode }
+  PropsWithChildren<MenuProps & { element: React.ReactNode }>
 > = ({
   element,
   visible,
@@ -86,7 +86,7 @@ export const BaseMenu: React.FunctionComponent<
 };
 
 export const Menu: React.FunctionComponent<
-  MenuProps & { value: React.ReactNode }
+  PropsWithChildren<MenuProps & { value: React.ReactNode }>
 > = ({ visible, setVisible, value, ...otherProps }) => (
   <BaseMenu
     element={

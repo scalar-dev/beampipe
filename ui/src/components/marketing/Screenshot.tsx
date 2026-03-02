@@ -1,4 +1,6 @@
-export const Screenshot: React.FunctionComponent = ({ children }) => {
+import { PropsWithChildren } from "react";
+
+export const Screenshot: React.FunctionComponent<PropsWithChildren> = ({ children }) => {
   return (
     <div
       className="my-auto rounded-md border-b-2 border-r-2 pt-4 md:pt-6 inline-block bg-white relative shadow w-full lg:w-3/4 xl:w-2/3"

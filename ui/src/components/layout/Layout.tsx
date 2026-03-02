@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, useState } from "react";
+import { FunctionComponent, PropsWithChildren, useContext, useState } from "react";
 import { Link, LinkProps } from "react-router-dom";
 import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +18,7 @@ interface LayoutProps {
 const NAV_LINK_CLASS =
   "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4";
 
-const NavLink: React.FC<LinkProps> = ({
+const NavLink: React.FC<PropsWithChildren<LinkProps>> = ({
   children,
   className,
   ...otherProps
@@ -69,17 +69,17 @@ const SocialButtons = () => (
   </div>
 );
 
-export const IfUserLoggedIn: React.FunctionComponent = ({ children }) => {
+export const IfUserLoggedIn: React.FunctionComponent<PropsWithChildren> = ({ children }) => {
   const user = useContext(UserContext);
   return user.user ? <>{children}</> : null;
 };
 
-export const IfAnonymous: React.FunctionComponent = ({ children }) => {
+export const IfAnonymous: React.FunctionComponent<PropsWithChildren> = ({ children }) => {
   const user = useContext(UserContext);
   return user.user ? null : <>{children}</>;
 };
 
-export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
+export const Layout: FunctionComponent<PropsWithChildren<LayoutProps>> = ({ title, children }) => {
   const user = useContext(UserContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -90,7 +90,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
           <nav className="flex items-center justify-between flex-wrap py-4">
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle">
-                <a href={process.env.REACT_APP_WEBSITE_URL}>
+                <a href={import.meta.env.VITE_WEBSITE_URL}>
                   <FontAwesomeIcon
                     size="sm"
                     className="fill-current mr-2"
@@ -137,7 +137,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 <div>
                   <IfAnonymous>
                     <a
-                      href={`${process.env.REACT_APP_WEBSITE_URL}/#pricing`}
+                      href={`${import.meta.env.VITE_WEBSITE_URL}/#pricing`}
                       className={NAV_LINK_CLASS}
                       onClick={() => {
                         setMenuVisible((visible) => !visible);
@@ -152,7 +152,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 <div>
                   <a
                     className={NAV_LINK_CLASS}
-                    href={`${process.env.REACT_APP_WEBSITE_URL}/blog`}
+                    href={`${import.meta.env.VITE_WEBSITE_URL}/blog`}
                     onClick={() => setMenuVisible((visible) => !visible)}
                   >
                     Blog

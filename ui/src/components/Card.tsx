@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 
 interface CardProps
   extends React.DetailedHTMLProps<
@@ -22,6 +23,6 @@ export const Card: React.FunctionComponent<CardProps> = ({
   </div>
 );
 
-export const CardTitle: React.FunctionComponent<{}> = ({ children }) => (
+export const CardTitle: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
   <h2 className="text-xl pb-2 font-bold text-gray-800">{children}</h2>
 );

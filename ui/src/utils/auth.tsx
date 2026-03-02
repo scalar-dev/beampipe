@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, PropsWithChildren } from "react";
 import { gql, useQuery } from "urql";
 
 interface IUserContext {
@@ -39,7 +39,7 @@ export const UserContext = createContext<IUserContext>({
   loading: true,
 });
 
-export const AuthProvider: React.FunctionComponent<{}> = ({ children }) => {
+export const AuthProvider: React.FunctionComponent<PropsWithChildren> = ({ children }) => {
   const [query] = useQuery({ query: userQuery });
 
   return (

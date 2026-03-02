@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { Spinner } from "./Spinner";
 
 interface NonIdealStateProps {
@@ -7,7 +7,7 @@ interface NonIdealStateProps {
   nonIdeal?: ReactNode;
 }
 
-export const NonIdealState: React.FunctionComponent<NonIdealStateProps> = ({
+export const NonIdealState: React.FunctionComponent<PropsWithChildren<NonIdealStateProps>> = ({
   isIdeal,
   isLoading,
   children,

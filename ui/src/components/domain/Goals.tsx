@@ -1,7 +1,7 @@
 import { DashboardCard } from "./DashboardCard";
 import { CardTitle } from "../Card";
 import { NonIdealState } from "../NonIdealState";
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import { Button } from "../Buttons";
 import { useQuery, useMutation, gql } from "urql";
 import { onApiError } from "../../utils/errors";
@@ -18,17 +18,17 @@ interface Goal {
   count: number;
 }
 
-const ModalBody: React.FunctionComponent = ({ children }) => (
+const ModalBody: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
   <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">{children}</div>
 );
 
-const ModalFooter: React.FunctionComponent = ({ children }) => (
+const ModalFooter: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
   <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
     {children}
   </div>
 );
 
-const Modal: React.FunctionComponent = ({ children, ...otherProps }) => {
+const Modal: React.FunctionComponent<PropsWithChildren> = ({ children, ...otherProps }) => {
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

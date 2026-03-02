@@ -12,11 +12,11 @@ import {
   faCheck,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, PropsWithChildren } from "react";
 import { getTimezones, renderTimeZone } from "../utils/timezones";
 import { BasicBullets, ProBullets } from "../components/marketing/Pricing";
 
- const stripePromise = process.env.REACT_APP_STRIPE_KEY ? loadStripe(process.env.REACT_APP_STRIPE_KEY) : null;
+ const stripePromise = import.meta.env.VITE_STRIPE_KEY ? loadStripe(import.meta.env.VITE_STRIPE_KEY) : null;
 
 interface EditableFieldProps {
   initialValue: string;
@@ -125,7 +125,7 @@ const EditableText = (props: EditableFieldProps) => (
   />
 );
 
-const EditableSelect: React.FunctionComponent<EditableFieldProps> = ({
+const EditableSelect: React.FunctionComponent<PropsWithChildren<EditableFieldProps>> = ({
   children,
   ...props
 }) => (
