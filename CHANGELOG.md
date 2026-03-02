@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/scalar-dev/beampipe/compare/v0.1.1...v0.1.2) (2026-03-02)
+
+
+### Features
+
+* update readme ([cc012d2](https://github.com/scalar-dev/beampipe/commit/cc012d21d29e72d699ce0bd1502b987c7ccc4e46))
+
 ## [0.1.1](https://github.com/scalar-dev/beampipe/compare/v0.1.0...v0.1.1) (2026-03-02)
 
 
