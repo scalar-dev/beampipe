@@ -16,6 +16,7 @@ RUN echo 'include "server"' > settings.gradle
 COPY build.gradle ./
 # Copy pre-built UI into resources so it's included in the JAR on the classpath
 COPY --from=ui-build /app/ui/build server/src/main/resources/ui/
+ENV GRADLE_OPTS="-Xmx512m -Dorg.gradle.jvmargs=-Xmx512m"
 RUN gradle --no-daemon --console=plain server:shadowJar
 
 # Stage 3: Conditionally download GeoLite2 database
@@ -33,7 +34,7 @@ RUN if [ -n "$GEOLITE2_LICENSE_KEY" ]; then \
     fi
 
 # Stage 4: Runtime image
-FROM eclipse-temurin:11-jre-alpine
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=server-build /app/server/build/libs/server-*-all.jar /app/server.jar
 COPY --from=geolite2 /data/ /data/
