@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
 
   deploy:
     needs: [release-please]
