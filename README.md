@@ -58,8 +58,8 @@ Start developing
 
 ```sh
 cd docs
-yarn
-gatsby develop
+bun
+bun dev
 ```
 
 Run locally at
