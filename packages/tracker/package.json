@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "bun run build.ts && bun run copy",
-    "copy": "cp dist/tracker.js ../../ui/public/tracker.js && cp dist/tracker.js ../../web/public/js/tracker.js"
+    "build": "bun run build.ts"
   },
   "devDependencies": {
     "typescript": "^5.0.0"

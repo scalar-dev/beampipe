@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "prebuild": "bun run --cwd ../packages/tracker build",
+    "prebuild": "bun run --cwd ../packages/tracker build && cp ../packages/tracker/dist/tracker.js public/js/tracker.js",
     "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
