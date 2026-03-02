@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, chore/railway-deploy]
   pull_request:
 
 jobs:
@@ -63,9 +63,10 @@ jobs:
         docker push scalardev/beampipe:${{ needs.release-please.outputs.tag_name }}
         docker push scalardev/beampipe:latest
 
+    - name: Install Railway CLI
+      run: npm install -g @railway/cli
+
     - name: Deploy to Railway
-      uses: railwayapp/cli-action@v1
-      with:
-        command: up --service ${{ vars.RAILWAY_SERVICE_ID }}
+      run: railway up --service ${{ vars.RAILWAY_SERVICE_ID }}
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
