@@ -41,8 +41,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - name: Run tests
-        run: ./gradlew test
-        working-directory: server
+        run: ./gradlew :server:test
 
   web:
     runs-on: ubuntu-latest
