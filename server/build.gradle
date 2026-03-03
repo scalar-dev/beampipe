@@ -7,7 +7,7 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.4.4'
 }
 
-version "0.1.6" // x-release-please-version
+version "0.2.0" // x-release-please-version
 group "io.beampipe"
 
 repositories {
