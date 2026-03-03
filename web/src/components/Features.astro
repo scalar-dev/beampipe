@@ -1,0 +1,80 @@
+---
+import Screenshot from "./Screenshot.astro";
+---
+
+<div class="md:pt-8">
+  <div class="container mx-auto">
+    <!-- Feature 1: Dashboard -->
+    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
+      <div class="w-full md:w-1/2 md:pr-8 pb-8">
+        <div class="text-4xl font-black tracking-tight">
+          Simple, powerful web analytics dashboard.
+        </div>
+        <div class="text-xl">
+          <p>
+            See only what you need to know. No more scrolling through endless
+            reports.
+          </p>
+          <p class="mt-4">Your dashboard is live and updated in realtime.</p>
+          <p class="mt-4">
+            Easily filter by traffic source, region or time period.
+          </p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 flex justify-end">
+        <div class="flex justify-end">
+          <Screenshot>
+            <img src="/images/screenshot2.png" />
+          </Screenshot>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 2: Slack -->
+    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
+      <div class="w-full md:w-1/2 md:pr-8 pb-8">
+        <div class="text-4xl font-black tracking-tight">
+          Slack integration.
+        </div>
+        <div class="text-xl">
+          <p>Receive daily or weekly summary reports straight to Slack.</p>
+          <p class="mt-4">
+            Get notified when specific events occur e.g. sign ups or purchases.
+          </p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 flex justify-end">
+        <div class="flex justify-end">
+          <Screenshot>
+            <img src="/images/slack2.png" class="w-full" />
+          </Screenshot>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: Goals -->
+    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
+      <div class="w-full md:w-1/2 md:pr-8 pb-8">
+        <div class="text-4xl font-black tracking-tight">
+          Track goals and conversions.
+        </div>
+        <div class="text-xl">
+          <p>
+            Use our javascript SDK to record user interactions and metadata.
+          </p>
+          <p class="mt-4">
+            Better understand how your product is being used, improve sales
+            funnels and increase conversion rates.
+          </p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 flex justify-end">
+        <div class="flex justify-end">
+          <Screenshot>
+            <img src="/images/goals.png" class="w-full m-auto" />
+          </Screenshot>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

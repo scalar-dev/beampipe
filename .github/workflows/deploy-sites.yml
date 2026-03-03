@@ -28,7 +28,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: beampipe-web
-          directory: web/out
+          directory: web/dist
 
   deploy-docs:
     name: Deploy Docs Site
