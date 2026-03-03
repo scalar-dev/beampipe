@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/scalar-dev/beampipe/compare/v0.1.6...v0.2.0) (2026-03-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* modernise server  ([#129](https://github.com/scalar-dev/beampipe/issues/129))
+
+### Bug Fixes
+
+* modernise server  ([#129](https://github.com/scalar-dev/beampipe/issues/129)) ([d487200](https://github.com/scalar-dev/beampipe/commit/d487200df67e802da1183a8ed784bbfb2e61e23b))
+
 ## [0.1.6](https://github.com/scalar-dev/beampipe/compare/v0.1.5...v0.1.6) (2026-03-03)
 
 
