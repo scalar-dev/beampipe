@@ -2,4 +2,7 @@
 ---
 <script is:inline>
   document.documentElement.dataset.theme = "light";
+  document.addEventListener("astro:after-swap", function () {
+    document.documentElement.dataset.theme = "light";
+  });
 </script>

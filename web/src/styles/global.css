@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "fontsource-inter/latin.css";
 
+@font-face {
+  font-family: "Inter";
+  font-display: block;
+}
+
 body {
   font-family: "Inter", sans-serif;
 }
