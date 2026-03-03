@@ -17,7 +17,7 @@ import io.micronaut.security.rules.SecurityRule
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.net.URI
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 @Controller("/stripe")

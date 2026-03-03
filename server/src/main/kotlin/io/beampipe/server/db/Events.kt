@@ -3,7 +3,7 @@ package io.beampipe.server.db
 import io.beampipe.server.db.util.defaultObjectMapper
 import io.beampipe.server.db.util.jsonb
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.`java-time`.timestamp
+import org.jetbrains.exposed.sql.javatime.timestamp
 
 object Events : UUIDTable("event") {
     val time = timestamp("time")

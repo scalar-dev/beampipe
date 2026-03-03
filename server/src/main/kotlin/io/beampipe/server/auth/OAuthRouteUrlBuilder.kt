@@ -4,11 +4,10 @@ import io.micronaut.context.annotation.Replaces
 import io.micronaut.http.HttpRequest
 import io.micronaut.security.oauth2.url.DefaultOauthRouteUrlBuilder
 import io.micronaut.security.oauth2.url.OauthRouteUrlBuilder
-import org.apache.hc.core5.net.URIBuilder
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.net.URI
 import java.net.URL
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /***
  * This is a hack to workaround the fact that we are currently using netlify to redirect to the oauth endpoints.
@@ -18,13 +17,13 @@ import javax.inject.Singleton
 
 @Singleton
 @Replaces(DefaultOauthRouteUrlBuilder::class)
-class OAuthRouteUrlBuilder(@Inject val defaultOauthRouteUrlBuilder: DefaultOauthRouteUrlBuilder) : OauthRouteUrlBuilder {
+class OAuthRouteUrlBuilder(@Inject val defaultOauthRouteUrlBuilder: DefaultOauthRouteUrlBuilder) : OauthRouteUrlBuilder<HttpRequest<*>> {
     override fun buildUrl(current: HttpRequest<*>?, path: String?): URL {
         return defaultOauthRouteUrlBuilder.buildUrl(current, path)
     }
 
     override fun buildLoginUrl(originating: HttpRequest<*>?, providerName: String?): URL {
-        return  defaultOauthRouteUrlBuilder.buildLoginUrl(originating, providerName)
+        return defaultOauthRouteUrlBuilder.buildLoginUrl(originating, providerName)
     }
 
     override fun buildCallbackUrl(originating: HttpRequest<*>?, providerName: String?): URL {
@@ -38,6 +37,6 @@ class OAuthRouteUrlBuilder(@Inject val defaultOauthRouteUrlBuilder: DefaultOauth
 
     override fun buildCallbackUri(providerName: String?): URI {
         val default = defaultOauthRouteUrlBuilder.buildCallbackUri(providerName)
-        return URIBuilder(default).setScheme("https").setHost("app.beampipe.io").build()
+        return URI("https", "app.beampipe.io", default.path, default.query, default.fragment)
     }
 }

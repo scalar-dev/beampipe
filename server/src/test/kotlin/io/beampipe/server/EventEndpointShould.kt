@@ -5,7 +5,7 @@ import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Testcontainers
 @MicronautTest
@@ -31,7 +31,7 @@ class EventEndpointShould : TestPropertyProvider {
 
     @Inject
     @field:Client("/")
-    lateinit var client: RxHttpClient
+    lateinit var client: HttpClient
 
     private fun event() = EventEndpoint.Event(
         "event",

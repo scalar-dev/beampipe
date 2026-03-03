@@ -9,14 +9,14 @@ import io.beampipe.server.auth.canonicaliseEmail
 import io.beampipe.server.auth.hashPassword
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.ResetTokens
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import io.beampipe.server.stripe.StripeClient
 import io.micronaut.context.annotation.Property
-import io.micronaut.security.authentication.UserDetails
-import io.micronaut.security.token.jwt.generator.JwtTokenGenerator
-import io.micronaut.security.token.jwt.validator.JwtTokenValidator
-import kotlinx.coroutines.reactive.awaitFirst
+import io.micronaut.security.authentication.Authentication
+import io.micronaut.security.token.generator.TokenGenerator
+import io.micronaut.security.token.validator.TokenValidator
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.apache.commons.validator.routines.EmailValidator
 import org.jetbrains.exposed.sql.and
@@ -24,15 +24,15 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import java.security.SecureRandom
 import java.time.ZoneId
 import java.util.Base64
 import java.util.UUID
-import javax.annotation.Nullable
-import javax.inject.Inject
+import jakarta.annotation.Nullable
+import jakarta.inject.Inject
 
 
 class AccountMutations(
@@ -40,8 +40,8 @@ class AccountMutations(
         name = "stripe.product",
         defaultValue = "price_1H9wLyKrGSqzIeMTIkqhJVDa"
     ) val stripeProduct: String,
-    @Inject val jwtTokenGenerator: JwtTokenGenerator?,
-    @Inject val jwtTokenValidator: JwtTokenValidator?
+    @Inject val jwtTokenGenerator: TokenGenerator?,
+    @Inject val jwtTokenValidator: TokenValidator<*>?
 ) {
     @Inject
     lateinit var accountQuery: AccountQuery
@@ -50,7 +50,7 @@ class AccountMutations(
     @Nullable
     var stripeClient: StripeClient? = null
 
-    suspend fun updateName(context: Context, name: String): String = context.withAccountId { accountId ->
+    suspend fun updateName(@GraphQLIgnore context: Context, name: String): String = context.withAccountId { accountId ->
         newSuspendedTransaction {
             Accounts.update({
                 Accounts.id.eq(accountId)
@@ -62,7 +62,7 @@ class AccountMutations(
         }
     }
 
-    suspend fun updateEmail(context: Context, email: String): String = context.withAccountId { accountId ->
+    suspend fun updateEmail(@GraphQLIgnore context: Context, email: String): String = context.withAccountId { accountId ->
         if (!EmailValidator.getInstance().isValid(email)) {
             throw CustomException("Invalid email address")
         }
@@ -79,7 +79,7 @@ class AccountMutations(
     }
 
 
-    suspend fun updateTimeZone(context: Context, timeZone: String): String = context.withAccountId { accountId ->
+    suspend fun updateTimeZone(@GraphQLIgnore context: Context, timeZone: String): String = context.withAccountId { accountId ->
         try {
             ZoneId.of(timeZone)
         } catch (e: java.lang.Exception) {
@@ -97,11 +97,11 @@ class AccountMutations(
         }
     }
 
-    suspend fun subscribe(context: Context): String? {
+    suspend fun subscribe(@GraphQLIgnore context: Context): String? {
         val stripeId = newSuspendedTransaction {
             val existingStripeId = Accounts
-                .slice(Accounts.stripeId)
-                .select { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
+                .select(Accounts.stripeId)
+                .where { Accounts.id.eq(UUID.fromString(context.authentication!!.attributes["accountId"] as String)) }
                 .first()[Accounts.stripeId]
 
             if (existingStripeId == null) {
@@ -142,11 +142,11 @@ class AccountMutations(
         return session.id
     }
 
-    suspend fun cancelSubscription(context: Context): String = context.withAccountId { accountId ->
+    suspend fun cancelSubscription(@GraphQLIgnore context: Context): String = context.withAccountId { accountId ->
         newSuspendedTransaction {
             val stripeId = Accounts
-                .slice(Accounts.stripeId)
-                .select { Accounts.id.eq(accountId) }
+                .select(Accounts.stripeId)
+                .where { Accounts.id.eq(accountId) }
                 .first()[Accounts.stripeId]
 
             val subscriptionId = Customer.retrieve(stripeId)
@@ -172,8 +172,8 @@ class AccountMutations(
                 throw CustomException("Invalid password")
             }
 
-            val existingAccount = Accounts.slice(Accounts.id)
-                .select { Accounts.email.eq(email) }
+            val existingAccount = Accounts.select(Accounts.id)
+                .where { Accounts.email.eq(email) }
                 .limit(1)
                 .firstOrNull()
 
@@ -194,13 +194,16 @@ class AccountMutations(
         }
 
     suspend fun createPasswordReset(email: String) = newSuspendedTransaction {
-        val accountId = Accounts.select { Accounts.email eq email }.firstOrNull()?.get(Accounts.id)?.value
+        val accountId = Accounts.selectAll().where { Accounts.email eq email }.firstOrNull()?.get(Accounts.id)?.value
 
         if (accountId != null) {
-            val userDetails = UserDetails(accountId.toString(), emptyList())
+            val auth = Authentication.build(accountId.toString(), emptyList())
             val token = jwtTokenGenerator!!
-                    .generateToken(userDetails, 7 * 24 * 60 * 60)
-                    .orElseThrow { RuntimeException("foo") }
+                    .generateToken(mapOf(
+                        "sub" to accountId.toString(),
+                        "exp" to (System.currentTimeMillis() / 1000 + 7 * 24 * 60 * 60)
+                    ))
+                    .orElseThrow { RuntimeException("Failed to generate token") }
 
             ResetTokens.insert {
                 it[ResetTokens.accountId] = accountId
@@ -216,11 +219,11 @@ class AccountMutations(
             throw CustomException("Invalid password")
         }
 
-        val accountId = ResetTokens.select { ResetTokens.token eq token and (ResetTokens.isUsed.isNull() or ResetTokens.isUsed.eq(false))}
+        val accountId = ResetTokens.selectAll().where { ResetTokens.token eq token and (ResetTokens.isUsed.isNull() or ResetTokens.isUsed.eq(false))}
             .firstOrNull()
             ?.get(ResetTokens.accountId)
 
-        val auth = jwtTokenValidator!!.validateToken(token, null).awaitFirstOrNull()
+        val auth = jwtTokenValidator!!.validateToken(token, null)?.awaitFirstOrNull()
 
         if (accountId != null && auth != null) {
             val salt = ByteArray(16)

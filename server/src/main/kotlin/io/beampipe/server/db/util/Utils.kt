@@ -12,8 +12,8 @@ import org.jetbrains.exposed.sql.IntegerColumnType
 import org.jetbrains.exposed.sql.QueryBuilder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.`java-time`.JavaInstantColumnType
-import org.jetbrains.exposed.sql.`java-time`.JavaLocalDateTimeColumnType
+import org.jetbrains.exposed.sql.javatime.JavaInstantColumnType
+import org.jetbrains.exposed.sql.javatime.JavaLocalDateTimeColumnType
 import org.jetbrains.exposed.sql.append
 import java.time.Instant
 import java.time.LocalDateTime
@@ -25,7 +25,7 @@ class TimeBucket(val expr1: Expression<*>, val expr2: Expression<*>) : Expressio
         }
     }
 
-    override val columnType: IColumnType = JavaInstantColumnType()
+    override val columnType: IColumnType<Instant> = JavaInstantColumnType()
 }
 
 
@@ -36,7 +36,7 @@ class TimeBucketGapFill(val expr1: Expression<*>, val expr2: Expression<*>) : Ex
         }
     }
 
-    override val columnType: IColumnType = JavaInstantColumnType()
+    override val columnType: IColumnType<Instant> = JavaInstantColumnType()
 }
 
 
@@ -52,7 +52,7 @@ class TimeBucketGapFillStartEnd(
         }
     }
 
-    override val columnType: IColumnType = JavaLocalDateTimeColumnType()
+    override val columnType: IColumnType<LocalDateTime> = JavaLocalDateTimeColumnType()
 }
 
 
@@ -63,7 +63,7 @@ class AtTimeZone(val expr1: Expression<*>, val expr2: Expression<String>) : Expr
         }
     }
 
-    override val columnType: IColumnType = JavaLocalDateTimeColumnType()
+    override val columnType: IColumnType<LocalDateTime> = JavaLocalDateTimeColumnType()
 }
 
 fun SqlExpressionBuilder.timeBucket(expr1: Expression<*>, expr2: Expression<*>) = TimeBucket(expr1, expr2)

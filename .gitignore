@@ -4,6 +4,9 @@ data/
 postgres-data
 node_modules/
 
+# Version file (written by CI)
+VERSION
+
 # Built tracker artifacts
 packages/tracker/dist/
 ui/public/tracker.js

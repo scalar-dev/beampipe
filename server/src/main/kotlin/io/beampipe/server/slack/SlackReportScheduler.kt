@@ -11,12 +11,13 @@ import io.beampipe.server.graphql.EventQuery
 import io.beampipe.server.graphql.EventStats
 import io.micronaut.scheduling.annotation.Scheduled
 import io.micronaut.scheduling.cron.CronExpression
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import java.text.DecimalFormat
@@ -26,12 +27,13 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 
 @Singleton
 class SlackReportScheduler() {
     val LOG = logger()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private fun block(text: String) = SectionBlock.builder()
         .text(
@@ -169,25 +171,14 @@ class SlackReportScheduler() {
     }
 
     @Scheduled(fixedRate = "10m")
-    fun run() = GlobalScope.launch(Dispatchers.IO) {
+    fun run() = scope.launch {
         newSuspendedTransaction {
             LOG.info("Checking for summary subscriptions")
             SlackSubscriptions
                 .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
                 .join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                .slice(
-                    SlackSubscriptions.id,
-                    SlackSubscriptions.channelId,
-                    SlackSubscriptions.domainId,
-                    SlackSubscriptions.teamId,
-                    SlackSubscriptions.subscriptionCron,
-                    SlackSubscriptions.lastDeliveryTime,
-                    Domains.domain,
-                    Accounts.timeZone,
-                    Accounts.slackToken,
-                    Accounts.createdAt
-                )
-                .select { SlackSubscriptions.subscriptionType eq "summary" }
+                .selectAll()
+                .where { SlackSubscriptions.subscriptionType eq "summary" }
                 .forEach { subscription ->
                     val timeZone = ZoneId.of(subscription[Accounts.timeZone])
                     val currentTime = ZonedDateTime.now(timeZone)

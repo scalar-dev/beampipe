@@ -216,6 +216,7 @@ export const Layout: FunctionComponent<PropsWithChildren<LayoutProps>> = ({ titl
                 >
                   scalar.dev
                 </a>
+                <span className="text-xs text-gray-400">{__APP_VERSION__}</span>
               </div>
             </div>
           </nav>

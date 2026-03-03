@@ -10,8 +10,8 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.server.util.HttpHostResolver
 import io.micronaut.security.utils.SecurityService
 import org.reactivestreams.Publisher
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Singleton
 @Replaces(DefaultGraphQLExecutionInputCustomizer::class)
@@ -25,7 +25,9 @@ class GraphQLExecutionInput(@Inject val securityService: SecurityService?) : Gra
         httpResponse: MutableHttpResponse<String>?
     ): Publisher<ExecutionInput> {
         return Publishers.just(executionInput.transform { builder ->
-            builder.context(Context(securityService?.authentication?.orElse(null), hostResolver.resolve(httpRequest)))
+            builder.graphQLContext { ctx ->
+                ctx.put("beampipeContext", Context(securityService?.authentication?.orElse(null), hostResolver.resolve(httpRequest)))
+            }
         })
     }
 }

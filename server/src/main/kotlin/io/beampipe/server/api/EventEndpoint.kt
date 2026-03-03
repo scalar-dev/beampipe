@@ -17,8 +17,6 @@ import io.micronaut.http.server.util.HttpClientAddressResolver
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
 import io.whitfin.siphash.SipHasher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import nl.basjes.parse.useragent.UserAgent
 import nl.basjes.parse.useragent.UserAgentAnalyzer
 import org.jetbrains.exposed.sql.insert
@@ -27,7 +25,7 @@ import java.io.File
 import java.net.InetAddress
 import java.net.URI
 import java.time.Instant
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 
 @Controller("/event")
@@ -75,10 +73,8 @@ class EventEndpoint {
 
     suspend fun storeEvent(clientIp: String?, event: Event) {
         val ip = clientIp?.split(",")?.firstOrNull()?.trim()
-        val ipCity = GlobalScope.async {
-            val ipAddress = InetAddress.getByName(ip)
-            geoTagger.tag(ipAddress)
-        }.await()
+        val ipAddress = InetAddress.getByName(ip)
+        val ipCity = geoTagger.tag(ipAddress)
 
         val uri = URI.create(event.url)
         val userId: Long = container.hash("${event.domain}_${clientIp}_${event.userAgent}".toByteArray())
@@ -87,7 +83,7 @@ class EventEndpoint {
         val domain = event.domain?.removePrefix("www.") ?: uri.host.removePrefix("www.")
 
         // Drop notification if we're full
-        if (!slackNotifier.events.offer(SlackNotifier.Event(domain, event.type))) {
+        if (!slackNotifier.events.trySend(SlackNotifier.Event(domain, event.type)).isSuccess) {
             LOG.warn("Slack notification channel is full. Dropping.")
         }
 

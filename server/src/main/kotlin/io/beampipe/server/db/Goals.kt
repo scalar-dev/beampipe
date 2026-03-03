@@ -1,7 +1,7 @@
 package io.beampipe.server.db
 
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.`java-time`.timestamp
+import org.jetbrains.exposed.sql.javatime.timestamp
 
 object Goals : UUIDTable("goal") {
     val domain = uuid("domain_id")
