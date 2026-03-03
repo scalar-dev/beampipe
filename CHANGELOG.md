@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/scalar-dev/beampipe/compare/v0.1.4...v0.1.5) (2026-03-03)
+
+
+### Bug Fixes
+
+* railway deploy message ([#124](https://github.com/scalar-dev/beampipe/issues/124)) ([bdd7b7d](https://github.com/scalar-dev/beampipe/commit/bdd7b7dbd03809e07e64bb9edcc8d4825d257b5e))
+
 ## [0.1.4](https://github.com/scalar-dev/beampipe/compare/v0.1.3...v0.1.4) (2026-03-03)
 
 
