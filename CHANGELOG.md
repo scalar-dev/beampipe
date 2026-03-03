@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/scalar-dev/beampipe/compare/v0.1.3...v0.1.4) (2026-03-03)
+
+
+### Bug Fixes
+
+* FOUC ([#122](https://github.com/scalar-dev/beampipe/issues/122)) ([725ab44](https://github.com/scalar-dev/beampipe/commit/725ab4496de8f538f13d28235993c4944889be1e))
+
 ## [0.1.3](https://github.com/scalar-dev/beampipe/compare/v0.1.2...v0.1.3) (2026-03-03)
 
 
