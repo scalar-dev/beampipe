@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/scalar-dev/beampipe/compare/v0.1.2...v0.1.3) (2026-03-03)
+
+
+### Features
+
+* web/ -&gt; astro ([#120](https://github.com/scalar-dev/beampipe/issues/120)) ([73df3ff](https://github.com/scalar-dev/beampipe/commit/73df3ffea48792a1cc3ba04110222074d8ef8fd4))
+
 ## [0.1.2](https://github.com/scalar-dev/beampipe/compare/v0.1.1...v0.1.2) (2026-03-02)
 
 
