@@ -157,6 +157,19 @@ class EventStatsShould : TestPropertyProvider {
     }
 
     @Test
+    fun return_empty_goals_list_when_no_goals_configured() = runBlocking {
+        // Create a domain with no goals
+        val emptyDomainId = TestHelper.createDomain(accountId, "no-goals.com", public = true)
+        TestHelper.insertEvent(domain = "no-goals.com", path = "/", userId = 1L, time = now.minus(1, ChronoUnit.HOURS))
+
+        val stats = EventStats("no-goals.com", startTime, endTime, null, ZoneOffset.UTC, emptyList(), true)
+        val goals = stats.goals()
+
+        assertNotNull(goals)
+        assertTrue(goals.isEmpty(), "goals should be an empty list when none configured, but was: $goals")
+    }
+
+    @Test
     fun return_goals_with_counts() = runBlocking {
         val stats = createStats()
         val goals = stats.goals()

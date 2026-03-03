@@ -1,5 +1,7 @@
 package server
 
+import io.beampipe.server.db.Domains
+import io.beampipe.server.db.Goals
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.HttpClient
@@ -8,6 +10,10 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -187,6 +193,74 @@ class GraphQLShould : TestPropertyProvider {
         """.trimIndent())
 
         assertTrue(response.contains("\"bounceCount\""))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun return_empty_goals_list_when_no_goals_configured() {
+        val json = graphqlQueryJson("""
+            {
+                events(domain: "public-test.com", timePeriod: {type: "month"}) {
+                    goals {
+                        id
+                        name
+                        count
+                    }
+                }
+            }
+        """.trimIndent())
+
+        val data = json["data"] as Map<String, Any>
+        val events = data["events"] as Map<String, Any>
+        val goals = events["goals"] as List<*>
+        assertNotNull(goals, "goals should not be null")
+        assertTrue(goals.isEmpty(), "goals should be an empty list when none configured")
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun return_goals_with_counts() {
+        // Create a goal that matches page_view events
+        val domainId = transaction {
+            Domains.selectAll().where { Domains.domain eq "public-test.com" }
+                .first()[Domains.id].value
+        }
+        val goalId = TestHelper.createGoal(
+            domainId = domainId,
+            name = "All page views",
+            eventType = "page_view",
+            path = ""
+        )
+
+        try {
+            val json = graphqlQueryJson("""
+                {
+                    events(domain: "public-test.com", timePeriod: {type: "month"}) {
+                        goals {
+                            id
+                            name
+                            eventType
+                            path
+                            count
+                        }
+                    }
+                }
+            """.trimIndent())
+
+            val data = json["data"] as Map<String, Any>
+            val events = data["events"] as Map<String, Any>
+            val goals = events["goals"] as List<Map<String, Any>>
+            assertTrue(goals.isNotEmpty(), "goals should contain the created goal")
+            val goal = goals.first()
+            assertTrue(goal["name"] == "All page views")
+            assertTrue(goal["eventType"] == "page_view")
+            assertTrue((goal["count"] as Number).toLong() > 0, "goal count should be > 0")
+        } finally {
+            // Clean up the goal
+            transaction {
+                Goals.deleteWhere { Goals.id eq goalId }
+            }
+        }
     }
 
     override fun getProperties(): MutableMap<String, String> {
