@@ -1,19 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { execSync } from "child_process";
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import pkg from "./package.json" with { type: "json" };
 
-const version = (() => {
-  try {
-    return readFileSync(resolve(__dirname, "../VERSION"), "utf-8").trim();
-  } catch {}
-  try {
-    return execSync("git describe --tags --always", { encoding: "utf-8" }).trim();
-  } catch {}
-  return "unknown";
-})();
+const version = pkg.version;
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
