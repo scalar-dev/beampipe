@@ -160,7 +160,18 @@ export const Footer = () => (
       </div>
 
       <div className="pb-6 text-center w-full text-sm">
-        Copyright © Beampipe 2020.
+        <div>Copyright © Beampipe 2020.</div>
+        <div className="mt-1">
+          IP Geolocation by{" "}
+          <a
+            href="https://db-ip.com"
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            DB-IP
+          </a>
+        </div>
       </div>
     </div>
   </footer>
