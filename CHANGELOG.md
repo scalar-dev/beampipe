@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/scalar-dev/beampipe/compare/v0.1.5...v0.1.6) (2026-03-03)
+
+
+### Features
+
+* modernise the server ([#127](https://github.com/scalar-dev/beampipe/issues/127)) ([364521e](https://github.com/scalar-dev/beampipe/commit/364521ef0ca4e196c92c0050dfb8e5c0cad222ab))
+
 ## [0.1.5](https://github.com/scalar-dev/beampipe/compare/v0.1.4...v0.1.5) (2026-03-03)
 
 

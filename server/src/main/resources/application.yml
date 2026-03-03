@@ -87,6 +87,8 @@ datasources:
     dialect: postgres
     maximumPoolSize: 15
     minimumIdle: 5
+jackson:
+  serialization-inclusion: ALWAYS
 graphql:
   enabled: true
   path: /graphql

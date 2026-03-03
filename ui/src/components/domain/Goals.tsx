@@ -369,7 +369,7 @@ export const GoalsCard = ({
       )}
       <NonIdealState
         isLoading={stats.fetching}
-        isIdeal={stats.data?.events.goals.length > 0}
+        isIdeal={(stats.data?.events?.goals?.length ?? 0) > 0}
         nonIdeal={
           <div className="text-md text-gray-600 text-center">
             You haven't configured any goals yet.
@@ -385,7 +385,7 @@ export const GoalsCard = ({
       >
         <Table
           columnHeadings={["Goals", "Count"]}
-          data={stats.data?.events.goals.map((goal: Goal) => ({
+          data={stats.data?.events?.goals?.map((goal: Goal) => ({
             key: goal.id,
             label: goal.name,
             count: goal.count,
@@ -394,7 +394,7 @@ export const GoalsCard = ({
             isEditable
               ? (id) => {
                   setGoal(
-                    stats.data.events.goals.find((goal: Goal) => goal.id === id)
+                    stats.data?.events?.goals?.find((goal: Goal) => goal.id === id)
                   );
                   setModalVisible(true);
                 }
