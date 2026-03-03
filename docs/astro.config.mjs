@@ -11,6 +11,7 @@ export default defineConfig({
       customCss: ["./src/styles/custom.css"],
       favicon: "/favicon.png",
       components: {
+        Head: "./src/components/Head.astro",
         ThemeProvider: "./src/components/ThemeProvider.astro",
         ThemeSelect: "./src/components/ThemeSelect.astro",
       },
