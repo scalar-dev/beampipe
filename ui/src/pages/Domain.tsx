@@ -160,18 +160,7 @@ export const Footer = () => (
       </div>
 
       <div className="pb-6 text-center w-full text-sm">
-        <div>Copyright © Beampipe 2020.</div>
-        <div className="mt-1">
-          IP Geolocation by{" "}
-          <a
-            href="https://db-ip.com"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            DB-IP
-          </a>
-        </div>
+        Copyright © Beampipe 2020.
       </div>
     </div>
   </footer>
@@ -631,6 +620,17 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           <TakeBackControl />
         </div>
       </IfAnonymous>
+      <div className="pb-4 text-center text-xs text-gray-400">
+        IP Geolocation by{" "}
+        <a
+          href="https://db-ip.com"
+          target="_blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          DB-IP
+        </a>
+      </div>
     </div>
   );
 };

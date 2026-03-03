@@ -38,7 +38,7 @@
   "scripts": {
     "dev": "bun vite",
     "prebuild": "bun run --cwd ../packages/tracker build && cp ../packages/tracker/dist/tracker.js public/tracker.js",
-    "build": "bun vite build",
+    "build": "bun vite build --mode production",
     "preview": "bun vite preview",
     "typecheck": "bun tsc --noEmit"
   },

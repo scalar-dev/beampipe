@@ -6,6 +6,7 @@ COPY packages/tracker/ packages/tracker/
 COPY ui/package.json ui/
 RUN bun install
 COPY ui/ ui/
+RUN rm -f ui/.env.development
 ENV CI=true
 WORKDIR /app/ui
 RUN bun run build
