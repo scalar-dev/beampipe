@@ -1,0 +1,19 @@
+---
+const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
+---
+
+<div class="mx-auto container py-8 text-center">
+  <div
+    class="font-black leading-tight text-5xl md:text-6xl text-gray-800"
+  >
+    Take back control of your analytics.
+  </div>
+  <div class="pt-8">
+    <a
+      href={`${appUrl}/sign-up`}
+      class="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4"
+    >
+      Get started.
+    </a>
+  </div>
+</div>

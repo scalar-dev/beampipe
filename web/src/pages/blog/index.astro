@@ -1,0 +1,46 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TakeBackControl from "../../components/TakeBackControl.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("posts");
+posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Layout title="Blog">
+  <div class="container mx-auto max-w-screen-sm mt-8">
+    {
+      posts.map((post) => (
+        <article>
+          <header>
+            <h3 class="mb-1 text-3xl font-semibold text-purple-600">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-4xl font-black text-purple-600 no-underline"
+              >
+                {post.data.title}
+              </a>
+            </h3>
+            <span class="mb-4 text-sm">
+              {post.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+          </header>
+          <section class="leading-7 text-gray-700">
+            <p class="mb-8">{post.data.description}</p>
+          </section>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="my-16">
+    <TakeBackControl />
+  </div>
+
+  <Footer />
+</Layout>

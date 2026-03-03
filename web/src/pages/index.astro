@@ -1,0 +1,64 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Screenshot from "../components/Screenshot.astro";
+import Features from "../components/Features.astro";
+import Why from "../components/Why.astro";
+import TakeBackControl from "../components/TakeBackControl.astro";
+import Pricing from "../components/Pricing.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="dead simple web analytics">
+  <div class="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+    <Hero />
+    <div class="flex py-8 px-2 md:px-32 justify-center">
+      <Screenshot>
+        <video
+          loop
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+          poster="/images/screenshot.png"
+        >
+          <source type="video/mp4" src="/video.mp4" />
+        </video>
+      </Screenshot>
+    </div>
+  </div>
+
+  <div class="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+    <Features />
+  </div>
+
+  <div class="from-gray-100 via-white to-gray-100 bg-gradient-to-b">
+    <Why />
+
+    <TakeBackControl />
+
+    <div id="pricing">
+      <Pricing />
+    </div>
+
+    <div class="flex justify-center">
+      <div class="m-auto py-8">
+        <a
+          href="https://www.producthunt.com/posts/beampipe?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-beampipe"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=225181&theme=dark"
+            alt="Beampipe - Privacy-focussed web analytics. Free for smaller sites. | Product Hunt Embed"
+            style="width: 250px; height: 54px;"
+            width="250"
+            height="54"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

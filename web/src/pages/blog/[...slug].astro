@@ -1,0 +1,106 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const formattedDate = post.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={post.data.title}>
+  <div class="bg-gradient-to-b from-gray-100 to-white">
+    <div class="container mx-auto">
+      <article
+        class="max-w-screen-sm mx-auto text-gray-700 leading-7 mt-8 pb-16"
+      >
+        <div
+          class="text-purple-600 font-bold text-sm hover:text-purple-500"
+        >
+          <svg
+            class="inline w-4 h-4 mr-2"
+            fill="currentColor"
+            viewBox="0 0 448 512"
+            ><path
+              d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
+            ></path></svg
+          >
+          <a href="/blog">Back to posts</a>
+        </div>
+        <div class="text-5xl text-purple-600 font-black leading-tight">
+          {post.data.title}
+        </div>
+        <div class="text-lg font-bold text-gray-600">
+          {formattedDate} - By {post.data.author}
+        </div>
+        <div class="prose prose-lg max-w-none mt-4">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #1f2937;
+    line-height: 1.25;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose a {
+    font-weight: 700;
+  }
+
+  .prose a:hover {
+    color: #7c3aed;
+  }
+
+  .prose img {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .prose hr {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-color: #e5e7eb;
+  }
+
+  .prose strong {
+    font-weight: 700;
+  }
+</style>

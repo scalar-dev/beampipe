@@ -1,0 +1,33 @@
+---
+const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
+---
+
+<div class="container mx-auto">
+  <div class="px-2 pb-4 md:pt-4 md:w-full flex flex-col">
+    <div class="text-6xl text-purple-600 font-extrabold text-center">
+      <div class="font-black tracking-tight">Simple. Powerful. Private.</div>
+      <p class="leading-normal text-2xl text-gray-800 font-medium">
+        beampipe is <b>simple</b>, <b>privacy-focussed</b> web analytics. <b
+          >free</b
+        > for up to 10k monthly page views.
+      </p>
+    </div>
+  </div>
+
+  <div class="flex flex-col py-4">
+    <div class="m-auto flex items-center justify-center">
+      <a
+        href={`${appUrl}/sign-up`}
+        class="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4"
+      >
+        Sign up free
+      </a>
+      <a
+        href={`${appUrl}/domain/beampipe.io`}
+        class="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md"
+      >
+        Live demo
+      </a>
+    </div>
+  </div>
+</div>

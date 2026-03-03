@@ -1,0 +1,315 @@
+---
+const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
+---
+
+<div class="pt-8">
+  <div class="container mx-auto text-gray-800">
+    <div
+      class="mx-auto text-6xl font-black tracking-tight py-4 text-center text-purple-600"
+    >
+      Pricing
+    </div>
+    <p class="text-center pb-4 text-gray-600 font-bold">
+      No credit card required. Cancel at any time.
+    </p>
+    <div class="mx-auto lg:grid lg:grid-cols-3 lg:gap-5">
+      <!-- Free -->
+      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
+        <div class="px-6 py-8 bg-white">
+          <div class="text-2xl font-bold">Free</div>
+          <div class="text-4xl pt-2 leading-none font-extrabold">
+            $0 / month
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
+          <div class="flex-1">
+            <ul>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2"><b>5</b> domains</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2"><b>10k</b> page views per month</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Full-featured analytics dashboard</div>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-4 w-full flex justify-center">
+            <a
+              href={`${appUrl}/sign-up`}
+              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
+            >
+              Sign up
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro -->
+      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
+        <div class="px-6 py-8 bg-white">
+          <div class="text-2xl font-bold">
+            Pro
+            <span
+              class="text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle"
+              >7 day free trial</span
+            >
+          </div>
+          <div class="text-4xl pt-2 leading-none font-extrabold">
+            $10 / month
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
+          <div class="flex-1">
+            <ul>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2"><b>10</b> domains</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2"><b>100k</b> page views per month</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Full-featured analytics dashboard</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Slack integration</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">API Access</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Email support</div>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-4 w-full flex justify-center">
+            <a
+              href={`${appUrl}/sign-up`}
+              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
+            >
+              Sign up
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
+        <div class="px-6 py-8 bg-white">
+          <div class="text-2xl font-bold">
+            Enterprise
+            <span
+              class="text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle"
+              >7 day free trial</span
+            >
+          </div>
+          <div class="text-4xl pt-2 leading-none font-extrabold">
+            <a class="hover:text-gray-500" href="mailto:hello@beampipe.io"
+              >Contact us</a
+            >
+          </div>
+        </div>
+        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
+          <div class="flex-1">
+            <ul>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2"><b>Unlimited</b> domains</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">
+                  <b>Unlimited</b> page views per month
+                </div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Full-featured analytics dashboard</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Slack integration</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">API Access</div>
+              </li>
+              <li class="flex py-2">
+                <svg
+                  class="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  ><path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"></path></svg
+                >
+                <div class="pl-2">Priority support</div>
+              </li>
+            </ul>
+          </div>
+          <div class="pt-4 w-full flex justify-center">
+            <a
+              href={`${appUrl}/sign-up`}
+              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
+            >
+              Sign up
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
