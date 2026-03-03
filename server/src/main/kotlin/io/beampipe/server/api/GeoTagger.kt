@@ -14,10 +14,10 @@ interface  GeoTagger {
 }
 
 @Singleton
-@Requires(property = "geolite2.db")
-class GeoLiteGeoTagger(@Property(name = "geolite2.db") val geoLite2DbPath: String): GeoTagger {
-    var database = File(geoLite2DbPath).also {
-        require(it.exists()) { "GEOLITE2_DB is set to '$geoLite2DbPath' but the file does not exist. Ensure GEOLITE2_LICENSE_KEY is set as a build-time variable." }
+@Requires(property = "geoip.db")
+class GeoIpGeoTagger(@Property(name = "geoip.db") val geoIpDbPath: String): GeoTagger {
+    var database = File(geoIpDbPath).also {
+        require(it.exists()) { "GEOIP_DB is set to '$geoIpDbPath' but the file does not exist." }
     }
     var reader = DatabaseReader.Builder(database).build()
 
@@ -25,7 +25,7 @@ class GeoLiteGeoTagger(@Property(name = "geolite2.db") val geoLite2DbPath: Strin
 }
 
 @Singleton
-@Requires(missingProperty = "geolite2.db")
+@Requires(missingProperty = "geoip.db")
 class NoGeoTagger: GeoTagger {
     override fun tag(ipAddress: InetAddress) = Optional.empty<CityResponse>()
 }

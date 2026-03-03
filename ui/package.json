@@ -36,11 +36,11 @@
     "urql": "^4"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "bun vite",
     "prebuild": "bun run --cwd ../packages/tracker build && cp ../packages/tracker/dist/tracker.js public/tracker.js",
-    "build": "vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "build": "bun vite build",
+    "preview": "bun vite preview",
+    "typecheck": "bun tsc --noEmit"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4",

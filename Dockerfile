@@ -7,7 +7,8 @@ COPY ui/package.json ui/
 RUN bun install
 COPY ui/ ui/
 ENV CI=true
-RUN bun run --cwd ui build
+WORKDIR /app/ui
+RUN bun run build
 
 # Stage 2: Build the server Shadow JAR
 FROM gradle:7.6-jdk11 AS server-build
@@ -21,24 +22,23 @@ COPY --from=ui-build /app/ui/dist server/src/main/resources/ui/
 ENV GRADLE_OPTS="-Xmx512m -Dorg.gradle.jvmargs=-Xmx512m"
 RUN gradle --no-daemon --console=plain server:shadowJar
 
-# Stage 3: Conditionally download GeoLite2 database
-FROM alpine:3.18 AS geolite2
-ARG GEOLITE2_LICENSE_KEY
-RUN if [ -n "$GEOLITE2_LICENSE_KEY" ]; then \
-      apk add --no-cache wget && \
-      wget -q -O /tmp/geolite2.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=${GEOLITE2_LICENSE_KEY}&suffix=tar.gz" && \
-      mkdir -p /data && \
-      tar xf /tmp/geolite2.tar.gz -C /tmp && \
-      mv /tmp/GeoLite2-City_*/GeoLite2-City.mmdb /data/GeoLite2-City.mmdb && \
-      rm -rf /tmp/geolite2.tar.gz /tmp/GeoLite2-City_*; \
-    else \
-      mkdir -p /data; \
-    fi
+# Stage 3: Download DB-IP City Lite database
+FROM alpine:3.18 AS geoip
+RUN apk add --no-cache wget && \
+    YEAR=$(date +%Y) && \
+    MONTH=$(($(date +%-m) - 1)) && \
+    if [ "$MONTH" -eq 0 ]; then MONTH=12; YEAR=$((YEAR - 1)); fi && \
+    YEAR_MONTH=$(printf "%d-%02d" "$YEAR" "$MONTH") && \
+    mkdir -p /data && \
+    wget -q -O /tmp/dbip.mmdb.gz "https://download.db-ip.com/free/dbip-city-lite-${YEAR_MONTH}.mmdb.gz" && \
+    gunzip /tmp/dbip.mmdb.gz && \
+    mv /tmp/dbip.mmdb /data/dbip-city-lite.mmdb
 
 # Stage 4: Runtime image
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=server-build /app/server/build/libs/server-*-all.jar /app/server.jar
-COPY --from=geolite2 /data/ /data/
+COPY --from=geoip /data/ /data/
+ENV GEOIP_DB=/data/dbip-city-lite.mmdb
 EXPOSE 8080
 CMD ["java", "-Xmx256m", "-jar", "/app/server.jar"]

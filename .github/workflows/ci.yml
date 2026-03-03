@@ -14,7 +14,6 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
             -t scalardev/beampipe:$GITHUB_RUN_NUMBER \
             .
 
