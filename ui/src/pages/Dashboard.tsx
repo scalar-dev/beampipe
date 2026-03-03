@@ -11,6 +11,7 @@ import {
   faCopy,
   faCog,
   faQuestionCircle,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, MouseEventHandler, PropsWithChildren } from "react";
 import { NonIdealState } from "../components/NonIdealState";
@@ -321,11 +322,23 @@ const DomainCard: React.FunctionComponent<{
   const renderInner = (state: DomainCardState) => {
     switch (state) {
       case "chart":
-        return <DomainChart domain={domain} />;
+        return (
+          <Link to={`/domain/${encodeURIComponent(domain.domain)}`}>
+            <DomainChart domain={domain} />
+          </Link>
+        );
       case "code":
         return (
-          <div className="flex-1 flex">
+          <div className="flex-1 flex flex-col">
             <ScriptSnippet domain={domain} />
+            <div className="text-center pt-4">
+              <button
+                className="text-sm text-purple-600 hover:text-purple-500 outline-none focus:outline-none"
+                onClick={() => setState("chart")}
+              >
+                Back to chart
+              </button>
+            </div>
           </div>
         );
       case "editing":
@@ -353,6 +366,11 @@ const DomainCard: React.FunctionComponent<{
               className="text-gray-800 hover:text-gray-500 break-words"
             >
               {domain.domain}
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                size="xs"
+                className="text-gray-400 ml-1"
+              />
             </Link>
           </div>
 
