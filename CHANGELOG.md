@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.1](https://github.com/scalar-dev/beampipe/compare/v0.2.0...v0.2.1) (2026-03-03)
+
+
+### Features
+
+* make ui clearer in domain dashboard ([#133](https://github.com/scalar-dev/beampipe/issues/133)) ([0ae23a9](https://github.com/scalar-dev/beampipe/commit/0ae23a9db170c503d7c884fb2b249205ec29d98a))
+
+
+### Bug Fixes
+
+* card table borders ([#131](https://github.com/scalar-dev/beampipe/issues/131)) ([6cad65f](https://github.com/scalar-dev/beampipe/commit/6cad65fb473af7236c3cb2a96b9205813fca78e1))
+
 ## [0.2.0](https://github.com/scalar-dev/beampipe/compare/v0.1.6...v0.2.0) (2026-03-03)
 
 
