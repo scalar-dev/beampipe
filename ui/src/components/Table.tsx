@@ -87,7 +87,7 @@ export const Table = ({
         {data?.slice(0, maxRows).map((item, idx) => (
           <tr
             key={idx}
-            className={`border-t-2 ${
+            className={`border-t ${
               onClick || item.onClick ? "cursor-pointer hover:bg-gray-100" : ""
             }`}
             onClick={() => {
