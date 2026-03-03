@@ -12,7 +12,7 @@ WORKDIR /app/ui
 RUN bun run build
 
 # Stage 2: Build the server Shadow JAR
-FROM gradle:7.6-jdk11 AS server-build
+FROM gradle:8.10-jdk17 AS server-build
 WORKDIR /app
 COPY server/ server/
 # Use a single-project settings.gradle to avoid needing the ui subproject

@@ -3,13 +3,14 @@ package io.beampipe.server.graphql
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.time.ZoneId
@@ -17,8 +18,8 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 fun timePeriodToStartTime(origin: Instant, timePeriodStart: String?): Instant = when (timePeriodStart ?: "day") {
     "day" -> origin.minus(1, ChronoUnit.DAYS)
@@ -93,7 +94,7 @@ class EventQuery {
 
     private fun matchingDomain(userId: UUID?, domain: String) =
         Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-            .select {
+            .selectAll().where {
                 Domains.domain.eq(domain) and (
                         if (userId != null) {
                             Domains.public or Accounts.id.eq(userId)
@@ -105,13 +106,13 @@ class EventQuery {
             .firstOrNull()
             ?: throw CustomException("Domain not found")
 
-    suspend fun liveUnique(context: Context, domain: String) = newSuspendedTransaction {
+    suspend fun liveUnique(@GraphQLIgnore context: Context, domain: String) = newSuspendedTransaction {
         val userId = accountQuery.user(context)?.id
         matchingDomain(userId, domain)
 
         Events
-            .slice(Events.userId)
-            .select {
+            .select(Events.userId)
+            .where {
                 Events.domain.eq(domain) and
                         Events.time.greaterEq(Instant.now().minus(5, ChronoUnit.MINUTES))
             }
@@ -120,7 +121,7 @@ class EventQuery {
     }
 
     suspend fun events(
-        context: Context,
+        @GraphQLIgnore context: Context,
         domain: String,
         timePeriod: TimePeriod,
         timeZone: String?,
@@ -137,7 +138,7 @@ class EventQuery {
             }
 
             val isEditable = Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                .select {
+                .selectAll().where {
                     Domains.domain.eq(domain) and Accounts.id.eq(userId)
                 }
                 .firstOrNull() != null
@@ -153,4 +154,3 @@ class EventQuery {
             )
         }
 }
-

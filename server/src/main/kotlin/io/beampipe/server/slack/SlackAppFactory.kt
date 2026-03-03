@@ -17,15 +17,15 @@ import io.beampipe.server.db.SlackSubscriptions
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
-import javax.inject.Inject
-
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Factory
 class AppFactory(@Inject val slackNotifier: SlackNotifier) {
@@ -36,13 +36,13 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
 
     private fun getDomainId(domain: String, teamId: String) = Domains
         .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
-        .slice(Domains.id)
-        .select { Domains.domain.eq(domain) and Accounts.slackTeamId.eq(teamId) }
+        .select(Domains.id)
+        .where { Domains.domain.eq(domain) and Accounts.slackTeamId.eq(teamId) }
         .map { it[Domains.id] }
         .firstOrNull()
 
     private fun getExistingSubscription(domainId: UUID, channelId: String) = SlackSubscriptions
-        .select {
+        .selectAll().where {
             SlackSubscriptions.domainId.eq(domainId) and
                     SlackSubscriptions.channelId.eq(channelId) and
                     SlackSubscriptions.subscriptionType.eq("summary")
@@ -76,7 +76,7 @@ class AppFactory(@Inject val slackNotifier: SlackNotifier) {
 
     private fun listSubscriptions(req: SlashCommandRequest, ctx:SlashCommandContext): Response =
         transaction {
-            val unsubscribeSections = SlackSubscriptions.select {
+            val unsubscribeSections = SlackSubscriptions.selectAll().where {
                 SlackSubscriptions.channelId eq (req.payload.channelId) and
                         (SlackSubscriptions.teamId eq req.payload.teamId)
             }

@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.LongColumnType
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
-import org.jetbrains.exposed.sql.`java-time`.timestampLiteral
+import org.jetbrains.exposed.sql.javatime.timestampLiteral
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.castTo
@@ -19,7 +19,7 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.countDistinct
 import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -107,8 +107,8 @@ data class EventStats(
         val timeBucket = timeBucket(bucketDuration)
         val count = Events.time.count().castTo<Long?>(LongColumnType())
 
-        Events.slice(timeBucket, count)
-            .select { preselect(startTime, endTime) }
+        Events.select(timeBucket, count)
+            .where { preselect(startTime, endTime) }
             .groupBy(timeBucket)
             .orderBy(timeBucket)
             .map {
@@ -121,8 +121,8 @@ data class EventStats(
         val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
 
         Events
-            .slice(timeBucket, count)
-            .select { preselect(startTime, endTime) }
+            .select(timeBucket, count)
+            .where { preselect(startTime, endTime) }
             .groupBy(timeBucket)
             .orderBy(timeBucket)
             .map {
@@ -133,13 +133,13 @@ data class EventStats(
 
     suspend fun count() = newSuspendedTransaction {
         Events
-            .select { preselect(startTime, endTime) }
+            .selectAll().where { preselect(startTime, endTime) }
             .count()
     }
 
     suspend fun previousCount() = if (comparisonStartTime != null) {
         newSuspendedTransaction {
-            Events.select { preselect(comparisonStartTime, startTime) }
+            Events.selectAll().where { preselect(comparisonStartTime, startTime) }
                 .count()
         }
     } else {
@@ -151,8 +151,8 @@ data class EventStats(
             val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
             val columns = listOfNotNull(key, display).toTypedArray()
 
-            Events.slice(count, *columns)
-                .select { preselect(startTime, endTime) }
+            Events.select(count, *columns)
+                .where { preselect(startTime, endTime) }
                 .groupBy(*columns)
                 .having { count.greaterEq(1L) }
                 .orderBy(count, SortOrder.DESC)
@@ -174,8 +174,8 @@ data class EventStats(
 
     suspend fun topSources(n: Int?) = newSuspendedTransaction {
         val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType())
-        Events.slice(Events.referrerClean, Events.sourceClean, count)
-            .select {
+        Events.select(Events.referrerClean, Events.sourceClean, count)
+            .where {
                 preselect(startTime, endTime) and
                         // We have some cases of refferer being null and source being not null.
                         // Looks like the Google bot
@@ -209,8 +209,8 @@ data class EventStats(
 
     suspend fun countUnique() = newSuspendedTransaction {
         Events
-            .slice(Events.userId)
-            .select { preselect(startTime, endTime) }
+            .select(Events.userId)
+            .where { preselect(startTime, endTime) }
             .withDistinct()
             .count()
     }
@@ -218,8 +218,8 @@ data class EventStats(
     suspend fun previousCountUnique() = if (comparisonStartTime != null) {
         newSuspendedTransaction {
             Events
-                .slice(Events.userId)
-                .select { preselect(comparisonStartTime, startTime) }
+                .select(Events.userId)
+                .where { preselect(comparisonStartTime, startTime) }
                 .withDistinct()
                 .count()
         }
@@ -229,8 +229,8 @@ data class EventStats(
 
     suspend fun bounceCount() = newSuspendedTransaction {
         Events
-            .slice(Events.userId, Events.userId.count())
-            .select { preselect(startTime, endTime) }
+            .select(Events.userId, Events.userId.count())
+            .where { preselect(startTime, endTime) }
             .groupBy(Events.userId)
             .having { Events.userId.count().eq(1) }
             .count()
@@ -240,8 +240,8 @@ data class EventStats(
         val count = Events.userId.countDistinct().castTo<Long?>(LongColumnType()).alias("count")
 
         val eventTypePathCount = Events
-            .slice(Events.type, Events.path, count)
-            .select { Events.domain eq domain }
+            .select(Events.type, Events.path, count)
+            .where { Events.domain eq domain }
             .groupBy(Events.type, Events.path)
             .alias("event_type_path_by_count")
 
@@ -254,8 +254,8 @@ data class EventStats(
                         eventTypePathCount[Events.path].eq(Goals.path) or Goals.path.eq("") or Goals.path.isNull()
                         )
             }
-            .slice(Goals.id, Goals.name, Goals.description, Goals.eventType, Goals.path, sum)
-            .select { Domains.domain eq domain }
+            .select(Goals.id, Goals.name, Goals.description, Goals.eventType, Goals.path, sum)
+            .where { Domains.domain eq domain }
             .groupBy(Goals.id)
             .orderBy(sum, SortOrder.DESC)
             .map {
@@ -273,8 +273,8 @@ data class EventStats(
     suspend fun previousBounceCount() = if (comparisonStartTime != null) {
         newSuspendedTransaction {
             Events
-                .slice(Events.userId, Events.userId.count())
-                .select { preselect(comparisonStartTime, startTime) }
+                .select(Events.userId, Events.userId.count())
+                .where { preselect(comparisonStartTime, startTime) }
                 .groupBy(Events.userId)
                 .having { Events.userId.count().eq(1) }
                 .count()

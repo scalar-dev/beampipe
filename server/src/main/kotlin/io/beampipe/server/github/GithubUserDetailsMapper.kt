@@ -1,34 +1,39 @@
 package io.beampipe.server.github
 
 import io.beampipe.server.db.Accounts
-import io.micronaut.security.authentication.UserDetails
-import io.micronaut.security.oauth2.endpoint.token.response.OauthUserDetailsMapper
+import io.micronaut.security.authentication.AuthenticationResponse
+import io.micronaut.security.oauth2.endpoint.authorization.state.State
+import io.micronaut.security.oauth2.endpoint.token.response.OauthAuthenticationMapper
 import io.micronaut.security.oauth2.endpoint.token.response.TokenResponse
+import jakarta.inject.Named
+import jakarta.inject.Singleton
 import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
 import java.time.Instant
-import javax.inject.Named
-import javax.inject.Singleton
 
 @Named("github")
 @Singleton
-class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUserDetailsMapper {
-    override fun createUserDetails(tokenResponse: TokenResponse): Publisher<UserDetails> {
-        return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)!!
+class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthAuthenticationMapper {
+    override fun createAuthenticationResponse(
+        tokenResponse: TokenResponse,
+        state: State?
+    ): Publisher<AuthenticationResponse> {
+        return apiClient.getUser(TOKEN_PREFIX + tokenResponse.accessToken)
             .map { login ->
                 val account = transaction {
                     val existingUser = Accounts
-                        .slice(Accounts.id)
-                        .select { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
+                        .select(Accounts.id)
+                        .where { Accounts.githubUserId.eq(stringLiteral(login!!.id.toString())) }
                         .firstOrNull()
 
                     val accountId = if (existingUser == null) {
                         Accounts.insertAndGetId {
-                            it[githubUserId] = login.id.toString()
+                            it[githubUserId] = login!!.id.toString()
                             it[email] = login.email
                         }
                     } else {
@@ -38,14 +43,14 @@ class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthUse
                         existingUser[Accounts.id]
                     }
 
-                    Accounts.select { Accounts.id.eq(accountId) }
+                    Accounts.selectAll().where { Accounts.id.eq(accountId) }
                         .firstOrNull()!!
                 }
-                UserDetails(
+                AuthenticationResponse.success(
                     account[Accounts.id].toString(),
                     listOf(ROLE_GITHUB),
                     mapOf(
-                        OauthUserDetailsMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
+                        OauthAuthenticationMapper.ACCESS_TOKEN_KEY to tokenResponse.accessToken,
                         "accountId" to account[Accounts.id].toString(),
                         "email" to account[Accounts.email],
                         "name" to account[Accounts.name]

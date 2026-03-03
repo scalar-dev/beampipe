@@ -3,18 +3,19 @@ package io.beampipe.server.graphql
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import io.beampipe.server.graphql.util.Context
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import jakarta.inject.Singleton
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import javax.inject.Singleton
 
 @Singleton
 class AccountQuery {
@@ -35,7 +36,7 @@ class AccountQuery {
 
     data class Domain(val id: UUID, val domain: String, val hasData: Boolean, val public: Boolean)
 
-    fun user(context: Context) = if (context.authentication != null) {
+    fun user(@GraphQLIgnore context: Context) = if (context.authentication != null) {
         User(
             UUID.fromString(context.authentication.attributes["accountId"] as String),
             context.authentication.attributes["email"] as String?,
@@ -57,27 +58,27 @@ class AccountQuery {
         else -> 5
     }
 
-    suspend fun settings(context: Context) = context.withAccountId { accountId ->
+    suspend fun settings(@GraphQLIgnore context: Context) = context.withAccountId { accountId ->
         newSuspendedTransaction {
             val domains = Domains
-                .slice(Domains.domain)
-                .select { Domains.accountId eq accountId }
+                .select(Domains.domain)
+                .where { Domains.accountId eq accountId }
                 .map { it[Domains.domain] }
 
-            val pageViews = Events.select {
+            val pageViews = Events.selectAll().where {
                 Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS)) and (Events.domain inList domains)
             }
                 .count()
 
             val visitors = Events
-                .slice( Events.userId )
-                .select {
+                .select(Events.userId)
+                .where {
                     Events.time.greaterEq(Instant.now().minus(28, ChronoUnit.DAYS)) and (Events.domain inList domains)
                 }
                 .withDistinct(true)
                 .count()
 
-            Accounts.select { Accounts.id.eq(accountId) }
+            Accounts.selectAll().where { Accounts.id.eq(accountId) }
                 .map {
                     val subscription = it[Accounts.subscription]
 
@@ -96,15 +97,15 @@ class AccountQuery {
         }
     }
 
-    suspend fun domains(context: Context): List<Domain> = newSuspendedTransaction {
+    suspend fun domains(@GraphQLIgnore context: Context): List<Domain> = newSuspendedTransaction {
         val user = user(context)
 
         if (user != null) {
-            val hasData = exists(Events.select { Events.domain.eq(Domains.domain) }).alias("hasData")
+            val hasData = exists(Events.selectAll().where { Events.domain.eq(Domains.domain) }).alias("hasData")
 
             Domains.join(Accounts, JoinType.INNER, Domains.accountId, Accounts.id)
-                .slice(Domains.id, Domains.domain, Domains.public, hasData)
-                .select {
+                .select(Domains.id, Domains.domain, Domains.public, hasData)
+                .where {
                     Accounts.id.eq(user.id)
                 }
                 .orderBy(Domains.domain)

@@ -7,18 +7,23 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import io.beampipe.server.db.Accounts
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.SlackSubscriptions
-import kotlinx.coroutines.GlobalScope
+import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
+import jakarta.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.annotation.PostConstruct
-import javax.inject.Singleton
 
 inline fun <reified T> T.logger(): Logger {
     return LoggerFactory.getLogger(T::class.java)
@@ -28,6 +33,8 @@ inline fun <reified T> T.logger(): Logger {
 class SlackNotifier {
     val LOG = logger()
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     data class Event(val domain: String, val event: String)
     data class Subscription(val channelId: String, val teamId: String, val token: String)
 
@@ -36,8 +43,15 @@ class SlackNotifier {
     val isDirty = AtomicBoolean(true)
 
     @PostConstruct
-    fun start() = GlobalScope.launch {
-        run()
+    fun start() {
+        scope.launch {
+            run()
+        }
+    }
+
+    @PreDestroy
+    fun stop() {
+        scope.cancel()
     }
 
     suspend fun run() {
@@ -51,7 +65,7 @@ class SlackNotifier {
                     SlackSubscriptions
                         .join(Domains, JoinType.INNER, SlackSubscriptions.domainId, Domains.id)
                         .join(Accounts, JoinType.INNER, Accounts.id, Domains.accountId)
-                        .select { Accounts.slackToken.isNotNull() }
+                        .selectAll().where { Accounts.slackToken.isNotNull() }
                         .map {
                             "${it[Domains.domain]}_${it[SlackSubscriptions.eventType]}" to Subscription(
                                 it[SlackSubscriptions.channelId],

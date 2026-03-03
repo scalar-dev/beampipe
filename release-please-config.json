@@ -10,7 +10,8 @@
           "type": "generic",
           "path": "server/build.gradle",
           "glob": false
-        }
+        },
+        "ui/package.json"
       ]
     }
   }

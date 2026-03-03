@@ -7,7 +7,7 @@ import io.micronaut.context.annotation.Requires
 import java.io.File
 import java.net.InetAddress
 import java.util.*
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 interface  GeoTagger {
    fun tag(ipAddress: InetAddress): Optional<CityResponse>

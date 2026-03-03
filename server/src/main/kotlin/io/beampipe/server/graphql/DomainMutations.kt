@@ -2,24 +2,26 @@ package io.beampipe.server.graphql
 
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Goals
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import io.beampipe.server.graphql.util.Context
 import io.beampipe.server.graphql.util.CustomException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 fun canonicaliseDomain(domain:String) = domain.trim().lowercase()
 
 @Singleton
 class DomainMutations(@Inject val accountQuery: AccountQuery) {
-    suspend fun deleteDomain(context: Context, id: UUID): UUID = context.withAccountId {
+    suspend fun deleteDomain(@GraphQLIgnore context: Context, id: UUID): UUID = context.withAccountId {
         newSuspendedTransaction {
             Domains.deleteWhere {
                 Domains.id.eq(id) and Domains.accountId.eq(context.accountId)
@@ -29,7 +31,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
         id
     }
 
-    suspend fun addGoal(context: Context, domainId: UUID, name: String, description: String?, eventType: String, path: String?) =
+    suspend fun addGoal(@GraphQLIgnore context: Context, domainId: UUID, name: String, description: String?, eventType: String, path: String?) =
         context.withAccountId { _ ->
             newSuspendedTransaction {
                 context.checkDomainAccess(domainId)
@@ -48,9 +50,9 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
             }
         }
 
-    suspend fun deleteGoal(context: Context, id: UUID) = context.withAccountId { _ ->
+    suspend fun deleteGoal(@GraphQLIgnore context: Context, id: UUID) = context.withAccountId { _ ->
         newSuspendedTransaction {
-            val goal = Goals.select { Goals.id eq id }
+            val goal = Goals.selectAll().where { Goals.id eq id }
                 .firstOrNull()!!
 
             context.checkDomainAccess(goal[Goals.domain])
@@ -59,7 +61,7 @@ class DomainMutations(@Inject val accountQuery: AccountQuery) {
         }
     }
 
-    suspend fun createOrUpdateDomain(context: Context, id: UUID?, domain: String, public: Boolean) =
+    suspend fun createOrUpdateDomain(@GraphQLIgnore context: Context, id: UUID?, domain: String, public: Boolean) =
         context.withAccountId { accountId ->
             newSuspendedTransaction {
                 if (id != null) {

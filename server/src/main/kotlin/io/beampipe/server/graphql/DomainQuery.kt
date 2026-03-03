@@ -3,12 +3,12 @@ package io.beampipe.server.graphql
 import io.beampipe.server.db.Domains
 import io.beampipe.server.db.Events
 import io.beampipe.server.db.Goals
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import io.beampipe.server.graphql.util.Context
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.UUID
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class DomainQuery {
@@ -22,21 +22,21 @@ class DomainQuery {
 
     data class DomainQ(val domainId: UUID, val domain: String) {
         fun id() = domainId
-        suspend fun eventTypes(context: Context) = newSuspendedTransaction {
+        suspend fun eventTypes(@GraphQLIgnore context: Context) = newSuspendedTransaction {
             context.checkDomainAccess(domainId)
 
-            Events.slice(Events.type)
-                .select { Events.domain eq domain }
+            Events.select(Events.type)
+                .where { Events.domain eq domain }
                 .withDistinct(true)
                 .map { it[Events.type] }
         }
     }
 
-    suspend fun listGoals(context: Context, domainId: UUID): List<Goal> = context.withAccountId { _ ->
+    suspend fun listGoals(@GraphQLIgnore context: Context, domainId: UUID): List<Goal> = context.withAccountId { _ ->
         newSuspendedTransaction {
             context.checkDomainAccess(domainId)
 
-            Goals.select {
+            Goals.selectAll().where {
                 Goals.domain eq domainId
             }.map {
                 Goal(
@@ -50,9 +50,9 @@ class DomainQuery {
         }
     }
 
-    suspend fun domain(context: Context, id: UUID?, domain: String?): DomainQ = context.withAccountId { _ ->
+    suspend fun domain(@GraphQLIgnore context: Context, id: UUID?, domain: String?): DomainQ = context.withAccountId { _ ->
         val domainId = id ?: newSuspendedTransaction {
-            Domains.slice(Domains.id).select { Domains.domain eq domain!! }.firstOrNull()!![Domains.id].value
+            Domains.select(Domains.id).where { Domains.domain eq domain!! }.firstOrNull()!![Domains.id].value
         }
 
         newSuspendedTransaction {

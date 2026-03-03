@@ -2,68 +2,59 @@ package io.beampipe.server.auth
 
 import io.beampipe.server.db.Accounts
 import io.micronaut.http.HttpRequest
-import io.micronaut.security.authentication.AuthenticationFailed
-import io.micronaut.security.authentication.AuthenticationProvider
 import io.micronaut.security.authentication.AuthenticationRequest
 import io.micronaut.security.authentication.AuthenticationResponse
-import io.micronaut.security.authentication.UserDetails
-import io.reactivex.Flowable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.future.future
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import io.micronaut.security.authentication.provider.HttpRequestAuthenticationProvider
+import jakarta.inject.Singleton
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import org.reactivestreams.Publisher
 import java.time.Instant
 import java.util.Base64
-import javax.inject.Singleton
 
 fun canonicaliseEmail(email: String) = email.trim().lowercase()
 
 @Singleton
-class UsernamePasswordAuthenticationProvider : AuthenticationProvider {
+class UsernamePasswordAuthenticationProvider :
+    HttpRequestAuthenticationProvider<Any> {
     override fun authenticate(
-        httpRequest: HttpRequest<*>?,
-        authenticationRequest: AuthenticationRequest<*, *>?
-    ): Publisher<AuthenticationResponse> {
-        return Flowable.fromFuture(
-            GlobalScope.future {
-                val email = canonicaliseEmail(authenticationRequest!!.identity as String)
-                val account = newSuspendedTransaction {
-                    Accounts.slice(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
-                        .select { Accounts.email.eq(email) }
-                        .firstOrNull()
-                }
+        httpRequest: HttpRequest<Any>?,
+        authenticationRequest: AuthenticationRequest<String, String>
+    ): AuthenticationResponse {
+        val email = canonicaliseEmail(authenticationRequest.identity)
 
-                if (account == null) {
-                    AuthenticationFailed()
-                } else {
-                    newSuspendedTransaction {
-                        Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
-                            it[lastLoginAt] = Instant.now()
-                        }
-                    }
+        val account = transaction {
+            Accounts.select(Accounts.email, Accounts.name, Accounts.id, Accounts.salt, Accounts.password)
+                .where { Accounts.email.eq(email) }
+                .firstOrNull()
+        }
 
-                    val dec: Base64.Decoder = Base64.getDecoder()
-                    val salt = dec.decode(account[Accounts.salt])
-                    val hash = hashPassword(authenticationRequest.secret as String, salt)
+        if (account == null) {
+            return AuthenticationResponse.failure()
+        }
 
-                    if (hash == account[Accounts.password]) {
-                        UserDetails(
-                            account[Accounts.id].value.toString(),
-                            emptyList(),
-                            mapOf(
-                                "accountId" to account[Accounts.id].value.toString(),
-                                "name" to account[Accounts.name],
-                                "email" to account[Accounts.email]
-                            )
-                        )
-                    } else {
-                        AuthenticationFailed()
-                    }
-                }
+        transaction {
+            Accounts.update({ Accounts.id.eq(account[Accounts.id]) }) {
+                it[lastLoginAt] = Instant.now()
             }
-        )
-    }
+        }
 
+        val dec: Base64.Decoder = Base64.getDecoder()
+        val salt = dec.decode(account[Accounts.salt])
+        val hash = hashPassword(authenticationRequest.secret, salt)
+
+        return if (hash == account[Accounts.password]) {
+            AuthenticationResponse.success(
+                account[Accounts.id].value.toString(),
+                emptyList(),
+                mapOf(
+                    "accountId" to account[Accounts.id].value.toString(),
+                    "name" to account[Accounts.name],
+                    "email" to account[Accounts.email]
+                )
+            )
+        } else {
+            AuthenticationResponse.failure()
+        }
+    }
 }

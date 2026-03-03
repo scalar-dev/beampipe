@@ -14,7 +14,7 @@ import org.postgresql.util.PGobject
 fun <T : Any> Table.jsonb(name: String, klass: Class<T>, jsonMapper: ObjectMapper): Column<T> =
     registerColumn(name, Json(klass, jsonMapper))
 
-private class Json<out T : Any>(private val klass: Class<T>, private val jsonMapper: ObjectMapper) : ColumnType() {
+private class Json<T : Any>(private val klass: Class<T>, private val jsonMapper: ObjectMapper) : ColumnType<T>() {
     override fun sqlType() = "jsonb"
 
     override fun setParameter(stmt: PreparedStatementApi, index: Int, value: Any?) {
@@ -24,21 +24,24 @@ private class Json<out T : Any>(private val klass: Class<T>, private val jsonMap
         stmt[index] = obj
     }
 
-    override fun valueFromDB(value: Any): Any {
-        if (value !is PGobject) {
-            // We didn't receive a PGobject (the format of stuff actually coming from the DB).
-            // In that case "value" should already be an object of type T.
-            return value
+    override fun valueFromDB(value: Any): T {
+        val pgValue = when (value) {
+            is PGobject -> value.value
+            is String -> value
+            else -> {
+                @Suppress("UNCHECKED_CAST")
+                return value as T
+            }
         }
 
         return try {
-            jsonMapper.readValue(value.value, klass)
+            jsonMapper.readValue(pgValue, klass)
         } catch (e: Exception) {
             e.printStackTrace()
             throw RuntimeException("Can't parse JSON: $value")
         }
     }
 
-    override fun notNullValueToDB(value: Any): Any = jsonMapper.writeValueAsString(value)
-    override fun nonNullValueToString(value: Any): String = "'${jsonMapper.writeValueAsString(value)}'"
+    override fun notNullValueToDB(value: T): Any = jsonMapper.writeValueAsString(value)
+    override fun nonNullValueToString(value: T): String = "'${jsonMapper.writeValueAsString(value)}'"
 }
