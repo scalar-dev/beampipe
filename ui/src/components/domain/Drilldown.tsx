@@ -64,9 +64,9 @@ export const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
   }
 };
 
-export const DrilldownPill: React.FunctionComponent<{
+export const DrilldownPill: React.FunctionComponent<React.PropsWithChildren<{
   onClick: () => void;
-}> = ({ onClick, children }) => (
+}>> = ({ onClick, children }) => (
   <button
     className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full mr-2 focus:outline-none"
     onClick={onClick}

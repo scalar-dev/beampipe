@@ -14,9 +14,23 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
             -t scalardev/beampipe:$GITHUB_RUN_NUMBER \
             .
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Typecheck
+        run: bun run typecheck
+        working-directory: ui
+      - name: Build
+        run: bun run build
+        working-directory: ui
 
   web:
     runs-on: ubuntu-latest

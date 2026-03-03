@@ -1,8 +1,8 @@
-import { useContext, useEffect } from "react";
+import { PropsWithChildren, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { UserContext } from "../utils/auth";
 
-export const Secure: React.FC = ({ children }) => {
+export const Secure: React.FC<PropsWithChildren> = ({ children }) => {
   const { user, loading } = useContext(UserContext);
   const navigate = useNavigate();
 

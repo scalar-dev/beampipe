@@ -32,7 +32,6 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build \
-            --build-arg GEOLITE2_LICENSE_KEY=${{ secrets.GEOLITE2_LICENSE_KEY }} \
             -t scalardev/beampipe:${{ needs.release-please.outputs.tag_name }} \
             -t scalardev/beampipe:latest \
             .

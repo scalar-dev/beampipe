@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 export const Pill = React.forwardRef<
   HTMLButtonElement,
@@ -22,7 +22,7 @@ export const Pill = React.forwardRef<
   </li>
 ));
 
-export const Pills: React.FunctionComponent = ({ children }) => (
+export const Pills: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
   <ul className="flex items-center">{children}</ul>
 );
 
