@@ -1,7 +1,7 @@
 import { gql, useQuery } from "urql";
 import { useState } from "react";
 import { Menu, MenuSection, MenuItem } from "../Menu";
-import { Tick } from "../marketing/Tick";
+import { Tick } from "@beampipe/components";
 import { Domain } from "../../interfaces";
 import { useParams, useNavigate } from "react-router-dom";
 

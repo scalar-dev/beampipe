@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, MenuSection, MenuItem, MenuDivider } from "../Menu";
-import { Tick } from "../marketing/Tick";
+import { Tick } from "@beampipe/components";
 import moment from "moment";
 import { DateRangePicker } from "./DateRangePicker";
 

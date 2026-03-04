@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, ReactNode, PropsWithChildren } from "react";
 import { getTimezones, renderTimeZone } from "../utils/timezones";
-import { BasicBullets, ProBullets } from "../components/marketing/Pricing";
+import { BasicBullets, ProBullets } from "@beampipe/components";
 
  const stripePromise = import.meta.env.VITE_STRIPE_KEY ? loadStripe(import.meta.env.VITE_STRIPE_KEY) : null;
 

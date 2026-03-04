@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Card } from "../components/Card";
 import { SignupForm } from "../components/Auth";
-import { BasicBullets } from "../components/marketing/Pricing";
+import { BasicBullets } from "@beampipe/components";
 
 const SignUp = () => {
   return (

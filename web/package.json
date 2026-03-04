@@ -9,9 +9,13 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/react": "^4",
+    "@beampipe/components": "workspace:*",
     "@beampipe/tracker": "workspace:*",
     "astro": "^5.5.0",
-    "fontsource-inter": "^4.0.0"
+    "fontsource-inter": "^4.0.0",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4",

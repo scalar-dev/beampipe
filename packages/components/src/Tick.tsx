@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Tick = () => (
   <svg
     className="h-6 w-6 text-purple-600"
@@ -15,4 +13,3 @@ export const Tick = () => (
     ></path>
   </svg>
 );
-

@@ -3,6 +3,7 @@
   "version": "0.2.2",
   "private": true,
   "dependencies": {
+    "@beampipe/components": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
