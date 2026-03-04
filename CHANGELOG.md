@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3](https://github.com/scalar-dev/beampipe/compare/v0.2.2...v0.2.3) (2026-03-04)
+
+
+### Bug Fixes
+
+* broken build ([#138](https://github.com/scalar-dev/beampipe/issues/138)) ([5c1fdb3](https://github.com/scalar-dev/beampipe/commit/5c1fdb3bcd360582dcf8df46151e45ce6d0c30bc))
+* visual issues ([#136](https://github.com/scalar-dev/beampipe/issues/136)) ([502f07d](https://github.com/scalar-dev/beampipe/commit/502f07ddcbd9d8bc803948e8b09ce0270c91762e))
+
 ## [0.2.2](https://github.com/scalar-dev/beampipe/compare/v0.2.1...v0.2.2) (2026-03-04)
 
 
