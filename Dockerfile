@@ -3,6 +3,7 @@ FROM oven/bun:latest AS ui-build
 WORKDIR /app
 RUN echo '{"private":true,"workspaces":["packages/*","ui"]}' > package.json
 COPY packages/tracker/ packages/tracker/
+COPY packages/components/ packages/components/
 COPY ui/package.json ui/
 RUN bun install
 COPY ui/ ui/
