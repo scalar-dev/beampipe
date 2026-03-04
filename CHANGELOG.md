@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/scalar-dev/beampipe/compare/v0.2.1...v0.2.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* navbar logo ([#134](https://github.com/scalar-dev/beampipe/issues/134)) ([de03590](https://github.com/scalar-dev/beampipe/commit/de03590656d245cf494df03fe0a4bad93c83e706))
+
 ## [0.2.1](https://github.com/scalar-dev/beampipe/compare/v0.2.0...v0.2.1) (2026-03-03)
 
 
