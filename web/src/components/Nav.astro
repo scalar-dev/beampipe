@@ -1,4 +1,5 @@
 ---
+import { Logo } from "@beampipe/components";
 const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
 const NAV_LINK_CLASS =
   "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4";
@@ -11,14 +12,7 @@ const NAV_LINK_CLASS =
         href="/"
         class="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle"
       >
-        <svg
-          class="inline w-4 h-5 mr-2 -mt-1"
-          viewBox="0 0 384 512"
-          fill="currentColor"
-          ><path
-            d="M192 32c17.7 0 32 14.3 32 32v119.4l103.2-59.6c15.3-8.8 34.9-3.6 43.7 11.7s3.6 34.9-11.7 43.7L256 238.8v34.4l103.2 59.6c15.3 8.8 20.5 28.4 11.7 43.7s-28.4 20.5-43.7 11.7L224 329V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V329l-103.2 59.6c-15.3 8.8-34.9 3.6-43.7-11.7s-3.6-34.9 11.7-43.7L128 273.6v-34.4L24.8 179.6c-15.3-8.8-20.5-28.4-11.7-43.7s28.4-20.5 43.7-11.7L160 183.8V64c0-17.7 14.3-32 32-32z"
-          ></path></svg
-        >beampipe
+        <Logo />
       </a>
     </div>
 

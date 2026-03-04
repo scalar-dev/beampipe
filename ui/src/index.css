@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../packages/components/src";
 
 @import "fontsource-inter/latin.css";
 body {

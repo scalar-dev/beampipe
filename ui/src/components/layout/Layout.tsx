@@ -1,6 +1,6 @@
 import { FunctionComponent, PropsWithChildren, useContext, useState } from "react";
 import { Link, LinkProps } from "react-router-dom";
-import { faAsterisk } from "@fortawesome/free-solid-svg-icons";
+import { Logo } from "@beampipe/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { colorForIntent } from "../Buttons";
 import { Avatar } from "./Avatar";
@@ -83,12 +83,7 @@ export const Layout: FunctionComponent<PropsWithChildren<LayoutProps>> = ({ titl
             <div className="flex items-center flex-shrink-0 text-black mr-6">
               <span className="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle">
                 <a href={import.meta.env.VITE_WEBSITE_URL}>
-                  <FontAwesomeIcon
-                    size="sm"
-                    className="fill-current mr-2"
-                    icon={faAsterisk}
-                  />
-                  beampipe
+                  <Logo />
                 </a>
               </span>
             </div>
