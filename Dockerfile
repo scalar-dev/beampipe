@@ -43,4 +43,4 @@ COPY --from=server-build /app/server/build/libs/server-*-all.jar /app/server.jar
 COPY --from=geoip /data/ /data/
 ENV GEOIP_DB=/data/dbip-city-lite.mmdb
 EXPOSE 8080
-CMD ["java", "-Xmx256m", "-jar", "/app/server.jar"]
+CMD ["java", "-Xmx256m", "-XX:ActiveProcessorCount=2", "-jar", "/app/server.jar"]
