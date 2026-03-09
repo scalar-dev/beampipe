@@ -37,7 +37,6 @@ This launches TimescaleDB and beampipe. Access the UI at `http://localhost:8080`
 
 Docker images are on Docker Hub:
 - [scalardev/beampipe](https://hub.docker.com/r/scalardev/beampipe) — server + UI
-- [scalardev/beampipe-ui](https://hub.docker.com/r/scalardev/beampipe-ui) — UI only (for k8s)
 
 ## Development
 
