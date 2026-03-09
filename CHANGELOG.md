@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/scalar-dev/beampipe/compare/v0.2.4...v0.2.5) (2026-03-09)
+
+
+### Bug Fixes
+
+* improve log and fix netty memory issues ([#142](https://github.com/scalar-dev/beampipe/issues/142)) ([d03bc64](https://github.com/scalar-dev/beampipe/commit/d03bc64cbab0b899db6fc0b3b2f67d097af7475e))
+
 ## [0.2.4](https://github.com/scalar-dev/beampipe/compare/v0.2.3...v0.2.4) (2026-03-09)
 
 
