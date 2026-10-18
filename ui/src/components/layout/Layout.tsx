@@ -1,11 +1,10 @@
 import { FunctionComponent, PropsWithChildren, useContext, useState } from "react";
 import { Link, LinkProps } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
-import { Logo } from "@beampipe/components";
+import { BrandMark, SCALAR_CONTACT_URL, SCALAR_URL } from "@beampipe/components";
 import { Avatar } from "./Avatar";
 import { UserContext } from "../../utils/auth";
 import { Button } from "@/components/ui/button";
-import { SCALAR_CONTACT_URL, SCALAR_URL } from "../../scalar";
 
 interface LayoutProps {
   title: string;
@@ -49,13 +48,7 @@ export const Layout: FunctionComponent<PropsWithChildren<LayoutProps>> = ({ chil
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
         <nav className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-10">
-            <a
-              href={import.meta.env.VITE_WEBSITE_URL}
-              className="text-2xl font-extrabold tracking-tight text-primary hover:text-primary/80"
-              title={`beampipe ${__APP_VERSION__}`}
-            >
-              <Logo />
-            </a>
+            <BrandMark href={import.meta.env.VITE_WEBSITE_URL} />
 
             <div className="hidden items-center gap-7 md:flex">
               <NavLinks onClick={closeMenu} />
@@ -114,11 +107,18 @@ export const Layout: FunctionComponent<PropsWithChildren<LayoutProps>> = ({ chil
 
       <div>{children}</div>
 
-      <IfUserLoggedIn>
-        <footer className="container mx-auto px-4 pb-8 text-center text-xs text-muted-foreground">
+      <footer className="container mx-auto flex flex-col items-center gap-2 px-4 pt-4 pb-8 text-center text-xs text-muted-foreground">
+        <p>
           <ScalarCredit />
-        </footer>
-      </IfUserLoggedIn>
+        </p>
+        <p className="flex items-center gap-3">
+          <a href="mailto:hello@beampipe.io" className="hover:text-foreground">
+            Contact us
+          </a>
+          <span aria-hidden="true">·</span>
+          <span>v{__APP_VERSION__}</span>
+        </p>
+      </footer>
     </div>
   );
 };
@@ -160,10 +160,6 @@ const NavLinks = ({ onClick }: { onClick: () => void }) => (
       onClick={onClick}
     >
       Docs
-    </a>
-
-    <a href="mailto:hello@beampipe.io" className={NAV_LINK_CLASS} onClick={onClick}>
-      Contact
     </a>
   </>
 );
