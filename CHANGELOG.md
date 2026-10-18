@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.9](https://github.com/scalar-dev/beampipe/compare/v0.2.8...v0.2.9) (2026-10-18)
+
+
+### Bug Fixes
+
+* drop "by Scalar" byline from the header logo ([#151](https://github.com/scalar-dev/beampipe/issues/151)) ([62fdefc](https://github.com/scalar-dev/beampipe/commit/62fdefca388c6b58468c6dd70e8772e259e938a3))
+
 ## [0.2.8](https://github.com/scalar-dev/beampipe/compare/v0.2.7...v0.2.8) (2026-10-18)
 
 
