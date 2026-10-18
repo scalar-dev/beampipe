@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.7](https://github.com/scalar-dev/beampipe/compare/v0.2.6...v0.2.7) (2026-10-18)
+
+
+### Features
+
+* redesign marketing site and app on shadcn/ui ([#147](https://github.com/scalar-dev/beampipe/issues/147)) ([2cdf590](https://github.com/scalar-dev/beampipe/commit/2cdf590854faa00db519e3b47ee4f56d26b24c90))
+
 ## [0.2.6](https://github.com/scalar-dev/beampipe/compare/v0.2.5...v0.2.6) (2026-10-18)
 
 
