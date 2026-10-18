@@ -166,7 +166,7 @@ object Scalars {
             override fun parseLiteral(input: Value<*>, variables: CoercedVariables, context: GraphQLContext, locale: Locale): Long? {
                 return when (input) {
                     is IntValue -> input.value.toLong()
-                    is StringValue -> input.value.toLong()
+                    is StringValue -> input.value?.toLong()
                     else -> null
                 }
             }

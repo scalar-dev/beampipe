@@ -8,3 +8,11 @@ node_modules/
 packages/tracker/dist/
 ui/public/tracker.js
 web/public/js/tracker.js
+
+# devenv
+.devenv*
+devenv.local.nix
+.direnv
+
+# Gradle problems report at the root
+/build/

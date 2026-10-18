@@ -19,7 +19,7 @@ interface GithubApiClient {
     @Get("/user")
     fun getUser(
         @Header(HttpHeaders.AUTHORIZATION) authorization: String?
-    ): Mono<GithubUser?>
+    ): Mono<GithubUser>
 
     @Get("/user/emails")
     fun getUserEmails(

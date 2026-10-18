@@ -19,7 +19,7 @@ beampipe/
 
 ## Server (`server/`)
 
-- **Kotlin 2.0.21** on **Micronaut 4.4.4**, targets JVM 17
+- **Kotlin 2.4.21** on **Micronaut 5.2**, targets JVM 25
 - **PostgreSQL + TimescaleDB** via **Exposed** ORM, migrations with **Flyway** (`server/src/main/resources/databasemigrations/`)
 - **GraphQL** API at `/graphql` (graphql-kotlin schema generation)
 - Event ingestion endpoint: `POST /event`

@@ -28,12 +28,12 @@ class GithubUserDetailsMapper(private val apiClient: GithubApiClient) : OauthAut
                 val account = transaction {
                     val existingUser = Accounts
                         .select(Accounts.id)
-                        .where { Accounts.githubUserId.eq(stringLiteral(login!!.id.toString())) }
+                        .where { Accounts.githubUserId.eq(stringLiteral(login.id.toString())) }
                         .firstOrNull()
 
                     val accountId = if (existingUser == null) {
                         Accounts.insertAndGetId {
-                            it[githubUserId] = login!!.id.toString()
+                            it[githubUserId] = login.id.toString()
                             it[email] = login.email
                         }
                     } else {

@@ -3,7 +3,7 @@ package io.beampipe.server.api
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MutableHttpResponse
 
-fun <T> MutableHttpResponse<T>.corsHeaders() = this
+fun <T : Any> MutableHttpResponse<T>.corsHeaders() = this
     .header("Access-Control-Allow-Origin", "*")
     .header("Access-Control-Allow-Methods", "POST, OPTIONS")
     .header(
