@@ -2,18 +2,24 @@
 const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
 ---
 
-<div class="mx-auto container py-8 text-center">
+<section class="px-4 py-20 sm:px-6 md:py-28">
   <div
-    class="font-black leading-tight text-5xl md:text-6xl text-gray-800"
+    class="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-green-600 px-6 py-16 text-center shadow-xl shadow-green-900/10 sm:px-16"
   >
-    Take back control of your analytics.
+    <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      Take back control of your analytics.
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-lg text-green-50">
+      Get set up in minutes with a single snippet. Free for up to 10k monthly
+      page views.
+    </p>
+    <div class="mt-8">
+      <a
+        href={`${appUrl}/sign-up`}
+        class="inline-block rounded-lg bg-white px-6 py-3 text-base font-semibold text-green-700 shadow-sm transition-colors hover:bg-green-50"
+      >
+        Get started
+      </a>
+    </div>
   </div>
-  <div class="pt-8">
-    <a
-      href={`${appUrl}/sign-up`}
-      class="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4"
-    >
-      Get started.
-    </a>
-  </div>
-</div>
+</section>

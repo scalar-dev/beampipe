@@ -1,6 +1,6 @@
 export const Tick = () => (
   <svg
-    className="h-6 w-6 text-purple-600"
+    className="h-5 w-5 text-green-600 shrink-0"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"

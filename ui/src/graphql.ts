@@ -4,13 +4,9 @@ import {
   fetchExchange,
 } from "urql";
 
-const graphqlEndpoint = () =>
-  `${window.location.origin}/graphql`;
-
+// Same-origin in production; in development Vite proxies /graphql to the API.
 export const client = createClient({
-  url: import.meta.env.DEV
-    ? import.meta.env.VITE_GRAPHQL_ENDPOINT!
-    : graphqlEndpoint(),
+  url: `${window.location.origin}/graphql`,
 
   exchanges: [cacheExchange, fetchExchange],
 });

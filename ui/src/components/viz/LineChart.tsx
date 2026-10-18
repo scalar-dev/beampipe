@@ -9,6 +9,9 @@ import { NICE_NUMBER_FORMAT } from "./Stats";
 import _ from "lodash";
 import { RangeSelectPlugin } from "./RangeSelect";
 
+Chart.defaults.font.family = "\"Inter Variable\", \"Inter Fallback\", system-ui, sans-serif";
+Chart.defaults.color = "#71717a";
+
 const timePeriodToTimeUnit = (timePeriod: TimePeriod) => {
   if (timePeriod.type === "day") return "hour";
   else if (timePeriod.type === "hour") return "minute";
@@ -57,7 +60,7 @@ export const LineChart = ({
   onSelect?: (start: Moment, end: Moment) => void;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chart = useRef<Chart<"line", any>>();
+  const chart = useRef<Chart<"line", any> | undefined>(undefined);
 
   useEffect(() => {
     if (chart.current) {
@@ -71,6 +74,7 @@ export const LineChart = ({
         legend: undefined,
         maintainAspectRatio: false,
         plugins: {
+          legend: { display: false },
           //@ts-ignore
           rangeSelect: {
             onSelect,
@@ -90,7 +94,7 @@ export const LineChart = ({
               enabled: onSelect != null,
             },
             line: {
-              color: onSelect ? "red" : "rgba(0, 0, 0, 0)",
+              color: onSelect ? "rgba(22, 163, 74, 0.6)" : "rgba(0, 0, 0, 0)",
             },
             callbacks: {
               beforeZoom: (start: Moment, end: Moment) => {

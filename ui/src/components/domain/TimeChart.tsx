@@ -43,15 +43,15 @@ export const TimeChart = ({
       backgroundColor: (context: any) => {
         return isDayMode &&
           context.dataset.data[context.dataIndex].x.getDay() % 6 === 0
-          ? "rgba(128, 90, 213, 0.5)"
-          : "rgba(128, 90, 213, 0.5)";
+          ? "rgba(21, 128, 61, 0.85)"
+          : "rgba(22, 163, 74, 0.85)";
       },
       label: "Unique visitors (drilldown)",
     });
   }
 
   return (
-    <DashboardCard position="full" style={{ height: "22rem" }}>
+    <DashboardCard span={2} className="h-[22rem]">
       <NonIdealState
         isLoading={stats.fetching || drilldownStats.fetching}
         isIdeal={!_.every(stats.data?.events?.bucketed, (x) => x.count === 0)}

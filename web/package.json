@@ -12,10 +12,10 @@
     "@astrojs/react": "^4",
     "@beampipe/components": "workspace:*",
     "@beampipe/tracker": "workspace:*",
+    "@fontsource-variable/inter": "^5",
     "astro": "^5.5.0",
-    "fontsource-inter": "^4.0.0",
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^19",
+    "react-dom": "^19"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4",

@@ -1,7 +1,16 @@
 import _ from "lodash";
 import { ReactNode } from "react";
 import numeral from "numeral";
-import Tippy from "@tippyjs/react";
+import { cn } from "cn";
+import {
+  Table as UiTable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface TableData {
   key: string;
@@ -15,7 +24,7 @@ interface TableProps {
     image?: ReactNode;
     onClick?: () => void;
   })[];
-  drilldownData?: TableData[];
+  drilldownData?: TableData[] | null;
   onClick?: (key: string | null) => void;
   showPercentages?: "max" | "sum" | null;
   columnHeadings?: [string, string];
@@ -25,25 +34,22 @@ interface TableProps {
 const Bar = ({
   tooltip,
   percentage,
-  colour = "text-green-600 hover:text-green-500",
+  className,
 }: {
   tooltip: string;
   percentage: number;
-  colour?: string;
+  className: string;
 }) => (
-  <div
-    className="absolute pointer-events-none"
-    style={{ top: 0, bottom: 0, left: 0, right: 0 }}
-  >
-    <Tippy content={tooltip}>
-      <svg
-        width={`${percentage * 100.0}%`}
-        height="100%"
-        className={`pointer-events-auto fill-current ${colour} block`}
-      >
-        <rect width="100%" height="100%" rx={3}></rect>
-      </svg>
-    </Tippy>
+  <div className="pointer-events-none absolute inset-0">
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          className={cn("pointer-events-auto h-full rounded-full", className)}
+          style={{ width: `${percentage * 100.0}%` }}
+        />
+      </TooltipTrigger>
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
   </div>
 );
 
@@ -66,74 +72,79 @@ export const Table = ({
   const denominator = showPercentages === "sum" ? sumCount : maxCount;
 
   const drilldownDataByKey = _.groupBy(drilldownData, "key");
+  const hasDrilldown = drilldownData != null;
 
   return (
-    <table className="w-full table-fixed">
-      <thead>
-        <tr>
-          {showImages && <th className="w-6 p-1"></th>}
-          <th className="text-left text-xs text-gray-600">
-            {columnHeadings[0]}
-          </th>
-          <th className="text-right text-xs text-gray-600 w-1/5">
+    <UiTable className="table-fixed">
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          {showImages && <TableHead className="h-8 w-8 px-1" />}
+          <TableHead className="h-8 px-2 text-xs">{columnHeadings[0]}</TableHead>
+          <TableHead className="h-8 w-1/5 px-2 text-right text-xs">
             {columnHeadings[1]}
-          </th>
+          </TableHead>
           {showPercentages && (
-            <th className="text-right text-xs text-gray-600 w-12">%</th>
+            <TableHead className="h-8 w-12 px-2 text-right text-xs">%</TableHead>
           )}
-        </tr>
-      </thead>
-      <tbody>
-        {data?.slice(0, maxRows).map((item, idx) => (
-          <tr
-            key={idx}
-            className={`border-t ${
-              onClick || item.onClick ? "cursor-pointer hover:bg-gray-100" : ""
-            }`}
-            onClick={() => {
-              if (onClick) {
-                onClick(item.key);
-              }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data?.slice(0, maxRows).map((item, idx) => {
+          const label = item.label || item.key || "none";
+          const clickable = onClick || item.onClick;
 
-              if (item.onClick) {
-                item.onClick();
-              }
-            }}
-          >
-            {showImages && <td className="w-6 p-1">{item.image}</td>}
-            <td className="px-2 text-xs text-gray-800 font-medium font-mono py-1 truncate">
-              {item.label || item.key || "none"}
-              <div style={{ height: "0.5rem" }} className="w-full relative">
-                <Bar
-                  tooltip={`${item.label || item.key || "none"}: ${item.count}`}
-                  percentage={maxCount === 0 ? 0 : item.count / maxCount}
-                />
-                {item.key in drilldownDataByKey ? (
+          return (
+            <TableRow
+              key={idx}
+              className={cn(clickable ? "cursor-pointer" : "hover:bg-transparent")}
+              onClick={() => {
+                if (onClick) {
+                  onClick(item.key);
+                }
+
+                if (item.onClick) {
+                  item.onClick();
+                }
+              }}
+            >
+              {showImages && <TableCell className="w-8 px-1">{item.image}</TableCell>}
+              <TableCell className="px-2 py-1.5">
+                <div className="truncate font-mono text-xs text-foreground">
+                  {label}
+                </div>
+                <div className="relative mt-1 h-1.5 w-full">
                   <Bar
-                    tooltip={`${
-                      item.label || item.key || "none"
-                    } (drilldown): ${drilldownDataByKey[item.key][0].count}`}
-                    percentage={
-                      maxCount === 0
-                        ? 0
-                        : drilldownDataByKey[item.key][0].count / maxCount
-                    }
-                    colour="text-purple-600 hover:text-purple-500"
+                    tooltip={`${label}: ${item.count}`}
+                    percentage={maxCount === 0 ? 0 : item.count / maxCount}
+                    className={hasDrilldown ? "bg-primary/20" : "bg-primary/80 hover:bg-primary"}
                   />
-                ) : null}
-              </div>
-            </td>
-            <td className="px-2 text-right text-xs w-1/5">{item.count}</td>
-            {showPercentages ? (
-              <td className="text-right w-12 text-xs text-gray-600">
-                {denominator > 0
-                  ? numeral(item.count / denominator).format("0%")
-                  : null}
-              </td>
-            ) : null}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                  {item.key in drilldownDataByKey ? (
+                    <Bar
+                      tooltip={`${label} (drilldown): ${drilldownDataByKey[item.key][0].count}`}
+                      percentage={
+                        maxCount === 0
+                          ? 0
+                          : drilldownDataByKey[item.key][0].count / maxCount
+                      }
+                      className="bg-primary hover:bg-primary/80"
+                    />
+                  ) : null}
+                </div>
+              </TableCell>
+              <TableCell className="px-2 text-right text-xs tabular-nums">
+                {item.count}
+              </TableCell>
+              {showPercentages ? (
+                <TableCell className="px-2 text-right text-xs text-muted-foreground tabular-nums">
+                  {denominator > 0
+                    ? numeral(item.count / denominator).format("0%")
+                    : null}
+                </TableCell>
+              ) : null}
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </UiTable>
   );
 };

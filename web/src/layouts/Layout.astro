@@ -1,6 +1,7 @@
 ---
 import Nav from "../components/Nav.astro";
 import "../styles/global.css";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -17,6 +18,7 @@ const metaDescription =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
     <meta name="description" content={metaDescription} />
     <meta property="og:title" content={fullTitle} />
@@ -38,8 +40,17 @@ const metaDescription =
     <script is:inline async defer src="/js/tracker.js" data-beampipe-domain="beampipe.io"
     ></script>
   </head>
-  <body class="min-h-screen bg-gray-100">
+  <body class="min-h-screen bg-white text-gray-900 antialiased">
     <Nav />
     <slot />
+
+    <script is:inline>
+      document.addEventListener("click", function (e) {
+        var link = e.target.closest && e.target.closest("[data-scalar-link]");
+        if (link && typeof window.beampipe === "function") {
+          window.beampipe("scalar_click");
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,6 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { Spinner } from "../Spinner";
 import numeral from "numeral";
 
@@ -19,19 +18,19 @@ const PercentageChange: React.FunctionComponent<{
 
   const color = downIsGood
     ? change >= 0
-      ? "text-red-600"
-      : "text-green-600"
+      ? "text-destructive"
+      : "text-primary"
     : change >= 0
-    ? "text-green-600"
-    : "text-red-600";
+    ? "text-primary"
+    : "text-destructive";
 
   return (
-    <div className="text-sm">
-      <FontAwesomeIcon
-        size="sm"
-        className={`fill-current w-4 h-4 mr-2 ${color}`}
-        icon={change >= 0 ? faArrowUp : faArrowDown}
-      />
+    <div className={`inline-flex items-center gap-0.5 text-xs font-medium ${color}`}>
+      {change >= 0 ? (
+        <ArrowUpIcon className="size-3" />
+      ) : (
+        <ArrowDownIcon className="size-3" />
+      )}
       {numeral(Math.abs(change)).format("0%")}
     </div>
   );
@@ -46,14 +45,14 @@ export const StatsCounter = ({
   title: string;
   delta: JSX.Element | null;
 }) => (
-  <div className="flex flex-1 flex-col text-center md:pr-8">
-    <div className="text-gray-400 font-bold text-xs uppercase whitespace-nowrap">
+  <div className="flex min-w-20 flex-1 flex-col">
+    <div className="text-xs font-medium whitespace-nowrap text-muted-foreground">
       {title}
     </div>
-    <div className="text-3xl font-black leading-tight text-gray-800">{value}</div>
-    {delta && (
-      <div className="text-gray-800 font-bold whitespace-nowrap">{delta}</div>
-    )}
+    <div className="mt-1 text-2xl font-semibold tracking-tight text-foreground tabular-nums">
+      {value}
+    </div>
+    {delta && <div className="mt-0.5 h-4 whitespace-nowrap">{delta}</div>}
   </div>
 );
 
@@ -105,7 +104,7 @@ export const Stats = ({ stats }: { stats?: any }) => {
               downIsGood
             />
           ) : (
-            <div className="text-sm">-</div>
+            <div className="text-xs text-muted-foreground">-</div>
           )
         }
       />

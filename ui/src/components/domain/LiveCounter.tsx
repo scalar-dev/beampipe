@@ -1,6 +1,6 @@
 import { gql, useQuery } from "urql";
 import { StatsCounter } from "../viz/Stats";
-import { Spinner } from "../Spinner";
+import { Spinner } from "@/components/ui/spinner";
 import numeral from "numeral";
 import { useEffect } from "react";
 
@@ -28,11 +28,15 @@ export const LiveCounter = ({ domain }: { domain: string }) => {
     <StatsCounter
       value={
         liveStats.data ? (
-          <div className="animate-pulse">
+          <div className="flex items-center gap-2">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-primary" />
+            </span>
             {numeral(liveStats.data.liveUnique).format("0.[0]a")}
           </div>
         ) : (
-          <Spinner />
+          <Spinner className="size-5 text-muted-foreground" />
         )
       }
       title="Online now"

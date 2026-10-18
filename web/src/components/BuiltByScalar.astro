@@ -1,0 +1,72 @@
+---
+import { SCALAR_CONTACT_URL, SCALAR_URL } from "../scalar";
+
+const services = [
+  {
+    title: "Data engineering",
+    body: "Cloud-native data lakes and pipelines, end to end or on top of data you already have.",
+  },
+  {
+    title: "LLMs and RAG",
+    body: "Deploying and operating large language models on real datasets, integrated with your existing systems.",
+  },
+  {
+    title: "Sensitive data",
+    body: "Advice on data security, and models deployed entirely within your own infrastructure where needed.",
+  },
+  {
+    title: "Bespoke development",
+    body: "Custom frontend, backend and infrastructure for AI projects.",
+  },
+];
+---
+
+<section class="py-20 md:py-28">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div
+      class="overflow-hidden rounded-3xl bg-gray-950 px-6 py-12 sm:px-12 md:py-16"
+    >
+      <div class="grid gap-12 lg:grid-cols-5 lg:gap-16">
+        <div class="lg:col-span-2">
+          <p class="text-sm font-semibold text-green-400">Built by Scalar</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            We build AI systems to help you scale.
+          </h2>
+          <p class="mt-4 text-lg text-gray-300">
+            beampipe is designed, built and run by
+            <a href={SCALAR_URL} class="font-semibold text-white underline decoration-green-400 underline-offset-4 hover:decoration-2">Scalar</a>,
+            a digital consultancy. If you need help with data or AI, we'd love
+            to hear from you.
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={SCALAR_CONTACT_URL}
+              class="rounded-lg bg-green-500 px-5 py-3 text-center text-sm font-semibold text-gray-950 shadow-sm transition-colors hover:bg-green-400"
+              data-scalar-link
+            >
+              Work with Scalar
+            </a>
+            <a
+              href={SCALAR_URL}
+              class="rounded-lg px-5 py-3 text-center text-sm font-semibold text-white ring-1 ring-white/20 transition-colors hover:bg-white/10"
+              data-scalar-link
+            >
+              Visit scalar.dev <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+
+        <dl class="grid gap-8 sm:grid-cols-2 lg:col-span-3">
+          {
+            services.map((service) => (
+              <div class="border-t border-white/10 pt-6">
+                <dt class="font-semibold text-white">{service.title}</dt>
+                <dd class="mt-2 text-sm leading-6 text-gray-400">{service.body}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+/*
+ * Shared design tokens for the marketing site (web/) and the app (ui/).
+ * Each app imports Tailwind and @fontsource-variable/inter itself, then this file.
+ */
+
+/*
+ * Metric-matched fallback so text doesn't reflow when Inter swaps in.
+ * Values are Inter's metrics expressed relative to Arial.
+ */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+  size-adjust: 107.06%;
+}
+
+@theme {
+  --font-sans: "Inter Variable", "Inter Fallback", ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

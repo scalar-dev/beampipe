@@ -5,7 +5,6 @@ import {
   IfUserLoggedIn,
   IfAnonymous,
 } from "../components/layout/Layout";
-import { Card, CardTitle } from "../components/Card";
 import { timePeriodToBucketDuration } from "../components/viz/LineChart";
 import { Table } from "../components/Table";
 import { NonIdealState } from "../components/NonIdealState";
@@ -20,176 +19,68 @@ import { LiveCounter } from "../components/domain/LiveCounter";
 import React from "react";
 import { TimeChart } from "../components/domain/TimeChart";
 import MapChart from "../components/domain/MapChart";
-import { Pills, Pill } from "../components/Pills";
 import { StatsQuery } from "../components/domain/StatsQuery";
 import { Link, useParams } from "react-router-dom";
 import { DrilldownPills, DrilldownState } from "../components/domain/Drilldown";
-import {
-  faBook,
-  faClipboardCheck,
-  faAt,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  faGithub,
-  faTwitter,
-  faProductHunt,
-  faMedium,
-} from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Logo } from "@beampipe/components";
+import { SCALAR_CONTACT_URL, SCALAR_URL } from "../scalar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Footer = () => (
-  <footer className="bg-green-600 text-white pt-8">
-    <div className="container mx-auto  px-8">
-      <div className="w-full flex flex-col md:flex-row pt-6">
-        <div className="flex-1 mb-6">
-          <a
-            className="no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
-            href="https://beampipe.io"
-          >
-            beampipe
+  <footer className="border-t bg-background">
+    <div className="container mx-auto flex flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <a
+          href="https://beampipe.io"
+          className="text-xl font-extrabold tracking-tight text-primary hover:text-primary/80"
+        >
+          <Logo />
+        </a>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Built by{" "}
+          <a href={SCALAR_URL} className="font-semibold text-foreground hover:text-primary">
+            Scalar
           </a>
-        </div>
-
-        <div className="flex-1">
-          <p className="uppercase font-extrabold md:mb-6">Links</p>
-          <ul className="list-reset mb-6">
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://docs.beampipe.io/"
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faBook}
-                />
-                Docs
-              </a>
-            </li>
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <Link
-                to="/privacy"
-                target="_blank"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faClipboardCheck}
-                />
-                Privacy policy
-              </Link>
-            </li>
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="mailto:hello@beampipe.io"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faAt}
-                />
-                Contact us
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div className="flex-1">
-          <p className="uppercase font-extrabold md:mb-6">Social</p>
-          <ul className="list-reset mb-6">
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://twitter.com/beampipe_io"
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faTwitter}
-                />
-                Twitter
-              </a>
-            </li>
-
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://medium.com/beampipe"
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faMedium}
-                />
-                Medium
-              </a>
-            </li>
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://www.producthunt.com/posts/beampipe"
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faProductHunt}
-                />
-                Product Hunt
-              </a>
-            </li>
-            <li className="mt-2 inline-block mr-2 md:block md:mr-0">
-              <a
-                href="https://github.com/scalar-dev/beampipe"
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline hover:underline"
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faGithub}
-                />
-                Github
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="pb-6 text-center w-full text-sm">
-        <div>Copyright © Beampipe 2020.</div>
-        <div className="mt-1">
-          IP Geolocation by{" "}
-          <a
-            href="https://db-ip.com"
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            DB-IP
+          . We build AI systems to help you scale.{" "}
+          <a href={SCALAR_CONTACT_URL} className="font-semibold text-primary hover:text-primary/80">
+            Work with us →
           </a>
-        </div>
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          &copy; {new Date().getFullYear()} Beampipe.
+        </p>
       </div>
+      <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted-foreground">
+        <a href="https://docs.beampipe.io/" target="_blank" rel="noreferrer" className="hover:text-foreground">
+          Docs
+        </a>
+        <a href="https://beampipe.io/privacy" className="hover:text-foreground">
+          Privacy policy
+        </a>
+        <a href="mailto:hello@beampipe.io" className="hover:text-foreground">
+          Contact us
+        </a>
+        <a href="https://github.com/scalar-dev/beampipe" target="_blank" rel="noreferrer" className="hover:text-foreground">
+          GitHub
+        </a>
+      </nav>
     </div>
   </footer>
 );
 
 export const TakeBackControl = () => (
-  <div className="mx-auto container py-8 text-center">
-    <div className="font-black leading-tight text-5xl md:text-6xl text-gray-800">
+  <div className="rounded-2xl bg-primary px-6 py-12 text-center sm:px-16">
+    <h2 className="text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
       Take back control of your analytics.
-    </div>
-    <div className="pt-8">
-      <Link
-        to="/sign-up"
-        className="rounded-lg p-4 hover:bg-purple-500 bg-purple-600 text-white text-xl md:text-2xl font-semibold leading-tight shadow-md mr-2 md:mr-4"
-      >
-        Get started.
-      </Link>
-    </div>
+    </h2>
+    <p className="mx-auto mt-3 max-w-xl text-primary-foreground/80">
+      Simple, privacy-focussed analytics. Free for up to 10k monthly page views.
+    </p>
+    <Button asChild size="lg" variant="secondary" className="mt-6">
+      <Link to="/sign-up">Get started</Link>
+    </Button>
   </div>
 );
 
@@ -205,19 +96,21 @@ const TopBar = ({
   setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
 }) => {
   return (
-    <Card classNames="w-full">
-      <div className="flex flex-row flex-wrap flex-1">
-        <div className="text-3xl text-purple-600 font-black leading-tight flex-1 my-auto py-2">
-          {domain}
-          <div>
+    <Card className="md:col-span-2">
+      <CardContent className="flex flex-col gap-6 lg:flex-row lg:items-center">
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {domain}
+          </h1>
+          <div className="mt-2 flex flex-wrap gap-2">
             <DrilldownPills drilldown={drilldown} setDrilldown={setDrilldown} />
           </div>
         </div>
-        <div className="flex flex-row flex-1 md:flex-none">
+        <div className="flex flex-row flex-wrap gap-6 lg:flex-nowrap lg:gap-8">
           <LiveCounter domain={domain} />
           <Stats stats={stats.data?.events} />
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };
@@ -229,28 +122,42 @@ const Toolbar = ({
   timePeriod: TimePeriod;
   setTimePeriod: (timePeriod: TimePeriod) => void;
 }) => (
-  <div className="py-2">
-    <div className="flex flex-row max-w-full items-center">
-      <div className="flex-1">
-        <IfUserLoggedIn>
-          <DomainPicker />
-        </IfUserLoggedIn>
-        <IfAnonymous>
-          <div className="align-middle">
-            <Link
-              to="/sign-up"
-              className="hover:text-purple-600 text-gray-600 text-lg font-bold leading-tight"
-            >
-              Get beampipe for your site.
-            </Link>
-          </div>
-        </IfAnonymous>
-      </div>
-      <div>
-        <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
-      </div>
+  <div className="flex flex-row flex-wrap items-center justify-between gap-3 py-6">
+    <div>
+      <IfUserLoggedIn>
+        <DomainPicker />
+      </IfUserLoggedIn>
+      <IfAnonymous>
+        <Link
+          to="/sign-up"
+          className="text-sm font-medium text-muted-foreground hover:text-foreground"
+        >
+          Get beampipe for your site <span aria-hidden="true">→</span>
+        </Link>
+      </IfAnonymous>
     </div>
+    <TimePicker timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
   </div>
+);
+
+const CardTabs = <T extends string>({
+  tabs,
+  selected,
+  setSelected,
+}: {
+  tabs: T[];
+  selected: T;
+  setSelected: (tab: T) => void;
+}) => (
+  <Tabs value={selected} onValueChange={(v) => setSelected(v as T)}>
+    <TabsList className="h-8">
+      {tabs.map((tab) => (
+        <TabsTrigger key={tab} value={tab} className="px-2 text-xs">
+          {tab}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  </Tabs>
 );
 
 type DevicesTab = "Screen Size" | "Device" | "Class";
@@ -304,26 +211,12 @@ const DevicesCard = ({
   };
 
   return (
-    <DashboardCard position="right">
-      <CardTitle>
-        <div className="flex flex-wrap">
-          <div className="flex-1">Devices</div>
-          <Pills>
-            {tabs.map((tab) => (
-              <Pill
-                key={tab}
-                onClick={(e) => {
-                  setSelected(tab);
-                  e.preventDefault();
-                }}
-                selected={selected === tab}
-              >
-                {tab}
-              </Pill>
-            ))}
-          </Pills>
-        </div>
-      </CardTitle>
+    <DashboardCard
+      title="Devices"
+      action={
+        <CardTabs tabs={tabs} selected={selected} setSelected={setSelected} />
+      }
+    >
       <NonIdealState
         isLoading={stats.fetching || drilldownStats?.fetching}
         isIdeal={stats.data?.events.topScreenSizes.length > 0}
@@ -348,40 +241,24 @@ const MapCard = ({
   drilldownStats: any | null;
   setDrilldown: React.Dispatch<React.SetStateAction<DrilldownState>>;
 }) => {
-  const [selected, setSelected] = useState<"table" | "map">("map");
+  const [selected, setSelected] = useState<"Map" | "Table">("Map");
 
   return (
-    <DashboardCard position="left">
-      <CardTitle>
-        <div className="flex flex-wrap">
-          <div className="flex-1">Countries</div>
-          <Pills>
-            <Pill
-              onClick={(e) => {
-                setSelected("map");
-                e.preventDefault();
-              }}
-              selected={selected === "map"}
-            >
-              Map
-            </Pill>
-            <Pill
-              onClick={(e) => {
-                setSelected("table");
-                e.preventDefault();
-              }}
-              selected={selected === "table"}
-            >
-              Table
-            </Pill>
-          </Pills>
-        </div>
-      </CardTitle>
+    <DashboardCard
+      title="Countries"
+      action={
+        <CardTabs
+          tabs={["Map", "Table"]}
+          selected={selected}
+          setSelected={setSelected}
+        />
+      }
+    >
       <NonIdealState
         isLoading={stats.fetching || drilldownStats?.fetching}
         isIdeal={stats.data?.events.topCountries.length > 0}
       >
-        {selected === "table" ? (
+        {selected === "Table" ? (
           <Table
             columnHeadings={["Country", "Visits"]}
             data={stats.data?.events.topCountries}
@@ -464,9 +341,9 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
   });
 
   return (
-    <div className="container mx-auto flex flex-col">
+    <div className="container mx-auto px-4 pb-12">
       <Toolbar timePeriod={timePeriod} setTimePeriod={setTimePeriod} />
-      <div className="flex flex-row flex-wrap">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <TopBar
           stats={stats}
           domain={domain}
@@ -489,8 +366,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           }}
         />
 
-        <DashboardCard position="left">
-          <CardTitle>Pages</CardTitle>
+        <DashboardCard title="Pages">
           <NonIdealState
             isLoading={stats.fetching}
             isIdeal={stats.data?.events.topPages.length > 0}
@@ -511,8 +387,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </NonIdealState>
         </DashboardCard>
 
-        <DashboardCard position="right">
-          <CardTitle>Sources</CardTitle>
+        <DashboardCard title="Sources">
           <NonIdealState
             isLoading={stats.fetching || drilldownStats.fetching}
             isIdeal={stats.data?.events.topSources.length > 0}
@@ -567,8 +442,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           drilldownStats={isDrilldown ? drilldownStats : null}
         />
 
-        <DashboardCard position="left">
-          <CardTitle>Operating Systems</CardTitle>
+        <DashboardCard title="Operating Systems">
           <NonIdealState
             isLoading={stats.fetching || drilldownStats.fetching}
             isIdeal={stats.data?.events.topOperatingSystems.length > 0}
@@ -593,8 +467,7 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
           </NonIdealState>
         </DashboardCard>
 
-        <DashboardCard position="right">
-          <CardTitle>User Agents</CardTitle>
+        <DashboardCard title="User Agents">
           <NonIdealState
             isLoading={stats.fetching || drilldownStats.fetching}
             isIdeal={stats.data?.events.topAgents.length > 0}
@@ -627,11 +500,11 @@ const Root: React.FunctionComponent<{ domain: string }> = ({ domain }) => {
         />
       </div>
       <IfAnonymous>
-        <div className="pb-8">
+        <div className="pt-12">
           <TakeBackControl />
         </div>
       </IfAnonymous>
-      <div className="pb-4 text-center text-xs text-gray-400">
+      <div className="pt-8 text-center text-xs text-muted-foreground">
         IP Geolocation by{" "}
         <a
           href="https://db-ip.com"

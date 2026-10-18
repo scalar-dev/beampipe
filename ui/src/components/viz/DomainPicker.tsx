@@ -1,9 +1,15 @@
 import { gql, useQuery } from "urql";
-import { useState } from "react";
-import { Menu, MenuSection, MenuItem } from "../Menu";
-import { Tick } from "@beampipe/components";
+import { ChevronsUpDownIcon } from "lucide-react";
 import { Domain } from "../../interfaces";
 import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const DomainPicker = () => {
   const params = useParams();
@@ -21,32 +27,28 @@ export const DomainPicker = () => {
     `,
   });
 
-  const [visible, setVisible] = useState(false);
-
   return (
-    <Menu
-      value={params.domain}
-      visible={visible}
-      setVisible={setVisible}
-      menuClassNames="left-0"
-      classNames="w-40 md:w-auto"
-    >
-      <MenuSection>
-        {query.data?.domains.map((item) => (
-          <MenuItem
-            key={item.domain}
-            onClick={() => {
-              navigate(`/domain/${encodeURIComponent(item.domain)}`);
-              setVisible(false);
-            }}
-          >
-            <div className="w-8">
-              {params.domain === item.domain && <Tick />}
-            </div>
-            {item.domain}
-          </MenuItem>
-        ))}
-      </MenuSection>
-    </Menu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="max-w-56 justify-between">
+          <span className="truncate">{params.domain}</span>
+          <ChevronsUpDownIcon className="text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-auto min-w-56">
+        <DropdownMenuRadioGroup
+          value={params.domain}
+          onValueChange={(domain) =>
+            navigate(`/domain/${encodeURIComponent(domain)}`)
+          }
+        >
+          {query.data?.domains.map((item) => (
+            <DropdownMenuRadioItem key={item.domain} value={item.domain}>
+              {item.domain}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
