@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6](https://github.com/scalar-dev/beampipe/compare/v0.2.5...v0.2.6) (2026-10-18)
+
+
+### Bug Fixes
+
+* restart the server when GraphQL gets stuck failing ([5ea5827](https://github.com/scalar-dev/beampipe/commit/5ea5827c3fac772d6dd6dc516256d14dd577051a))
+
 ## [0.2.5](https://github.com/scalar-dev/beampipe/compare/v0.2.4...v0.2.5) (2026-03-09)
 
 
