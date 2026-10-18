@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.10](https://github.com/scalar-dev/beampipe/compare/v0.2.9...v0.2.10) (2026-10-18)
+
+
+### Bug Fixes
+
+* send signed-in users from sign in / sign up to the dashboard ([#153](https://github.com/scalar-dev/beampipe/issues/153)) ([0ad6024](https://github.com/scalar-dev/beampipe/commit/0ad602407bfca3d687734f71f9461abefc5bdcd0))
+
 ## [0.2.9](https://github.com/scalar-dev/beampipe/compare/v0.2.8...v0.2.9) (2026-10-18)
 
 
