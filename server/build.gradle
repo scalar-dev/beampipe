@@ -1,10 +1,10 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "2.0.21"
-    id "com.google.devtools.ksp" version "2.0.21-1.0.27"
-    id "org.jetbrains.kotlin.plugin.allopen" version "2.0.21"
-    id("com.gradleup.shadow") version "8.3.5"
-    id("io.micronaut.application") version "4.4.4"
-    id 'com.google.cloud.tools.jib' version '3.4.4'
+    id "org.jetbrains.kotlin.jvm" version "2.4.21"
+    id "com.google.devtools.ksp" version "2.3.12"
+    id "org.jetbrains.kotlin.plugin.allopen" version "2.4.21"
+    id("com.gradleup.shadow") version "9.6.1"
+    id("io.micronaut.application") version "5.0.2"
+    id 'com.google.cloud.tools.jib' version '3.5.4'
 }
 
 version "0.2.5" // x-release-please-version
@@ -26,7 +26,7 @@ micronaut {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -43,7 +43,7 @@ configurations.all {
 dependencies {
     ksp("io.micronaut:micronaut-inject-java")
     ksp("io.micronaut.validation:micronaut-validation-processor")
-    ksp("io.micronaut.security:micronaut-security-annotations")
+    ksp("io.micronaut.security:micronaut-security-processor")
     kspTest("io.micronaut:micronaut-inject-java")
 
     implementation("io.micronaut:micronaut-inject")
@@ -71,7 +71,7 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed-java-time:$exposedVersion"
 
     implementation 'io.micronaut.graphql:micronaut-graphql'
-    implementation 'com.expediagroup:graphql-kotlin-schema-generator:8.2.1'
+    implementation 'com.expediagroup:graphql-kotlin-schema-generator:11.0.0'
 
     implementation("com.maxmind.geoip2:geoip2:2.14.0")
     implementation("io.whitfin:siphash:2.0.0")
@@ -93,11 +93,9 @@ dependencies {
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
-    testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
-
-    testImplementation "org.testcontainers:testcontainers:1.20.4"
-    testImplementation "org.testcontainers:postgresql:1.20.4"
-    testImplementation "org.testcontainers:junit-jupiter:1.20.4"
+    testImplementation "org.testcontainers:testcontainers:2.0.5"
+    testImplementation "org.testcontainers:testcontainers-postgresql:2.0.5"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter:2.0.5"
 
     if (bundleUi) {
         runtimeOnly project(':ui')
@@ -125,7 +123,7 @@ shadowJar {
 
 jib {
     from {
-        image = "gcr.io/distroless/java17-debian12"
+        image = "gcr.io/distroless/java25-debian13"
     }
 
     extraDirectories {
