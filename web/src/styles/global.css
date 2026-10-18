@@ -1,13 +1,4 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter/wght.css";
+@import "../../../packages/components/src/theme.css";
 @source "../../../packages/components/src";
-@import "fontsource-inter/latin.css";
-
-@font-face {
-  font-family: "Inter";
-  font-display: block;
-}
-
-
-body {
-  font-family: "Inter", sans-serif;
-}

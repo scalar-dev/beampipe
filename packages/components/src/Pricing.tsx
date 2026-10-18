@@ -2,9 +2,9 @@ import { PropsWithChildren } from "react";
 import { Tick } from "./Tick";
 
 const Bullet: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
-  <li className="flex py-2">
+  <li className="flex items-start gap-3 py-1.5">
     <Tick />
-    <div className="pl-2">{children}</div>
+    <div>{children}</div>
   </li>
 );
 

@@ -1,80 +1,67 @@
 ---
 import Screenshot from "./Screenshot.astro";
+
+const features = [
+  {
+    eyebrow: "Dashboard",
+    title: "Simple, powerful web analytics dashboard.",
+    body: [
+      "See only what you need to know. No more scrolling through endless reports.",
+      "Your dashboard is live and updated in realtime.",
+      "Easily filter by traffic source, region or time period.",
+    ],
+    image: { src: "/images/screenshot2.png", width: 2528, height: 1871 },
+  },
+  {
+    eyebrow: "Slack",
+    title: "Reports and alerts in Slack.",
+    body: [
+      "Receive daily or weekly summary reports straight to Slack.",
+      "Get notified when specific events occur e.g. sign ups or purchases.",
+    ],
+    image: { src: "/images/slack2.png", width: 760, height: 382 },
+  },
+  {
+    eyebrow: "Goals",
+    title: "Track goals and conversions.",
+    body: [
+      "Use our javascript SDK to record user interactions and metadata.",
+      "Better understand how your product is being used, improve sales funnels and increase conversion rates.",
+    ],
+    image: { src: "/images/goals.png", width: 1076, height: 403 },
+  },
+];
 ---
 
-<div class="md:pt-8">
-  <div class="container mx-auto">
-    <!-- Feature 1: Dashboard -->
-    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
-      <div class="w-full md:w-1/2 md:pr-8 pb-8">
-        <div class="text-4xl font-black tracking-tight">
-          Simple, powerful web analytics dashboard.
+<section class="border-t border-gray-100 bg-gray-50 py-20 md:py-28">
+  <div class="mx-auto max-w-6xl space-y-20 px-4 sm:px-6 md:space-y-28">
+    {
+      features.map((feature, i) => (
+        <div class="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+          <div class:list={[i % 2 === 1 && "md:order-2"]}>
+            <p class="text-sm font-semibold text-green-600">{feature.eyebrow}</p>
+            <h3 class="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              {feature.title}
+            </h3>
+            <div class="mt-4 space-y-3 text-lg text-gray-600">
+              {feature.body.map((p) => <p>{p}</p>)}
+            </div>
+          </div>
+          <div class:list={[i % 2 === 1 && "md:order-1"]}>
+            <Screenshot>
+              <img
+                src={feature.image.src}
+                width={feature.image.width}
+                height={feature.image.height}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="h-auto"
+              />
+            </Screenshot>
+          </div>
         </div>
-        <div class="text-xl">
-          <p>
-            See only what you need to know. No more scrolling through endless
-            reports.
-          </p>
-          <p class="mt-4">Your dashboard is live and updated in realtime.</p>
-          <p class="mt-4">
-            Easily filter by traffic source, region or time period.
-          </p>
-        </div>
-      </div>
-      <div class="w-full md:w-1/2 flex justify-end">
-        <div class="flex justify-end">
-          <Screenshot>
-            <img src="/images/screenshot2.png" />
-          </Screenshot>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feature 2: Slack -->
-    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
-      <div class="w-full md:w-1/2 md:pr-8 pb-8">
-        <div class="text-4xl font-black tracking-tight">
-          Slack integration.
-        </div>
-        <div class="text-xl">
-          <p>Receive daily or weekly summary reports straight to Slack.</p>
-          <p class="mt-4">
-            Get notified when specific events occur e.g. sign ups or purchases.
-          </p>
-        </div>
-      </div>
-      <div class="w-full md:w-1/2 flex justify-end">
-        <div class="flex justify-end">
-          <Screenshot>
-            <img src="/images/slack2.png" class="w-full" />
-          </Screenshot>
-        </div>
-      </div>
-    </div>
-
-    <!-- Feature 3: Goals -->
-    <div class="flex flex-col md:flex-row p-4 md:p-8 pb-8 text-gray-800">
-      <div class="w-full md:w-1/2 md:pr-8 pb-8">
-        <div class="text-4xl font-black tracking-tight">
-          Track goals and conversions.
-        </div>
-        <div class="text-xl">
-          <p>
-            Use our javascript SDK to record user interactions and metadata.
-          </p>
-          <p class="mt-4">
-            Better understand how your product is being used, improve sales
-            funnels and increase conversion rates.
-          </p>
-        </div>
-      </div>
-      <div class="w-full md:w-1/2 flex justify-end">
-        <div class="flex justify-end">
-          <Screenshot>
-            <img src="/images/goals.png" class="w-full m-auto" />
-          </Screenshot>
-        </div>
-      </div>
-    </div>
+      ))
+    }
   </div>
-</div>
+</section>

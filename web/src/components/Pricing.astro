@@ -1,101 +1,73 @@
 ---
 import { BasicBullets, ProBullets, EnterpriseBullets } from "@beampipe/components";
+import SectionHeading from "./SectionHeading.astro";
 const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
+
+const PRIMARY_BUTTON =
+  "block rounded-lg bg-green-600 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-500";
+const SECONDARY_BUTTON =
+  "block rounded-lg bg-white px-4 py-2.5 text-center text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors hover:bg-gray-50";
 ---
 
-<div class="pt-8">
-  <div class="container mx-auto text-gray-800">
-    <div
-      class="mx-auto text-6xl font-black tracking-tight py-4 text-center text-purple-600"
-    >
-      Pricing
-    </div>
-    <p class="text-center pb-4 text-gray-600 font-bold">
-      No credit card required. Cancel at any time.
-    </p>
-    <div class="mx-auto lg:grid lg:grid-cols-3 lg:gap-5">
+<section class="border-t border-gray-100 bg-gray-50 py-20 md:py-28">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <SectionHeading
+      eyebrow="Pricing"
+      title="Simple pricing that scales with you."
+      subtitle="No credit card required. Cancel at any time."
+    />
+
+    <div class="mx-auto mt-16 grid max-w-md gap-6 lg:max-w-none lg:grid-cols-3">
       <!-- Free -->
-      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
-        <div class="px-6 py-8 bg-white">
-          <div class="text-2xl font-bold">Free</div>
-          <div class="text-4xl pt-2 leading-none font-extrabold">
-            $0 / month
-          </div>
-        </div>
-        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
-          <div class="flex-1">
-            <BasicBullets />
-          </div>
-          <div class="pt-4 w-full flex justify-center">
-            <a
-              href={`${appUrl}/sign-up`}
-              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
-            >
-              Sign up
-            </a>
-          </div>
+      <div class="flex flex-col rounded-2xl bg-white p-8 ring-1 ring-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Free</h3>
+        <p class="mt-1 text-sm text-gray-600">For personal sites and side projects.</p>
+        <p class="mt-6 flex items-baseline gap-1">
+          <span class="text-4xl font-bold tracking-tight text-gray-900">$0</span>
+          <span class="text-sm font-medium text-gray-500">/ month</span>
+        </p>
+        <a href={`${appUrl}/sign-up`} class:list={[SECONDARY_BUTTON, "mt-6"]}>Sign up</a>
+        <div class="mt-8 flex-1 border-t border-gray-100 pt-6 text-sm text-gray-700">
+          <BasicBullets />
         </div>
       </div>
 
       <!-- Pro -->
-      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
-        <div class="px-6 py-8 bg-white">
-          <div class="text-2xl font-bold">
-            Pro
-            <span
-              class="text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle"
-              >7 day free trial</span
-            >
-          </div>
-          <div class="text-4xl pt-2 leading-none font-extrabold">
-            $10 / month
-          </div>
+      <div class="relative flex flex-col rounded-2xl bg-white p-8 shadow-xl shadow-green-900/5 ring-2 ring-green-600">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="text-lg font-semibold text-green-600">Pro</h3>
+          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">
+            7 day free trial
+          </span>
         </div>
-        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
-          <div class="flex-1">
-            <ProBullets />
-          </div>
-          <div class="pt-4 w-full flex justify-center">
-            <a
-              href={`${appUrl}/sign-up`}
-              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
-            >
-              Sign up
-            </a>
-          </div>
+        <p class="mt-1 text-sm text-gray-600">For growing sites and businesses.</p>
+        <p class="mt-6 flex items-baseline gap-1">
+          <span class="text-4xl font-bold tracking-tight text-gray-900">$10</span>
+          <span class="text-sm font-medium text-gray-500">/ month</span>
+        </p>
+        <a href={`${appUrl}/sign-up`} class:list={[PRIMARY_BUTTON, "mt-6"]}>Start free trial</a>
+        <div class="mt-8 flex-1 border-t border-gray-100 pt-6 text-sm text-gray-700">
+          <ProBullets />
         </div>
       </div>
 
       <!-- Enterprise -->
-      <div class="flex flex-col mt-4 rounded-lg shadow-lg overflow-hidden lg:mt-0">
-        <div class="px-6 py-8 bg-white">
-          <div class="text-2xl font-bold">
-            Enterprise
-            <span
-              class="text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle"
-              >7 day free trial</span
-            >
-          </div>
-          <div class="text-4xl pt-2 leading-none font-extrabold">
-            <a class="hover:text-gray-500" href="mailto:hello@beampipe.io"
-              >Contact us</a
-            >
-          </div>
+      <div class="flex flex-col rounded-2xl bg-white p-8 ring-1 ring-gray-200">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="text-lg font-semibold text-gray-900">Enterprise</h3>
+          <span class="rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-700">
+            7 day free trial
+          </span>
         </div>
-        <div class="flex flex-1 flex-col px-6 pt-6 pb-8 bg-gray-50">
-          <div class="flex-1">
-            <EnterpriseBullets />
-          </div>
-          <div class="pt-4 w-full flex justify-center">
-            <a
-              href={`${appUrl}/sign-up`}
-              class="text-center rounded-lg px-12 py-4 hover:bg-purple-500 bg-purple-600 text-white text-2xl font-semibold leading-tight shadow-md"
-            >
-              Sign up
-            </a>
-          </div>
+        <p class="mt-1 text-sm text-gray-600">For high-traffic sites and teams.</p>
+        <p class="mt-6 flex items-baseline gap-1">
+          <span class="text-4xl font-bold tracking-tight text-gray-900">Custom</span>
+        </p>
+        <a href="mailto:hello@beampipe.io" class:list={[SECONDARY_BUTTON, "mt-6"]}>Contact us</a>
+        <div class="mt-8 flex-1 border-t border-gray-100 pt-6 text-sm text-gray-700">
+          <EnterpriseBullets />
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>

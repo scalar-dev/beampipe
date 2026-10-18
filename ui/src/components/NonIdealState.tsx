@@ -12,7 +12,9 @@ export const NonIdealState: React.FunctionComponent<PropsWithChildren<NonIdealSt
   isLoading,
   children,
   nonIdeal = (
-    <div className="text-center text-xl text-gray-500">No data to display</div>
+    <div className="text-center text-sm text-muted-foreground">
+      No data to display
+    </div>
   ),
 }) => {
   if (isLoading) {

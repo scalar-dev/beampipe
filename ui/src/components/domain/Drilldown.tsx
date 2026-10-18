@@ -1,5 +1,5 @@
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { XIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Moment } from "moment-timezone";
 import React from "react";
 
@@ -67,13 +67,12 @@ export const sourceDrilldownText = (referrer: ReferrerDrilldown) => {
 export const DrilldownPill: React.FunctionComponent<React.PropsWithChildren<{
   onClick: () => void;
 }>> = ({ onClick, children }) => (
-  <button
-    className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-1 px-2 rounded-full mr-2 focus:outline-none"
-    onClick={onClick}
-  >
-    {children}
-    <FontAwesomeIcon className="fill-current w-4 h-4 ml-2" icon={faTimes} />
-  </button>
+  <Badge asChild className="h-6 gap-1 bg-primary/10 pr-1.5 font-mono text-primary hover:bg-primary/20">
+    <button onClick={onClick} title="Remove filter">
+      {children}
+      <XIcon data-icon="inline-end" />
+    </button>
+  </Badge>
 );
 
 export const DrilldownPills = ({

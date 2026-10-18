@@ -1,126 +1,132 @@
 ---
 import { Logo } from "@beampipe/components";
+import { SCALAR_URL } from "../scalar";
 const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.beampipe.io";
-const NAV_LINK_CLASS =
-  "text-sm block mt-4 ml-4 lg:ml-0 lg:inline-block lg:mt-0 font-semibold text-gray-600 hover:text-gray-900 mr-4";
+
+const links = [
+  { href: "/#pricing", label: "Pricing", pricing: true },
+  { href: "/blog", label: "Blog" },
+  { href: "https://docs.beampipe.io", label: "Docs", external: true },
+  { href: "mailto:hello@beampipe.io", label: "Contact" },
+];
 ---
 
-<div class="container m-auto">
-  <nav class="flex items-center justify-between flex-wrap py-4">
-    <div class="flex items-center flex-shrink-0 text-black mr-6">
+<header
+  class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur"
+>
+  <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <div class="flex items-center gap-10">
+      <div class="flex items-baseline gap-2">
+        <a
+          href="/"
+          class="text-2xl font-extrabold tracking-tight text-green-600 hover:text-green-500"
+        >
+          <Logo />
+        </a>
+        <a
+          href={SCALAR_URL}
+          class="hidden text-xs font-medium text-gray-500 hover:text-gray-900 sm:inline"
+          data-scalar-link
+        >
+          by Scalar
+        </a>
+      </div>
+
+      <div class="hidden items-center gap-7 md:flex">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              data-pricing-link={link.pricing ? "" : undefined}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="hidden items-center gap-5 md:flex">
       <a
-        href="/"
-        class="font-extrabold text-green-600 hover:text-green-500 text-3xl tracking-tight align-middle"
+        href={`${appUrl}/sign-in`}
+        class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
       >
-        <Logo />
+        Log in
+      </a>
+      <a
+        href={`${appUrl}/sign-up`}
+        class="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-500"
+      >
+        Sign up free
       </a>
     </div>
 
-    <div class="block lg:hidden">
-      <button
-        id="menu-toggle"
-        class="flex items-center px-3 py-2 border rounded text-green-600 border-green-600 hover:text-green-500 hover:border-green-500"
-      >
-        <svg
-          class="fill-current h-3 w-3"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <title>Menu</title>
-          <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-        </svg>
-      </button>
-    </div>
-
-    <div
-      id="menu"
-      class="w-full hidden flex-grow bg-white lg:bg-gray-100 border lg:border-none lg:flex lg:items-center lg:w-auto"
+    <button
+      id="menu-toggle"
+      type="button"
+      class="-mr-2 rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 md:hidden"
+      aria-controls="menu"
+      aria-expanded="false"
     >
-      <div class="lg:flex-grow flex flex-wrap">
-        <div>
-          <a href="/#pricing" class={NAV_LINK_CLASS} data-pricing-link>
-            Pricing
-          </a>
-        </div>
-        <div>
-          <a href="/blog" class={NAV_LINK_CLASS}>Blog</a>
-        </div>
-        <div>
-          <a
-            href="https://docs.beampipe.io"
-            target="_blank"
-            rel="noreferrer"
-            class={NAV_LINK_CLASS}>Docs</a
-          >
-        </div>
-        <div>
-          <a href="mailto:hello@beampipe.io" class={NAV_LINK_CLASS}
-            >Contact us</a
-          >
-        </div>
-      </div>
-
-      <div class="pr-2">
-        <a href={`${appUrl}/`} class={NAV_LINK_CLASS}>Login</a>
-        <div
-          class="block mt-4 ml-4 lg:ml-0 mb-4 lg:inline-block lg:mt-0 lg:mb-0"
-        >
-          <a
-            href={`${appUrl}/sign-up`}
-            class="rounded-lg px-4 py-3 bg-green-600 hover:bg-green-500 text-base text-white font-semibold leading-tight shadow-md mr-2"
-          >
-            Sign up
-          </a>
-        </div>
-      </div>
-
-      <div class="flex flex-col items-center">
-        <div class="flex flex-row p-4 lg:p-0">
-          <a
-            class="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
-            href="https://twitter.com/beampipe_io"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"
-              ><path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-              ></path></svg
-            >
-          </a>
-<a
-            class="block flex items-center text-gray-500 hover:text-gray-700 mr-3"
-            href="https://github.com/scalar-dev/beampipe"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"
-              ><path
-                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-              ></path></svg
-            >
-          </a>
-        </div>
-        <a
-          class={NAV_LINK_CLASS}
-          href="https://www.scalar.dev"
-        >
-          scalar.dev
-        </a>
-      </div>
-    </div>
+      <span class="sr-only">Toggle menu</span>
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
   </nav>
-</div>
+
+  <div id="menu" class="hidden border-t border-gray-200 bg-white md:hidden">
+    <div class="space-y-1 px-4 py-3">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50"
+            data-pricing-link={link.pricing ? "" : undefined}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+    <div class="flex items-center gap-3 border-t border-gray-100 px-4 py-4">
+      <a
+        href={`${appUrl}/sign-in`}
+        class="flex-1 rounded-lg px-4 py-2.5 text-center text-sm font-semibold text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50"
+      >
+        Log in
+      </a>
+      <a
+        href={`${appUrl}/sign-up`}
+        class="flex-1 rounded-lg bg-green-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-green-500"
+      >
+        Sign up free
+      </a>
+    </div>
+  </div>
+</header>
 
 <script is:inline>
-  document.getElementById("menu-toggle").addEventListener("click", function () {
-    var menu = document.getElementById("menu");
-    menu.classList.toggle("hidden");
+  var toggle = document.getElementById("menu-toggle");
+  var menu = document.getElementById("menu");
+
+  toggle.addEventListener("click", function () {
+    var hidden = menu.classList.toggle("hidden");
+    toggle.setAttribute("aria-expanded", String(!hidden));
   });
 
-  var pricingLink = document.querySelector("[data-pricing-link]");
-  if (pricingLink) {
-    pricingLink.addEventListener("click", function () {
-      document.getElementById("menu").classList.add("hidden");
+  document.querySelectorAll("[data-pricing-link]").forEach(function (link) {
+    link.addEventListener("click", function () {
+      menu.classList.add("hidden");
+      toggle.setAttribute("aria-expanded", "false");
       if (typeof window.beampipe === "function") {
         window.beampipe("view_pricing");
       }
     });
-  }
+  });
 </script>

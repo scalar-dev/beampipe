@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -20,36 +21,28 @@ const formattedDate = post.data.date.toLocaleDateString("en-US", {
 ---
 
 <Layout title={post.data.title}>
-  <div class="bg-gradient-to-b from-gray-100 to-white">
-    <div class="container mx-auto">
-      <article
-        class="max-w-screen-sm mx-auto text-gray-700 leading-7 mt-8 pb-16"
-      >
-        <div
-          class="text-purple-600 font-bold text-sm hover:text-purple-500"
-        >
-          <svg
-            class="inline w-4 h-4 mr-2"
-            fill="currentColor"
-            viewBox="0 0 448 512"
-            ><path
-              d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"
-            ></path></svg
-          >
-          <a href="/blog">Back to posts</a>
-        </div>
-        <div class="text-5xl text-purple-600 font-black leading-tight">
+  <main class="mx-auto max-w-3xl px-4 pt-12 pb-20 sm:px-6 md:pt-16">
+    <a
+      href="/blog"
+      class="text-sm font-semibold text-gray-500 hover:text-gray-900"
+    >
+      <span aria-hidden="true">←</span> All posts
+    </a>
+    <article class="mt-8">
+      <header>
+        <p class="text-sm text-gray-500">
+          <time datetime={post.data.date.toISOString()}>{formattedDate}</time> · {post.data.author}
+        </p>
+        <h1 class="mt-3 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
           {post.data.title}
-        </div>
-        <div class="text-lg font-bold text-gray-600">
-          {formattedDate} - By {post.data.author}
-        </div>
-        <div class="prose prose-lg max-w-none mt-4">
-          <Content />
-        </div>
-      </article>
-    </div>
-  </div>
+        </h1>
+      </header>
+      <div class="prose mt-10 max-w-none text-lg leading-8 text-gray-700">
+        <Content />
+      </div>
+    </article>
+  </main>
+  <Footer />
 </Layout>
 
 <style is:global>
@@ -59,11 +52,12 @@ const formattedDate = post.data.date.toLocaleDateString("en-US", {
   .prose h5,
   .prose h6 {
     font-size: 1.5rem;
-    font-weight: 900;
-    color: #1f2937;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: #111827;
     line-height: 1.25;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .prose p {
@@ -80,11 +74,39 @@ const formattedDate = post.data.date.toLocaleDateString("en-US", {
   }
 
   .prose a {
-    font-weight: 700;
+    font-weight: 600;
+    color: var(--color-green-700);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .prose a:hover {
-    color: #7c3aed;
+    color: var(--color-green-600);
+  }
+
+  .prose img {
+    border-radius: 0.75rem;
+  }
+
+  .prose code {
+    font-size: 0.875em;
+    background: var(--color-gray-100);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+  }
+
+  .prose pre {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .prose pre code {
+    background: none;
+    padding: 0;
   }
 
   .prose img {

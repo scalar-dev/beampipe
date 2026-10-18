@@ -1,10 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <Layout title="Privacy Policy">
-  <div class="p-12">
-    <h2 class="text-2xl">Privacy Policy</h2>
+  <main
+    class="mx-auto max-w-3xl px-4 py-16 leading-7 text-gray-700 sm:px-6 [&_a]:font-medium [&_a]:text-green-700 [&_a]:underline [&_p]:mt-4"
+  >
+    <h1 class="text-4xl font-bold tracking-tight text-gray-900">Privacy Policy</h1>
     <p>
       Your privacy is important to us. It is beampipe's policy to respect your
       privacy regarding any information we may collect from you across our
@@ -50,5 +53,6 @@ import Layout from "../layouts/Layout.astro";
         Privacy Policy created with GetTerms.
       </a>
     </p>
-  </div>
+  </main>
+  <Footer />
 </Layout>

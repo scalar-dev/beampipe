@@ -1,140 +1,70 @@
-<footer class="bg-green-600 text-white pt-8">
-  <div class="container mx-auto px-8">
-    <div class="w-full flex flex-col md:flex-row pt-6">
-      <div class="flex-1 mb-6 flex flex-col">
-        <a
-          class="no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
-          href="#"
-        >
-          beampipe
+---
+import { Logo } from "@beampipe/components";
+import { SCALAR_CONTACT_URL, SCALAR_URL } from "../scalar";
+
+const links = [
+  { href: "/blog", label: "Blog" },
+  { href: "https://docs.beampipe.io/", label: "Docs", external: true },
+  { href: "/privacy", label: "Privacy policy" },
+  { href: "mailto:hello@beampipe.io", label: "Contact us" },
+];
+
+const social = [
+  { href: "https://www.producthunt.com/posts/beampipe", label: "Product Hunt", path: "M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.806-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.804c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.201 4.201z" },
+  { href: "https://github.com/scalar-dev/beampipe", label: "GitHub", path: "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" },
+];
+---
+
+<footer class="border-t border-gray-200 bg-white">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+      <div>
+        <a href="/" class="text-xl font-extrabold tracking-tight text-green-600 hover:text-green-500">
+          <Logo />
         </a>
-        <span>
-          Sponsored by{" "}
-          <a href="https://www.scalar.dev" class="hover:underline">
-            scalar.dev
-          </a>
-        </span>
+        <p class="mt-3 max-w-sm text-sm text-gray-600">
+          Built by <a href={SCALAR_URL} class="font-semibold text-gray-900 hover:text-green-600" data-scalar-link>Scalar</a>.
+          We build AI systems to help you scale.
+        </p>
+        <a
+          href={SCALAR_CONTACT_URL}
+          class="mt-3 inline-flex text-sm font-semibold text-green-600 hover:text-green-500"
+          data-scalar-link
+        >
+          Work with us <span aria-hidden="true" class="ml-1">→</span>
+        </a>
       </div>
 
-      <div class="flex-1">
-        <p class="uppercase font-extrabold md:mb-6">Links</p>
-        <ul class="list-none mb-6">
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
+      <nav class="flex flex-wrap gap-x-8 gap-y-3">
+        {
+          links.map((link) => (
             <a
-              href="https://docs.beampipe.io/"
-              target="_blank"
-              rel="noreferrer"
-              class="no-underline hover:underline"
+              href={link.href}
+              class="text-sm text-gray-600 hover:text-gray-900"
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
             >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 448 512"
-                ><path
-                  d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
-                ></path></svg
-              >
-              Docs
+              {link.label}
             </a>
-          </li>
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-            <a
-              href="/privacy"
-              class="no-underline hover:underline"
-            >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 384 512"
-                ><path
-                  d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
-                ></path></svg
-              >
-              Privacy policy
-            </a>
-          </li>
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-            <a
-              href="mailto:hello@beampipe.io"
-              class="no-underline hover:underline"
-            >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 512 512"
-                ><path
-                  d="M256 64C150 64 64 150 64 256s86 192 192 192c17.7 0 32 14.3 32 32s-14.3 32-32 32C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256v32c0 53-43 96-96 96c-29.3 0-55.6-13.2-73.2-33.9C320 371.1 289.5 384 256 384c-70.7 0-128-57.3-128-128s57.3-128 128-128c70.7 0 128 57.3 128 128v32c0 17.7 14.3 32 32 32s32-14.3 32-32V256c0-106-86-192-192-192zm0 256a64 64 0 1 0 0-128 64 64 0 1 0 0 128z"
-                ></path></svg
-              >
-              Contact us
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="flex-1">
-        <p class="uppercase font-extrabold md:mb-6">Social</p>
-        <ul class="list-none mb-6">
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-            <a
-              href="https://twitter.com/beampipe_io"
-              target="_blank"
-              rel="noreferrer"
-              class="no-underline hover:underline"
-            >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                ><path
-                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                ></path></svg
-              >
-              Twitter
-            </a>
-          </li>
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-            <a
-              href="https://www.producthunt.com/posts/beampipe"
-              target="_blank"
-              rel="noreferrer"
-              class="no-underline hover:underline"
-            >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                ><path
-                  d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.806-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.804c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.201 4.201z"
-                ></path></svg
-              >
-              Product Hunt
-            </a>
-          </li>
-          <li class="mt-2 inline-block mr-2 md:block md:mr-0">
-            <a
-              href="https://github.com/scalar-dev/beampipe"
-              target="_blank"
-              rel="noreferrer"
-              class="no-underline hover:underline"
-            >
-              <svg
-                class="inline w-4 h-4 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                ><path
-                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                ></path></svg
-              >
-              Github
-            </a>
-          </li>
-        </ul>
-      </div>
+          ))
+        }
+      </nav>
     </div>
 
-    <div class="pb-6 text-center w-full text-sm">
-      Copyright &copy; Beampipe 2020.
+    <div class="mt-10 flex flex-col-reverse gap-6 border-t border-gray-100 pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-sm text-gray-500">&copy; {new Date().getFullYear()} Beampipe.</p>
+      <div class="flex gap-5">
+        {
+          social.map((item) => (
+            <a href={item.href} target="_blank" rel="noreferrer" class="text-gray-400 hover:text-gray-600">
+              <span class="sr-only">{item.label}</span>
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d={item.path} />
+              </svg>
+            </a>
+          ))
+        }
+      </div>
     </div>
   </div>
 </footer>

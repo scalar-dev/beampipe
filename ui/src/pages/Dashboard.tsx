@@ -1,74 +1,93 @@
 import { Layout } from "../components/layout/Layout";
 import { useQuery, useMutation, gql } from "urql";
 import numeral from "numeral";
-import { Card, CardTitle } from "../components/Card";
 import { LineChart } from "../components/viz/LineChart";
-import { Button } from "../components/Buttons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import {
-  faPlus,
-  faCopy,
-  faCog,
-  faQuestionCircle,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, MouseEventHandler, PropsWithChildren } from "react";
+  AlertCircleIcon,
+  ArrowRightIcon,
+  CheckIcon,
+  CodeIcon,
+  CopyIcon,
+  GlobeIcon,
+  PlusIcon,
+  SettingsIcon,
+} from "lucide-react";
+import { useState, ReactNode } from "react";
 import { NonIdealState } from "../components/NonIdealState";
 import _ from "lodash";
 import { Domain } from "../interfaces";
 import { Spinner } from "../components/Spinner";
 import { Stats } from "../components/viz/Stats";
 import { Secure } from "../components/Secure";
+import { PageHeader } from "../components/Title";
+import { ConfirmButton } from "../components/ConfirmButton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
+const domainPath = (domain: Domain) =>
+  `/domain/${encodeURIComponent(domain.domain)}`;
 
 const ScriptSnippet = ({ domain }: { domain: Domain }) => {
-  const ref = useRef<HTMLTextAreaElement | null>(null);
   const html = `<script async defer src="https://beampipe.io/js/tracker.js" data-beampipe-domain="${domain.domain}"></script>`;
   const [hasCopied, setHasCopied] = useState(false);
 
-  const onCopy: MouseEventHandler<HTMLElement> = (e) => {
-    e.preventDefault();
-    if (ref.current) {
-      const dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-      dummy.value = html;
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-      setHasCopied(true);
-    }
+  const onCopy = async () => {
+    await navigator.clipboard.writeText(html);
+    setHasCopied(true);
+    setTimeout(() => setHasCopied(false), 2000);
   };
 
   return (
-    <div className="text-center text-sm m-auto overflow-auto">
-      Add the following snippet to your page to start collecting data.
-      <div className="pt-4 flex flex-row max-w-full">
-        <div className="flex-1 overflow-auto">
-          <pre>
-            <code
-              ref={ref}
-              className="block overflow-auto font-mono bg-gray-200 p-2 border-gray-600 border-dashed border-2 w-full"
-            >
-              {html}
-            </code>
-          </pre>
-        </div>
-        <div className="overflow-auto flex">
-          <div className="m-auto px-2 text-gray-600">
-            <button
-              className="outline-none focus:outline-none"
+    <div className="flex flex-col gap-3 text-sm">
+      <p className="text-muted-foreground">
+        Add the following snippet to your page to start collecting data.
+      </p>
+      <div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3">
+        <code className="min-w-0 flex-1 font-mono text-xs break-all text-foreground">
+          {html}
+        </code>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={onCopy}
+              aria-label="Copy snippet"
             >
-              <FontAwesomeIcon
-                className="ml-2 hover:text-gray-300 fill-current w-4 h-4 mr-2"
-                icon={faCopy}
-              />
-            </button>
-            {hasCopied ? (
-              <div className="text-sm font-extrabold">Copied!</div>
-            ) : null}
-          </div>
-        </div>
+              {hasCopied ? <CheckIcon className="text-primary" /> : <CopyIcon />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{hasCopied ? "Copied!" : "Copy"}</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );
@@ -104,10 +123,8 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
   return (
     <NonIdealState
       nonIdeal={
-        <div className="text-center">
-          <div className="text-xl text-gray-500 pb-4">
-            No events recorded in the past {timePeriod.type}
-          </div>
+        <div className="py-8 text-center text-sm text-muted-foreground">
+          No events recorded in the past {timePeriod.type}
         </div>
       }
       isIdeal={
@@ -115,20 +132,22 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
       }
       isLoading={query.fetching}
     >
-      <div className="h-48">
+      <div className="flex flex-row flex-wrap gap-6 pb-4">
+        <Stats stats={query.data?.events} />
+      </div>
+      <div className="h-40">
         <LineChart
           data={[
             {
               data: query.data?.events?.bucketedUnique,
-              borderColor: "#0ba360",
               type: "bar",
               yAxisID: "visitors",
               backgroundColor: (context: any) => {
                 return context.dataset.data[context.dataIndex].x.getDay() %
                   6 ===
                   0
-                  ? "rgba(113, 128, 150, 0.5)"
-                  : "rgba(203, 213, 224, 0.5)";
+                  ? "rgba(22, 163, 74, 0.35)"
+                  : "rgba(22, 163, 74, 0.75)";
               },
               label: "Unique visitors",
             },
@@ -136,27 +155,6 @@ const InnerDomainChart = ({ domain }: { domain: string }) => {
           timePeriod={{ type: "week" }}
         />
       </div>
-      <div className="flex flex-row flex-wrap pt-4">
-        <Stats stats={query.data?.events} />
-      </div>
-    </NonIdealState>
-  );
-};
-
-const DomainChart = ({ domain }: { domain: Domain }) => {
-  return (
-    <NonIdealState
-      nonIdeal={
-        <div className="text-center">
-          <div className="text-xl text-gray-500 pb-4">
-            This domain has not recorded any data
-          </div>
-          <ScriptSnippet domain={domain} />
-        </div>
-      }
-      isIdeal={domain.hasData}
-    >
-      <InnerDomainChart domain={domain.domain} />
     </NonIdealState>
   );
 };
@@ -177,7 +175,7 @@ const AddOrEditDomain = ({
   onCancel: () => void;
   onComplete: () => void;
 }) => {
-  const [domainName, setDomainName] = useState(domain?.domain);
+  const [domainName, setDomainName] = useState(domain?.domain ?? "");
   const [validDomain, setValidDomain] = useState(isValidDomain(domain?.domain));
   const [isPublic, setPublic] = useState(domain?.public || false);
   const [error, setError] = useState<string | null>(null);
@@ -197,119 +195,138 @@ const AddOrEditDomain = ({
     }
   `);
 
+  const save = async () => {
+    const result = await executeMutation({
+      id: domain?.id,
+      domain: domainName,
+      public: isPublic,
+    });
+
+    if (!result.error) {
+      onComplete();
+    } else {
+      setError(
+        result.error.graphQLErrors[0]?.extensions?.userMessage as string
+      );
+    }
+  };
+
   return (
-    <form className="w-full max-w-xl" onSubmit={(e) => e.preventDefault()}>
-      <div className="md:flex md:items-center mb-6">
-        <div className="md:w-1/3">
-          <label
-            className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-            htmlFor="domain"
-          >
-            Domain
-          </label>
-        </div>
-        <div className="md:w-2/3">
-          <input
-            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+    <form
+      className="flex flex-col gap-6"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (validDomain) save();
+      }}
+    >
+      <FieldGroup>
+        <Field data-invalid={domainName !== "" && !validDomain}>
+          <FieldLabel htmlFor="domain">Domain</FieldLabel>
+          <Input
             id="domain"
-            type="text"
-            placeholder="foo.com"
+            placeholder="example.com"
             data-cy="input-domain-name"
             value={domainName}
+            aria-invalid={domainName !== "" && !validDomain}
             onChange={(e) => {
               setValidDomain(isValidDomain(e.target.value));
               setDomainName(e.target.value);
             }}
           />
-          {!validDomain && (
-            <p className="text-red-500 text-xs italic">
-              Enter a valid domain name (e.g. foo.com)
-            </p>
+          {domainName !== "" && !validDomain ? (
+            <FieldError>Enter a valid domain name (e.g. example.com)</FieldError>
+          ) : (
+            <FieldDescription>
+              The domain you will add the tracking snippet to.
+            </FieldDescription>
           )}
-        </div>
-      </div>
-      <div className="md:flex md:items-center mb-6">
-        <div className="md:w-1/3"></div>
-        <label className="md:w-2/3 block text-gray-500 font-bold">
-          <input
-            className="mr-2 leading-tight"
-            type="checkbox"
+        </Field>
+        <Field orientation="horizontal">
+          <Checkbox
+            id="domain-public"
             checked={isPublic}
-            onChange={(e) => setPublic(e.target.checked)}
+            onCheckedChange={(checked) => setPublic(checked === true)}
           />
-          <span className="text-sm">Make statistics publicly accessible</span>
-        </label>
-      </div>
+          <FieldLabel htmlFor="domain-public" className="font-normal">
+            Make statistics publicly accessible
+          </FieldLabel>
+        </Field>
+      </FieldGroup>
 
       {error && (
-        <div className="md:flex md:items-center mb-6">
-          <div className="md:w-1/3"></div>
-          <div className="md:w-2/3">
-            <p className="text-red-500 italic">{error}</p>
-          </div>
-        </div>
+        <Alert variant="destructive">
+          <AlertCircleIcon />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
-      <div className="md:flex md:items-center">
-        <div className="md:w-1/3"></div>
-        <div className="md:w-2/3">
-          <Button
-            disabled={!validDomain}
-            data-cy="button-save-domain"
-            onClick={async () => {
-              const result = await executeMutation({
-                id: domain?.id,
-                domain: domainName,
-                public: isPublic,
-              });
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="submit" disabled={!validDomain} data-cy="button-save-domain">
+          Save
+        </Button>
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+
+        {domain && (
+          <ConfirmButton
+            trigger={
+              <Button
+                type="button"
+                variant="destructive"
+                className="ml-auto"
+                data-cy="button-domain-delete"
+              >
+                Delete domain
+              </Button>
+            }
+            title={`Delete ${domain.domain}?`}
+            description="This permanently deletes the domain and all of its analytics data."
+            confirmLabel="Delete domain"
+            onConfirm={async () => {
+              const result = await executeDelete({ id: domain.id });
 
               if (!result.error) {
                 onComplete();
-              } else {
-                setError(
-                  result.error.graphQLErrors[0]?.extensions
-                    ?.userMessage as string
-                );
               }
             }}
-          >
-            Save
-          </Button>
-          <Button
-            className="mx-2"
-            type="button"
-            intent="info"
-            onClick={onCancel}
-          >
-            Cancel
-          </Button>
-
-          {domain && (
-            <Button
-              className="float-right"
-              type="button"
-              intent="danger"
-              data-cy="button-domain-delete"
-              onClick={async () => {
-                if (
-                  window.confirm("Are you sure you want to delete this domain?")
-                ) {
-                  const result = await executeDelete({ id: domain.id });
-
-                  if (!result.error) {
-                    onComplete();
-                  }
-                }
-              }}
-            >
-              Delete
-            </Button>
-          )}
-        </div>
+          />
+        )}
       </div>
     </form>
   );
 };
+
+const IconAction = ({
+  label,
+  active,
+  onClick,
+  children,
+  ...otherProps
+}: {
+  label: string;
+  active?: boolean;
+  onClick: () => void;
+  children: ReactNode;
+  "data-cy"?: string;
+}) => (
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={label}
+        aria-pressed={active}
+        className={active ? "bg-muted text-primary" : "text-muted-foreground"}
+        onClick={onClick}
+        {...otherProps}
+      >
+        {children}
+      </Button>
+    </TooltipTrigger>
+    <TooltipContent>{label}</TooltipContent>
+  </Tooltip>
+);
 
 type DomainCardState = "chart" | "editing" | "code";
 
@@ -322,25 +339,30 @@ const DomainCard: React.FunctionComponent<{
   const renderInner = (state: DomainCardState) => {
     switch (state) {
       case "chart":
-        return (
-          <Link to={`/domain/${encodeURIComponent(domain.domain)}`}>
-            <DomainChart domain={domain} />
+        return domain.hasData ? (
+          <Link
+            to={domainPath(domain)}
+            className="group/chart relative -mx-2 block rounded-lg p-2 transition-colors hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            aria-label={`View full dashboard for ${domain.domain}`}
+          >
+            <InnerDomainChart domain={domain.domain} />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover/chart:opacity-100 group-focus-visible/chart:opacity-100">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background shadow-lg">
+                View full dashboard
+                <ArrowRightIcon className="size-3.5" />
+              </span>
+            </span>
           </Link>
-        );
-      case "code":
-        return (
-          <div className="flex-1 flex flex-col">
+        ) : (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm font-medium text-foreground">
+              This domain has not recorded any data yet.
+            </p>
             <ScriptSnippet domain={domain} />
-            <div className="text-center pt-4">
-              <button
-                className="text-sm text-purple-600 hover:text-purple-500 outline-none focus:outline-none"
-                onClick={() => setState("chart")}
-              >
-                Back to chart
-              </button>
-            </div>
           </div>
         );
+      case "code":
+        return <ScriptSnippet domain={domain} />;
       case "editing":
         return (
           <AddOrEditDomain
@@ -356,67 +378,86 @@ const DomainCard: React.FunctionComponent<{
   };
 
   return (
-    <Card key={domain.id} style={{ minHeight: "15rem" }}>
-      <CardTitle>
-        <div className="flex">
-          <div className="flex-auto overflow-auto">
-            <Link
-              to={`/domain/${encodeURIComponent(domain.domain)}`}
-              data-cy="a-domain"
-              className="text-gray-800 hover:text-gray-500 break-words"
+    <Card className="pb-2 transition-shadow hover:shadow-md hover:ring-primary/30">
+      <CardHeader>
+        <CardTitle className="flex min-w-0 items-center gap-2 text-lg font-semibold">
+          <Link
+            to={domainPath(domain)}
+            data-cy="a-domain"
+            className="truncate hover:text-primary"
+          >
+            {domain.domain}
+          </Link>
+          {domain.public && (
+            <Badge variant="secondary" className="font-normal">
+              <GlobeIcon />
+              Public
+            </Badge>
+          )}
+        </CardTitle>
+        <CardDescription>Unique visitors, last 7 days</CardDescription>
+        {state !== "editing" && (
+          <CardAction className="flex gap-1">
+            <IconAction
+              label={state === "code" ? "Hide tracking snippet" : "Show tracking snippet"}
+              active={state === "code"}
+              onClick={() =>
+                setState((state) => (state === "code" ? "chart" : "code"))
+              }
             >
-              {domain.domain}
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                size="xs"
-                className="text-gray-400 ml-1"
-              />
+              <CodeIcon />
+            </IconAction>
+            <IconAction
+              label="Domain settings"
+              data-cy="button-domain-settings"
+              onClick={() => setState("editing")}
+            >
+              <SettingsIcon />
+            </IconAction>
+          </CardAction>
+        )}
+      </CardHeader>
+      <CardContent>{renderInner(state)}</CardContent>
+      {state !== "editing" && (
+        <CardFooter className="justify-end border-t pt-2!">
+          <Button asChild variant="ghost" size="sm" className="text-primary hover:text-primary">
+            <Link to={domainPath(domain)}>
+              View dashboard
+              <ArrowRightIcon data-icon="inline-end" />
             </Link>
-          </div>
-
-          <div className="flex-none">
-            {state !== "editing" && (
-              <>
-                <button
-                  data-cy="button-domain-settings"
-                  className="text-gray-600 hover:text-gray-500 outline-none focus:outline-none"
-                  onClick={(e) => {
-                    setState("editing");
-                    e.preventDefault();
-                  }}
-                >
-                  <FontAwesomeIcon
-                    size="sm"
-                    className="fill-current w-4 h-4 mr-2"
-                    icon={faCog}
-                  />
-                </button>
-                <button
-                  className={` outline-none focus:outline-none ${
-                    state === "code"
-                      ? "text-green-600 hover:text-green-500"
-                      : "hover:text-gray-500 text-gray-600"
-                  }`}
-                  onClick={(e) => {
-                    setState((state) => (state === "code" ? "chart" : "code"));
-                    e.preventDefault();
-                  }}
-                >
-                  <FontAwesomeIcon
-                    size="sm"
-                    className="fill-current w-4 h-4 mr-2"
-                    icon={faQuestionCircle}
-                  />
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </CardTitle>
-      {renderInner(state)}
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };
+
+const UsageStat = ({
+  label,
+  value,
+  max,
+  children,
+}: {
+  label: string;
+  value: ReactNode;
+  max?: ReactNode;
+  children?: ReactNode;
+}) => (
+  <Card size="sm">
+    <CardContent>
+      <div className="text-xs font-medium text-muted-foreground">{label}</div>
+      <div className="mt-1 flex items-baseline gap-1">
+        <span className="text-2xl font-semibold tracking-tight capitalize tabular-nums">
+          {value}
+        </span>
+        {max != null && (
+          <span className="text-sm text-muted-foreground">/ {max}</span>
+        )}
+      </div>
+      {children}
+    </CardContent>
+  </Card>
+);
 
 const DomainList = ({
   domains,
@@ -446,108 +487,62 @@ const DomainList = ({
     `,
   });
 
-  const Box: React.FunctionComponent<PropsWithChildren> = ({ children }) => (
-    <div className="text-gray-700 font-bold mr-8 mb-4 md:mb-0 flex-1">
-      {children}
-    </div>
-  );
+  const settings = query.data?.settings;
 
   return (
     <>
-      <div className="flex flex-col">
-        <div className="pb-4 flex-1 flex flex-col md:flex-row">
-          <div className="flex-1 flex flex-row flex-wrap p-2 text-center md:text-left">
-            <Box>
-              <div className="text-gray-600">Subscription</div>
-              <div className="text-3xl font-extrabold">
-                {query.data?.settings.subscription}
-              </div>
-              {query.data?.settings.subscription === "basic" ? (
-                <span className="text-sm text-purple-600 hover:text-purple-900">
-                  <Link to="/settings">Upgrade</Link>
-                </span>
-              ) : null}
-            </Box>
-            <Box>
-              <div className="text-gray-600">Domains</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
-                {query.data?.settings.domains.current}
+      <PageHeader
+        title="Your sites"
+        description="Click a site to see its full analytics dashboard."
+        actions={
+          <>
+            <Button variant="outline" asChild>
+              <Link to="/settings">
+                <SettingsIcon />
+                Settings
+              </Link>
+            </Button>
+            <Button onClick={() => setShowAddDomain(true)}>
+              <PlusIcon />
+              Add domain
+            </Button>
+          </>
+        }
+      />
 
-                <span className="text-sm text-gray-500">
-                  {" "}
-                  / {query.data?.settings.domains.max}
-                </span>
-              </div>
-            </Box>
-            <Box>
-              <div className="text-gray-600">Monthly Views</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
-                {numeral(query.data?.settings.pageViews.current).format(
-                  "0.[0]a"
-                )}
-                <span className="text-sm text-gray-500">
-                  {" "}
-                  /{" "}
-                  {numeral(query.data?.settings.pageViews.max).format("0.[0]a")}
-                </span>
-              </div>
-            </Box>
-            <Box>
-              <div className="text-gray-600">Monthly Visitors</div>
-              <div className="text-3xl font-extrabold whitespace-no-wrap">
-                {numeral(query.data?.settings.visitors).format("0.[0]a")}
-              </div>
-            </Box>
-          </div>
-
-          <div className="py-2 flex flex-row md:flex-col justify-start">
-            <div className="flex-1 md:flex-none">
-              <button
-                className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4 outline-none focus:outline-none"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowAddDomain(true);
-                }}
-              >
-                <FontAwesomeIcon
-                  className="fill-current w-4 h-4 mr-2"
-                  icon={faPlus}
-                />
-                Add domain
-              </button>
-            </div>
+      <div className="grid grid-cols-2 gap-4 pb-8 lg:grid-cols-4">
+        <UsageStat label="Subscription" value={settings?.subscription ?? "–"}>
+          {settings?.subscription === "basic" ? (
             <Link
               to="/settings"
-              className="text-md text-purple-600 hover:text-purple-500 font-semibold mr-4"
+              className="text-xs font-medium text-primary hover:underline"
             >
-              <FontAwesomeIcon
-                className="fill-current w-4 h-4 mr-2"
-                icon={faCog}
-              />
-              Settings
+              Upgrade
             </Link>
-          </div>
-        </div>
+          ) : null}
+        </UsageStat>
+        <UsageStat
+          label="Domains"
+          value={settings?.domains.current ?? "–"}
+          max={settings?.domains.max}
+        />
+        <UsageStat
+          label="Monthly views"
+          value={settings ? numeral(settings.pageViews.current).format("0.[0]a") : "–"}
+          max={settings && numeral(settings.pageViews.max).format("0.[0]a")}
+        />
+        <UsageStat
+          label="Monthly visitors"
+          value={settings ? numeral(settings.visitors).format("0.[0]a") : "–"}
+        />
       </div>
 
-      {domains?.length === 0 && !showAddDomain && (
-        <div className="py-12 text-xl text-gray-600 text-center font-extrabold">
-          You haven't setup any domains yet.
-          <div className="text-green-600 hover:text-green-500 pt-4 underline">
-            <button
-              className="outline-none focus:outline-none"
-              data-cy="add-domain"
-              onClick={() => setShowAddDomain(true)}
-            >
-              Add a domain to get started
-            </button>
-          </div>
-        </div>
-      )}
-
       {showAddDomain && (
-        <Card>
-          <div className="flex-1 h-full w-full">
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Add a domain</CardTitle>
+          </CardHeader>
+          <CardContent className="max-w-xl">
             <AddOrEditDomain
               onCancel={() => setShowAddDomain(false)}
               onComplete={() => {
@@ -555,17 +550,42 @@ const DomainList = ({
                 refetchDomains();
               }}
             />
-          </div>
+          </CardContent>
         </Card>
       )}
 
-      {domains?.map((domain) => (
-        <DomainCard
-          key={domain.id}
-          domain={domain}
-          refetchDomains={refetchDomains}
-        />
-      ))}
+      {domains?.length === 0 && !showAddDomain && (
+        <Card>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <GlobeIcon />
+              </EmptyMedia>
+              <EmptyTitle>No domains yet</EmptyTitle>
+              <EmptyDescription>
+                Add a domain, then drop the tracking snippet on your site to
+                start collecting analytics.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button data-cy="add-domain" onClick={() => setShowAddDomain(true)}>
+                <PlusIcon />
+                Add a domain to get started
+              </Button>
+            </EmptyContent>
+          </Empty>
+        </Card>
+      )}
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        {domains?.map((domain) => (
+          <DomainCard
+            key={domain.id}
+            domain={domain}
+            refetchDomains={refetchDomains}
+          />
+        ))}
+      </div>
     </>
   );
 };
@@ -587,7 +607,7 @@ const Page = () => {
   return (
     <Layout title="domains">
       <Secure>
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 pb-12">
           {!query.fetching ? (
             <DomainList
               domains={query.data?.domains}

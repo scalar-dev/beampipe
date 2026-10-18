@@ -6,10 +6,10 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "peerDependencies": {
-    "react": "^18"
+    "react": "^19"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/react": "^18"
+    "@types/react": "^19",
+    "typescript": "^5"
   }
 }
