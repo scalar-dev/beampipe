@@ -23,12 +23,11 @@ jobs:
         working-directory: web
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: beampipe-web
-          directory: web/dist
+          command: pages deploy web/dist --project-name=beampipe-web
 
   deploy-docs:
     name: Deploy Docs Site
@@ -46,9 +45,8 @@ jobs:
         run: bun run --cwd docs build
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: beampipe-docs
-          directory: docs/dist
+          command: pages deploy docs/dist --project-name=beampipe-docs
