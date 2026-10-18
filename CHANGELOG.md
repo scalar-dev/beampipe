@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.8](https://github.com/scalar-dev/beampipe/compare/v0.2.7...v0.2.8) (2026-10-18)
+
+
+### Features
+
+* shared brand mark, clearer profile menu and tighter marketing layout ([#149](https://github.com/scalar-dev/beampipe/issues/149)) ([876a779](https://github.com/scalar-dev/beampipe/commit/876a779f4a462c28f52bab69a1712ec2270b93ef))
+
 ## [0.2.7](https://github.com/scalar-dev/beampipe/compare/v0.2.6...v0.2.7) (2026-10-18)
 
 
