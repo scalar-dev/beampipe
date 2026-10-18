@@ -13,7 +13,7 @@ WORKDIR /app/ui
 RUN bun run build
 
 # Stage 2: Build the server Shadow JAR
-FROM gradle:8.10-jdk17 AS server-build
+FROM gradle:9.8.1-jdk25 AS server-build
 WORKDIR /app
 COPY server/ server/
 # Use a single-project settings.gradle to avoid needing the ui subproject
@@ -37,10 +37,10 @@ RUN apk add --no-cache wget && \
     mv /tmp/dbip.mmdb /data/dbip-city-lite.mmdb
 
 # Stage 4: Runtime image
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 WORKDIR /app
 COPY --from=server-build /app/server/build/libs/server-*-all.jar /app/server.jar
 COPY --from=geoip /data/ /data/
 ENV GEOIP_DB=/data/dbip-city-lite.mmdb
 EXPOSE 8080
-CMD ["java", "-Xmx256m", "-XX:ActiveProcessorCount=2", "-jar", "/app/server.jar"]
+CMD ["java", "-Xmx256m", "-XX:ActiveProcessorCount=2", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/server.jar"]
