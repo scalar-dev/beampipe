@@ -22,53 +22,9 @@ import MapChart from "../components/domain/MapChart";
 import { StatsQuery } from "../components/domain/StatsQuery";
 import { Link, useParams } from "react-router-dom";
 import { DrilldownPills, DrilldownState } from "../components/domain/Drilldown";
-import { Logo } from "@beampipe/components";
-import { SCALAR_CONTACT_URL, SCALAR_URL } from "../scalar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-export const Footer = () => (
-  <footer className="border-t bg-background">
-    <div className="container mx-auto flex flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <a
-          href="https://beampipe.io"
-          className="text-xl font-extrabold tracking-tight text-primary hover:text-primary/80"
-        >
-          <Logo />
-        </a>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Built by{" "}
-          <a href={SCALAR_URL} className="font-semibold text-foreground hover:text-primary">
-            Scalar
-          </a>
-          . We build AI systems to help you scale.{" "}
-          <a href={SCALAR_CONTACT_URL} className="font-semibold text-primary hover:text-primary/80">
-            Work with us →
-          </a>
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} Beampipe.
-        </p>
-      </div>
-      <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted-foreground">
-        <a href="https://docs.beampipe.io/" target="_blank" rel="noreferrer" className="hover:text-foreground">
-          Docs
-        </a>
-        <a href="https://beampipe.io/privacy" className="hover:text-foreground">
-          Privacy policy
-        </a>
-        <a href="mailto:hello@beampipe.io" className="hover:text-foreground">
-          Contact us
-        </a>
-        <a href="https://github.com/scalar-dev/beampipe" target="_blank" rel="noreferrer" className="hover:text-foreground">
-          GitHub
-        </a>
-      </nav>
-    </div>
-  </footer>
-);
 
 export const TakeBackControl = () => (
   <div className="rounded-2xl bg-primary px-6 py-12 text-center sm:px-16">
@@ -526,10 +482,6 @@ const DomainPage = () => {
     <AuthProvider>
       <Layout title={params.domain as string}>
         <Root domain={params.domain as string} />
-
-        <IfAnonymous>
-          <Footer />
-        </IfAnonymous>
       </Layout>
     </AuthProvider>
   );

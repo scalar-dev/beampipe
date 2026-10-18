@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { ScalarCredit } from "./layout/Layout";
 import { onApiError } from "../utils/errors";
 import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
@@ -104,10 +103,6 @@ export const AuthCard: React.FunctionComponent<PropsWithChildren<AuthCardProps>>
           {footer}
         </div>
       )}
-
-      <p className="mt-10 text-center text-xs text-muted-foreground">
-        <ScalarCredit />
-      </p>
     </div>
   </div>
 );
